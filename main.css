@@ -8,13 +8,19 @@ body{
 .horizontal-Menu-Option{
     display: flex;
     flex-direction: row; 
-    align-items: flex-start;
-    padding:20px; 
+    justify-content: space-between;
+    align-items: center;
+    padding:10px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+    margin-left: 10px;
+    margin-right: 10px; 
+    border: 1px solid black;
 }
 
 .vertical-change-page{
     display: flex;
-    flex-direction: column
+    flex-direction: column;
 
 }
 
@@ -26,8 +32,11 @@ body{
 
 
 .main-info{
-    margin:auto
+    margin:auto;
+    
 }
+
+
 
 .change-page-text{
     padding: 0px;
