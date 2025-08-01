@@ -7,6 +7,7 @@ const PORT = 3000;
 
 //app.use('/Chapter_18', express.static(path.join(__dirname, 'JavaScriptExercises', 'Chapter_18')));
 
+app.use(express.static(__dirname));
 
 // Route to serve exercise.html
 app.get('/', (req, res) => {
