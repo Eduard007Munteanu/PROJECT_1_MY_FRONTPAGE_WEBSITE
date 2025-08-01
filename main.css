@@ -1,3 +1,10 @@
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+
 .horizontal-Menu-Option{
     display: flex;
     flex-direction: row; 
@@ -14,6 +21,7 @@
 .vertical-head-body-allign{
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
 }
 
 
@@ -28,5 +36,9 @@
 
 
 .info-content{
-    margin:auto
+    display: flex;
+    /* margin:auto; */
+    justify-content: center;
+    align-items: center;
+    flex-grow:  1;
 }
