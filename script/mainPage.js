@@ -9,8 +9,8 @@ export function changeoption(){
         const selectValue = option.value;
         console.log("SelectValue is " + selectValue); //Test 1 > checking SelectValue
         const redirect = `${selectValue}.html`;
-        if(redirect != currentPage){
-            window.location.href  = redirect;
+        if(redirect != currentPage && !redirect.includes("default")){
+            window.location.href  = `/html/${redirect}`;
         }
         
     })

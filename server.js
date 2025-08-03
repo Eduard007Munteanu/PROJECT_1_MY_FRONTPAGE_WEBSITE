@@ -7,11 +7,11 @@ const PORT = 3000;
 
 //app.use('/Chapter_18', express.static(path.join(__dirname, 'JavaScriptExercises', 'Chapter_18')));
 
-app.use(express.static(__dirname));
+app.use(express.static(__dirname));  //Unsafe, fix later when publicly distributed. 
 
 // Route to serve exercise.html
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'main.html'));
+    res.sendFile(path.join(__dirname, '/html/main.html'));
 });
 
 app.listen(PORT, () => {
