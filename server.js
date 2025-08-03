@@ -11,7 +11,7 @@ app.use(express.static(__dirname));  //Unsafe, fix later when publicly distribut
 
 // Route to serve exercise.html
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/html/main.html'));
+    res.sendFile(path.join(__dirname, '/html/CV.html'));
 });
 
 app.listen(PORT, () => {

@@ -1,3 +1,3 @@
-import { changeoption } from "./mainPage.js";
+import { changeoption } from "./defaultPage.js";
 
 changeoption();
