@@ -122,15 +122,23 @@ export function deleterInteractorButton(){
     })
 }
 
+export function deleteAllInteractorButton(){
+    let allDeletebutton = document.querySelector(".remove-all-button");
+    allDeletebutton.addEventListener("click", () => {
+        fullProjectDeletor();
+    })
+}
+
 
 
 function projectDeletor(deletedElement){
-    let projectData = projectDatabase.getDataBase();
     projectDatabase.deleteElement(deletedElement);
     flushSpecificLink(deletedElement.id);
-    projectData.forEach((dataElement) => {
-        updateOthersId();
-    })
+}
+
+function fullProjectDeletor(){
+    projectDatabase.deleteAllElements();
+    flushVisualLinks();
 }
 
 
@@ -145,13 +153,3 @@ function flushSpecificLink(id){
     listlink.removeChild(specificLink);
 }
 
-function updateOthersId(){
-    projectDatabase.giveIdAfterDelete();
-    let listlink = document.querySelector(".list-links");
-    let children = listlink.children;
-    for(let i=0; i < children.length; i++){
-        children[i].id = projectDatabase.getDataBase()[i].id;
-    }
-
-
-}

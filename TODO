@@ -1,6 +1,11 @@
 Fix:
 
-1) Define the database as a class (JavaScript)
-2) Delete option should work
+1) Define the database as a class (JavaScript) [x]
+2) Delete option should work 
 3) Create backend section
 4) Define the database as a class (Java)
+
+
+
+At some point:
+    - Do not reupdate the ID's, let it be like it is. 

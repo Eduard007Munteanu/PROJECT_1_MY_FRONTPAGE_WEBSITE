@@ -6,13 +6,6 @@ class ProjectDatabase{
         return `link-element-${this.#projectDatabase.length + 1}`;  //To not have init being 0.
     }
 
-    giveIdAfterDelete(){
-        let id = 0;
-        this.#projectDatabase.forEach((element) => {
-            id ++;
-            element.id = `link-element-${id}`
-        }) 
-    }
 
     insertElement(element){
         this.#projectDatabase.push(element);
@@ -24,6 +17,10 @@ class ProjectDatabase{
 
     deleteElement(element){
         this.#projectDatabase.pop(element);
+    }
+
+    deleteAllElements(){
+        this.#projectDatabase.length = 0;
     }
 }
 

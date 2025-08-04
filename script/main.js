@@ -1,5 +1,6 @@
 import { changeoption } from "./defaultPage.js";
-import { insertLinkContent, projectInit, deleterInteractorButton} from "./linkPage.js";
+import { insertLinkContent, projectInit,
+        deleterInteractorButton, deleteAllInteractorButton} from "./linkPage.js";
 
 changeoption();
 
@@ -9,5 +10,6 @@ if (currentPage === "link.html") {
     insertLinkContent();
     projectInit();
     deleterInteractorButton();
+    deleteAllInteractorButton();
 }
 
