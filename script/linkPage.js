@@ -4,24 +4,39 @@ export function insertLinkContent(){
     let insertLinkButton = document.querySelector(".insert-link-button");
 
     insertLinkButton.addEventListener('click', () => {
-        projectInit();
+        togglePopUp();
     })
 }
 
-function projectInit(){
-    let projectData = {
-        name : null,
-        link: null,
-        video : null,
-        PDF : null,
-        description : null
-    }
 
-    let projectDataInput = document.querySelectorAll(".project-data");
+function togglePopUp(){
+    let overlay = document.querySelector(".overlay-insert-link");
+    overlay.style.display = "flex";
+
+}
+
+function removePopUp(){
+    let overlay = document.querySelector(".overlay-insert-link");
+    overlay.style.display = "none";
+}
+
+
+export function projectInit(){
     let sendDataButton = document.querySelector(".send-project-data-button");
 
-    
     sendDataButton.addEventListener("click", () => {
+        let projectData = {
+            name : null,
+            link: null,
+            video : null,
+            PDF : null,
+            description : null
+        }
+
+        let projectDataInput = document.querySelectorAll(".project-data");
+        
+
+        console.log("being called");
 
         
         for (const eachProject of projectDataInput) {
@@ -38,6 +53,7 @@ function projectInit(){
 
         if(projectData != null){
             projectCreator(projectData);
+            removePopUp();
         }
     })
 }
