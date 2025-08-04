@@ -1,3 +1,5 @@
+
+
 export function changeoption(){
     let option = document.querySelector(".change-page-option");
 
@@ -12,6 +14,12 @@ export function changeoption(){
         if(redirect != currentPage && !redirect.includes("default")){
             window.location.href  = `/html/${redirect}`;
         }
+
+        
+
+        
         
     })
 }
+
+
