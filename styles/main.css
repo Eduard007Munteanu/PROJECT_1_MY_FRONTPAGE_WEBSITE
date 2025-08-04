@@ -109,6 +109,7 @@ body{
     padding-left: 10px;
     padding-top:10px;
     padding-bottom:10px;
+    flex-direction: column;
 }
 
 .link-general-options{
@@ -138,4 +139,17 @@ body{
     opacity: 100%;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) /* add black shadow of 10px and 30% opacity */
+}
+
+.list-links{
+    list-style: none;
+    padding: 0px;
+}
+
+
+
+.div-link-element{
+    border: 1px solid black;
+    margin: 10px;
+    padding: 10px;
 }

@@ -1,5 +1,6 @@
 Fix:
 
-1) Costumizable info-content-secondary-info details, different percentages
-given different viewpoints
-2)
+1) Define the database as a class (JavaScript)
+2) Delete option should work
+3) Create backend section
+4) Define the database as a class (Java)

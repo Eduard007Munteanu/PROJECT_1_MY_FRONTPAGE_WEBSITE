@@ -1,19 +1,24 @@
-let projectDatabase = [];
+class ProjectDatabase{
+    #projectDatabase = [];
 
 
-export function giveId(){
-    return projectDatabase.length
+    getId(){
+        return this.#projectDatabase.length;
+    }
+
+    giveIdAfterDelete(){
+        id = 0;
+        this.#projectDatabase.forEach((element) => {
+            id ++;
+            element.id += id;
+        }) 
+    }
+
+    insertElement(element){
+        this.#projectDatabase.push(element);
+    }
 }
 
 
-export function giveIdAfterDelete(){
-    id = 0;
-    projectDatabase.forEach((element) => {
-        id ++;
-        element.id += id;
-    })
-}
-
-export function insertElement(element){
-    projectDatabase.push(element);
-}
+let projectDatabase = new ProjectDatabase();
+export default projectDatabase;

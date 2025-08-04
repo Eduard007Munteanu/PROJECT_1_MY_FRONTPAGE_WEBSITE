@@ -1,4 +1,4 @@
-import { giveIdAfterDelete, giveId, insertElement } from "../database/projectDatabase.js";
+import projectDatabase from "../database/projectDatabase.js";
 
 export function insertLinkContent(){
     let insertLinkButton = document.querySelector(".insert-link-button");
@@ -61,14 +61,16 @@ export function projectInit(){
 
 function projectCreator(projectData){
     let listLink = document.querySelector(".list-links");
-    projectData.id = giveId();
-    insertElement(projectData);
+    projectData.id = projectDatabase.getId();
+    projectDatabase.insertElement(projectData);
 
     
     const li = createElement("li", "Link-element");
     li.id = projectData.id;
 
-    const div = createElement("div");
+    const div = createElement("div", "div-link-element");
+    div.id = projectData.id;
+
     div.append(
         createElement("p", "", "Project name: " + projectData.name),
         createElement("p", "", "URL link: " + projectData.link),
