@@ -3,19 +3,27 @@ class ProjectDatabase{
 
 
     getId(){
-        return this.#projectDatabase.length;
+        return `link-element-${this.#projectDatabase.length + 1}`;  //To not have init being 0.
     }
 
     giveIdAfterDelete(){
-        id = 0;
+        let id = 0;
         this.#projectDatabase.forEach((element) => {
             id ++;
-            element.id += id;
+            element.id = `link-element-${id}`
         }) 
     }
 
     insertElement(element){
         this.#projectDatabase.push(element);
+    }
+
+    getDataBase(){
+        return this.#projectDatabase; 
+    }
+
+    deleteElement(element){
+        this.#projectDatabase.pop(element);
     }
 }
 

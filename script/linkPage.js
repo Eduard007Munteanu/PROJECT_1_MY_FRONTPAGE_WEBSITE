@@ -69,20 +69,36 @@ function projectCreator(projectData){
     li.id = projectData.id;
 
     const div = createElement("div", "div-link-element");
-    div.id = projectData.id;
+
+    const divContent = createElement("div", "div-link-element-content");
+    const divTools = createElement("div", "div-link-element-tools");
+
+
+    //div.id = projectData.id;
 
     div.append(
-        createElement("p", "", "Project name: " + projectData.name),
-        createElement("p", "", "URL link: " + projectData.link),
-        createElement("p", "", "Description: " + projectData.description),
-        createElement("p", "", "PDF folder: " + projectData.PDF),
-        createElement("p", "", "Video folder: " + projectData.video)
+        divTools,
+        divContent
     );
+
+    divTools.append(createElement("button", "deleteButton", "Delete"));
+    divContent.append(
+            createElement("p", "", "Project name: " + projectData.name),
+            createElement("p", "", "URL link: " + projectData.link),
+            createElement("p", "", "Description: " + projectData.description),
+            createElement("p", "", "PDF folder: " + projectData.PDF),
+            createElement("p", "", "Video folder: " + projectData.video)
+    );
+
+
+
+
 
     li.appendChild(div);
     listLink.appendChild(li);
 
-
+    //Testing part> Check database elements:
+    console.log(projectDatabase);
 }
 
 function createElement(tag, className, textContent) {
@@ -90,4 +106,52 @@ function createElement(tag, className, textContent) {
     if (className) el.className = className;
     if (textContent) el.textContent = textContent;
     return el;
+}
+
+
+export function deleterInteractorButton(){
+    let parent = document.querySelector(".list-links");
+    parent.addEventListener("click", (event) => {
+        let deleteButton = event.target.closest(".deleteButton");
+         
+        if(deleteButton){
+            let objectToDelete = deleteButton.closest(".Link-element");
+            projectDeletor(objectToDelete);
+        }
+
+    })
+}
+
+
+
+function projectDeletor(deletedElement){
+    let projectData = projectDatabase.getDataBase();
+    projectDatabase.deleteElement(deletedElement);
+    flushSpecificLink(deletedElement.id);
+    projectData.forEach((dataElement) => {
+        updateOthersId();
+    })
+}
+
+
+function flushVisualLinks(){
+    let listlink = document.querySelector(".list-links");
+    listlink.innerHTML = "";
+}
+
+function flushSpecificLink(id){
+    let listlink = document.querySelector(".list-links");
+    let specificLink = document.getElementById(id);
+    listlink.removeChild(specificLink);
+}
+
+function updateOthersId(){
+    projectDatabase.giveIdAfterDelete();
+    let listlink = document.querySelector(".list-links");
+    let children = listlink.children;
+    for(let i=0; i < children.length; i++){
+        children[i].id = projectDatabase.getDataBase()[i].id;
+    }
+
+
 }
