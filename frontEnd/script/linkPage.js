@@ -1,5 +1,5 @@
 // import projectDatabase from "../database/projectDatabase.js";
-import { getAllLinks, getSpecificLink, createLink } from "../API/linkAPI.js";
+import { getAllLinks, getSpecificLink, deleteAllLinks, deleteLink, createLink } from "../API/linkAPI.js";
 
 
 
@@ -76,6 +76,27 @@ export async function RenderDataOnPage(){
 }
 
 
+export function deleterInteractorButton(){
+    let parent = document.querySelector(".list-links");
+    parent.addEventListener("click", (event) => {
+        let deleteButton = event.target.closest(".deleteButton");
+         
+        if(deleteButton){
+            let objectToDelete = deleteButton.closest(".Link-element");
+            projectDeletor(objectToDelete);
+        }
+
+    })
+}
+
+export function deleteAllInteractorButton(){
+    let allDeletebutton = document.querySelector(".remove-all-button");
+    allDeletebutton.addEventListener("click", () => {
+        fullProjectDeletor();
+    })
+}
+
+
 
 
 
@@ -118,34 +139,19 @@ function createElement(tag, className, textContent) {
 }
 
 
-export function deleterInteractorButton(){
-    let parent = document.querySelector(".list-links");
-    parent.addEventListener("click", (event) => {
-        let deleteButton = event.target.closest(".deleteButton");
-         
-        if(deleteButton){
-            let objectToDelete = deleteButton.closest(".Link-element");
-            projectDeletor(objectToDelete);
-        }
 
-    })
-}
-
-export function deleteAllInteractorButton(){
-    let allDeletebutton = document.querySelector(".remove-all-button");
-    allDeletebutton.addEventListener("click", () => {
-        fullProjectDeletor();
-    })
-}
 
 
 
 function projectDeletor(deletedElement){
     // projectDatabase.deleteElement(deletedElement); /API 
+    let id = deletedElement.id;
+    deleteLink(id);
     flushSpecificLink(deletedElement.id);
 }
 
 function fullProjectDeletor(){
+    deleteAllLinks();
     // projectDatabase.deleteAllElements(); API
     flushVisualLinks();
 }

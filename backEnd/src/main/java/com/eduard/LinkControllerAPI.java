@@ -42,4 +42,22 @@ public class LinkControllerAPI {
         System.out.println("Received: " + link.getGithub_link());
         return linkRepository.save(link);
     }
+
+    //Delete: Remove a link from the database
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Link> deleteSpecificLink(@PathVariable Long id){
+        Optional<Link> linkEntity = linkRepository.findById(id);
+        if(linkEntity.isPresent()){
+            Link actualLinkEntity = linkEntity.get();
+            linkRepository.delete(actualLinkEntity);
+            return ResponseEntity.ok(actualLinkEntity);
+        } else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping
+    public void deleteAllLinks(){
+        linkRepository.deleteAll();
+    } 
 }

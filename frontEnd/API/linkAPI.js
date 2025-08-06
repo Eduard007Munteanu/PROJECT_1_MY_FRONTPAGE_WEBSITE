@@ -33,3 +33,27 @@ export async function createLink(linkData){
 
     return await response.json();
 }
+
+export async function deleteLink(specific_id){
+    const response = await fetch(`${BASE_URL}/${specific_id}`, {
+        method: "DELETE"
+    });
+
+    if(!response.ok){
+        throw new Error("failed to delete the link");
+    }
+
+    return await response.json();
+}
+
+export async function deleteAllLinks(){
+    const response = await fetch(BASE_URL, {
+        method: "DELETE"
+    });
+
+    if(!response.ok){
+        throw new Error("failed to delete all links");
+    }
+
+}
+
