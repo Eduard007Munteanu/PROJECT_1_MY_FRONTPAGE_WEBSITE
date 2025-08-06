@@ -2,8 +2,15 @@ Fix:
 
 1) Define the database as a class (JavaScript) [x]
 2) Delete option should work [x]
-3) Create backend section
-4) Define the database as a class (Java)
+3) Create backend section [x]
+4) Define the database as a class (Java) [x]
+5) API + communication between Backend and frontend ["partially"]
+6) Advanced server internal upload of folders and other data 
+.
+.
+.
+?) Security measurements 
+?+1) On an actual cloud server. (If possible)
 
 
 
@@ -11,3 +18,6 @@ Fix:
 Conceptually: 
 
 1) Learn about JDBC and how it works under the hood for JPA Spring Database management. 
+
+2) Remember for documentation => We are in the dev moment where we have two different ports, localhost:3000 and localhost:8080. On the production 
+section, this is not the standard, you have a single domain and main port. 
