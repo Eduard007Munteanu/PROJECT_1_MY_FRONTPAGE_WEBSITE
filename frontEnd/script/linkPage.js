@@ -1,4 +1,7 @@
-import projectDatabase from "../database/projectDatabase.js";
+// import projectDatabase from "../database/projectDatabase.js";
+import { getAllLinks, getSpecificLink, createLink } from "../API/linkAPI.js";
+
+
 
 export function insertLinkContent(){
     let insertLinkButton = document.querySelector(".insert-link-button");
@@ -21,16 +24,16 @@ function removePopUp(){
 }
 
 
-export function projectInit(){
+export async function projectFULLCreator(){
     let sendDataButton = document.querySelector(".send-project-data-button");
 
-    sendDataButton.addEventListener("click", () => {
+    sendDataButton.addEventListener("click", async () => {
         let projectData = {
-            name : null,
-            link: null,
-            video : null,
-            PDF : null,
-            description : null
+            project_name : null,
+            github_link: null,
+            description : null,
+            pdf_url : null,
+            video_url : null
         }
 
         let projectDataInput = document.querySelectorAll(".project-data");
@@ -52,19 +55,33 @@ export function projectInit(){
         }
 
         if(projectData != null){
-            projectCreator(projectData);
+            try{
+                let projectBackEndData = await createLink(projectData);  //Back the data from backend + ID
+                projectCreator(projectBackEndData);
+            } catch{
+                throw new Error("Failed retrieval of data POST");
+            }
             removePopUp();
         }
     })
 }
 
 
+
+export async function RenderDataOnPage(){
+    let data = await getAllLinks();
+    data.forEach((dataObject) => {
+        projectCreator(dataObject)
+    })
+}
+
+
+
+
+
+
 function projectCreator(projectData){
     let listLink = document.querySelector(".list-links");
-    projectData.id = projectDatabase.getId();
-    projectDatabase.insertElement(projectData);
-
-    
     const li = createElement("li", "Link-element");
     li.id = projectData.id;
 
@@ -74,8 +91,6 @@ function projectCreator(projectData){
     const divTools = createElement("div", "div-link-element-tools");
 
 
-    //div.id = projectData.id;
-
     div.append(
         divTools,
         divContent
@@ -83,22 +98,16 @@ function projectCreator(projectData){
 
     divTools.append(createElement("button", "deleteButton", "Delete"));
     divContent.append(
-            createElement("p", "", "Project name: " + projectData.name),
-            createElement("p", "", "URL link: " + projectData.link),
+            createElement("p", "", "Project name: " + projectData.project_name),
+            createElement("p", "", "URL link: " + projectData.github_link),
             createElement("p", "", "Description: " + projectData.description),
-            createElement("p", "", "PDF folder: " + projectData.PDF),
-            createElement("p", "", "Video folder: " + projectData.video)
+            createElement("p", "", "PDF folder: " + projectData.pdf_url),
+            createElement("p", "", "Video folder: " + projectData.video_url)
     );
-
-
-
-
 
     li.appendChild(div);
     listLink.appendChild(li);
 
-    //Testing part> Check database elements:
-    console.log(projectDatabase);
 }
 
 function createElement(tag, className, textContent) {
@@ -132,12 +141,12 @@ export function deleteAllInteractorButton(){
 
 
 function projectDeletor(deletedElement){
-    projectDatabase.deleteElement(deletedElement);
+    // projectDatabase.deleteElement(deletedElement); /API 
     flushSpecificLink(deletedElement.id);
 }
 
 function fullProjectDeletor(){
-    projectDatabase.deleteAllElements();
+    // projectDatabase.deleteAllElements(); API
     flushVisualLinks();
 }
 

@@ -4,3 +4,10 @@ Fix:
 2) Delete option should work [x]
 3) Create backend section
 4) Define the database as a class (Java)
+
+
+
+
+Conceptually: 
+
+1) Learn about JDBC and how it works under the hood for JPA Spring Database management. 

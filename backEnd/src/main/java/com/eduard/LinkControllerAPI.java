@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http//localhost:3000") //Allow CORS communication with frontend port 3000. For development only!
+@CrossOrigin(origins = "http://localhost:3000") //Allow CORS communication with frontend port 3000. For development only!
 @RestController
 @RequestMapping("/api/links")
 public class LinkControllerAPI {
@@ -39,6 +39,7 @@ public class LinkControllerAPI {
     // POST: Add a new link
     @PostMapping
     public Link createLink(@RequestBody Link link) {
+        System.out.println("Received: " + link.getGithub_link());
         return linkRepository.save(link);
     }
 }
