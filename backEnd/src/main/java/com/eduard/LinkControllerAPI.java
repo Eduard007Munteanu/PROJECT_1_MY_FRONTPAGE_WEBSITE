@@ -47,7 +47,7 @@ public class LinkControllerAPI {
     // POST: Add a new link
     @PostMapping
     public Link createLink(@RequestParam("pdf_folder") MultipartFile pdf_folder, @RequestParam("video_folder") MultipartFile video_folder, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam("github_link") String github_link) throws IOException {
-        //return linkRepository.save(link);
+        
         
 
         
@@ -82,7 +82,7 @@ public class LinkControllerAPI {
 
         
         
-        return link;
+        return linkRepository.save(link);
 
     }
 
