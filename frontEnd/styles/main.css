@@ -141,6 +141,15 @@ body{
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) /* add black shadow of 10px and 30% opacity */
 }
 
+
+.close-project-data-button{
+    display: flex;
+    margin-left: auto;
+    background-color: red;
+}
+
+
+
 .list-links{
     list-style: none;
     padding: 0px;

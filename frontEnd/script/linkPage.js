@@ -27,6 +27,14 @@ function removePopUp(){
 
 export async function projectFULLCreator(){
     let sendDataButton = document.querySelector(".send-project-data-button");
+    let closeDataButton = document.querySelector(".close-project-data-button");
+
+
+    closeDataButton.addEventListener("click", async () => {
+        removePopUp();
+    })
+
+
 
     sendDataButton.addEventListener("click", async () => {
         let projectData = {
