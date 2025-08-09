@@ -1,5 +1,6 @@
 // import projectDatabase from "../database/projectDatabase.js";
-import { getAllLinks, getSpecificLink, deleteAllLinks, deleteLink, createLink } from "../API/linkAPI.js";
+import { getAllLinks, getSpecificPDFFromLink, 
+    getSpecificVideoFromLink, deleteAllLinks, deleteLink, createLink } from "../API/linkAPI.js";
 
 
 
@@ -137,19 +138,40 @@ function projectCreator(projectData){
         divContent
     );
 
+
+    const pdfP = createElement("p", "", "PDF folder: " + projectData.pdf_url)
+    const videoP = createElement("p", "", "Video folder: " + projectData.video_url)
+
+
+
+
+    pdfP.addEventListener("click", async () => {
+        const blobResponse = await getSpecificPDFFromLink(projectData.id);
+        const url = URL.createObjectURL(blobResponse);
+        window.open(url, "_blank"); // Opens PDF in new tab
+    });
+
+    videoP.addEventListener("click", async () => {
+        const blobResponse = await getSpecificVideoFromLink(projectData.id);
+        const url = URL.createObjectURL(blobResponse);
+        window.open(url, "_blank"); // Opens video in new tab
+    });
+
     divTools.append(createElement("button", "deleteButton", "Delete"));
     divContent.append(
             createElement("p", "", "Project name: " + projectData.project_name),
             createElement("p", "", "URL link: " + projectData.github_link),
             createElement("p", "", "Description: " + projectData.description),
-            createElement("p", "", "PDF folder: " + projectData.pdf_url),
-            createElement("p", "", "Video folder: " + projectData.video_url)
+            pdfP,
+            videoP
     );
 
     li.appendChild(div);
     listLink.appendChild(li);
 
 }
+
+
 
 function createElement(tag, className, textContent) {
     const el = document.createElement(tag);

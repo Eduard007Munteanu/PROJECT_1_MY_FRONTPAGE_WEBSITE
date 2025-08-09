@@ -17,6 +17,26 @@ export async function getSpecificLink(specific_id){
     return await response.json();
 }
 
+
+export async function getSpecificPDFFromLink(specific_id){
+    const response = await fetch(`${BASE_URL}/pdfFiles/${specific_id}`);
+    if(!response.ok){
+        throw new Error(`failed to fetch that specific link with id: ${specific_id}`)
+    }
+
+    return await response.blob();
+}
+
+export async function getSpecificVideoFromLink(specific_id){
+    const response = await fetch(`${BASE_URL}/videoFiles/${specific_id}`);
+    if(!response.ok){
+        throw new Error(`failed to fetch that specific link with id: ${specific_id}`)
+    }
+
+    return await response.blob();
+    
+}
+
 export async function createLink(linkData){
     const response = await fetch(BASE_URL, {
         method: "POST",

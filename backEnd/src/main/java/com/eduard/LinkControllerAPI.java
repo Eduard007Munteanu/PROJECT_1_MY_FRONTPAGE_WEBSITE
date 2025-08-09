@@ -1,9 +1,13 @@
 package com.eduard;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,14 +48,65 @@ public class LinkControllerAPI {
 
     }
 
+
+
+    @GetMapping("/pdfFiles/{id}")
+    public ResponseEntity<Resource> getSpecificPDFFile(@PathVariable Long id){
+        Optional<Link> theLink = linkRepository.findById(id);
+
+        if(theLink.isPresent()){
+            Link theActualLink = theLink.get();
+
+            String pdfUrl = theActualLink.getPdf_url();
+            
+            String pdfFolderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
+
+            Path file = Paths.get(pdfFolderStringPath);
+
+            Path pdfFolderPath = file.resolve(pdfUrl);
+
+            Resource resource = new FileSystemResource(pdfFolderPath);
+            return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("application/pdf"))
+                .body(resource);
+        } else{
+            return ResponseEntity.notFound().build();
+        }
+
+
+    }
+
+
+
+    @GetMapping("/videoFiles/{id}")
+    public ResponseEntity<Resource> getSpecificVideoFile(@PathVariable Long id){
+        Optional<Link> theLink = linkRepository.findById(id);
+
+        if(theLink.isPresent()){
+            Link theActualLink = theLink.get();
+
+            String videoUrl = theActualLink.getVideo_url();
+            
+            String pdfFolderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
+
+            Path file = Paths.get(pdfFolderStringPath);
+
+            Path pdfFolderPath = file.resolve(videoUrl);
+
+            Resource resource = new FileSystemResource(pdfFolderPath);
+            return ResponseEntity.ok()
+                .contentType(MediaType.valueOf("video/mp4"))
+                .body(resource);
+        } else{
+            return ResponseEntity.notFound().build();
+        }
+
+
+    }
+
     // POST: Add a new link
     @PostMapping
     public Link createLink(@RequestParam("pdf_folder") MultipartFile pdf_folder, @RequestParam("video_folder") MultipartFile video_folder, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam("github_link") String github_link) throws IOException {
-        
-        
-
-        
-
         String pdfFolderPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
 
 
