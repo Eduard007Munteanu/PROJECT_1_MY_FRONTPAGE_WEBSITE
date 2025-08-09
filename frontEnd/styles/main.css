@@ -165,6 +165,25 @@ body{
 
 
 .dynamicVideoLink{
+    display: flex;
     width: 33%;
     height: auto;
+
 }
+
+.div-link-element-content{
+    display: flex;
+    flex-direction: row;
+}
+
+.div-link-element-info-content{
+    display: flex;
+    flex-direction: column;
+    flex: 1
+}
+
+.videoContainer{
+    display: flex; align-items: center; justify-content: center;
+    flex: 1
+}
+

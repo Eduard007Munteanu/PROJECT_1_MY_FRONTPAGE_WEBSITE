@@ -144,6 +144,9 @@ function projectCreator(projectData){
         divContent
     );
 
+    const divInfoContent = createElement("div", "div-link-element-info-content");
+    divContent.append(divInfoContent);
+
 
     const pdfP = createElement("p", "", "PDF folder: " + projectData.pdf_url)
     const videoP = createElement("p", "", "Video folder: " + projectData.video_url)
@@ -193,7 +196,7 @@ function projectCreator(projectData){
     });
 
     divTools.append(createElement("button", "deleteButton", "Delete"));
-    divContent.append(
+    divInfoContent.append(
             createElement("p", "", "Project name: " + projectData.project_name),
             createElement("p", "", "URL link: " + projectData.github_link),
             createElement("p", "", "Description: " + projectData.description),
