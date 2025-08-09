@@ -1,5 +1,18 @@
 Fix:
 
+
+
+BEFORE ALL:
+
+- Regarding video formats, find the source folder> For example
+upload, videoMP4, video1, convert to string as identifier the path
+Then store the path in the database. The user, when loaded, he get's
+the url Path, he insert the url path to retrieve the data, I look
+at the mapping to which folder, retrieve from the folder, send him the
+data as FormatData.
+Another option, stream/broadcast the information without downloading. 
+
+
 1) Define the database as a class (JavaScript) [x]
 2) Delete option should work [x]
 3) Create backend section [x]

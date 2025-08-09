@@ -18,13 +18,12 @@ export async function getSpecificLink(specific_id){
 }
 
 export async function createLink(linkData){
-    console.log(JSON.stringify(linkData, null, 2));
     const response = await fetch(BASE_URL, {
         method: "POST",
         headers: {
-            "Content-Type" : "application/json"
+            
         },
-        body: JSON.stringify(linkData)
+        body: linkData
     });
 
     if(!response.ok){

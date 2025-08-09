@@ -32,8 +32,10 @@ export async function projectFULLCreator(){
             project_name : null,
             github_link: null,
             description : null,
-            pdf_url : null,
-            video_url : null
+            // pdf_url : null,
+            // video_url : null, 
+            pdf_folder : null, //Actual files
+            video_folder: null,
         }
 
         let projectDataInput = document.querySelectorAll(".project-data");
@@ -46,7 +48,11 @@ export async function projectFULLCreator(){
 
             const key = eachProject.name;
 
-            if(eachProject.value.trim()){
+            if(eachProject.name == "pdf_folder" || eachProject.name == "video_folder"){
+                const file = eachProject.files[0];
+                projectData[key] = file;
+            }
+            else if(eachProject.value.trim()){
                 projectData[key] = eachProject.value.trim();
             } else{
                 projectData = null;
@@ -56,7 +62,21 @@ export async function projectFULLCreator(){
 
         if(projectData != null){
             try{
-                let projectBackEndData = await createLink(projectData);  //Back the data from backend + ID
+                console.log("At projectData check if not null");
+                const formData = new FormData();
+                console.log("At projectData, FormData() created")
+                for (const key in projectData) {
+                    console.log("At projectData, in the loop ", key)
+                    const value = projectData[key];
+                    console.log("Value defined as ", value)
+                    if (typeof value === "string") {
+                        formData.append(key, value);
+                    } else {
+                        formData.append(key, value, value.name);
+                    }
+                }
+                console.log("Yuppi, formData is ", formData);
+                let projectBackEndData = await createLink(formData);  //Back the data from backend + ID
                 projectCreator(projectBackEndData);
             } catch{
                 throw new Error("Failed retrieval of data POST");
