@@ -61,20 +61,20 @@ export async function projectFULLCreator(){
 
         if(projectData != null){
             try{
-                // console.log("At projectData check if not null");
+                console.log("At projectData check if not null");
                 const formData = new FormData();
-                // console.log("At projectData, FormData() created")
+                console.log("At projectData, FormData() created")
                 for (const key in projectData) {
-                    // console.log("At projectData, in the loop ", key)
+                    console.log("At projectData, in the loop ", key)
                     const value = projectData[key];
-                    // console.log("Value defined as ", value)
+                    console.log("Value defined as ", value)
                     if (typeof value === "string") {
                         formData.append(key, value);
                     } else {
                         formData.append(key, value, value.name);
                     }
                 }
-                // console.log("Yuppi, formData is ", formData);
+                console.log("Yuppi, formData is ", formData);
                 let projectBackEndData = await createLink(formData);  //Back the data from backend + ID
                 projectCreator(projectBackEndData);
             } catch{
