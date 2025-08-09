@@ -188,10 +188,18 @@ public class LinkControllerAPI {
 
     //Delete: Remove a link from the database
     @DeleteMapping("/{id}")
-    public ResponseEntity<Link> deleteSpecificLink(@PathVariable Long id){
+    public ResponseEntity<Link> deleteSpecificLink(@PathVariable Long id) throws IOException{
         Optional<Link> linkEntity = linkRepository.findById(id);
         if(linkEntity.isPresent()){
             Link actualLinkEntity = linkEntity.get();
+
+
+            String videoUrl = actualLinkEntity.getVideo_url();
+            String pdfUrl = actualLinkEntity.getPdf_url();
+
+
+            deleteFileFromPath(pdfUrl, videoUrl);
+
             linkRepository.delete(actualLinkEntity);
             return ResponseEntity.ok(actualLinkEntity);
         } else{
@@ -200,7 +208,41 @@ public class LinkControllerAPI {
     }
 
     @DeleteMapping
-    public void deleteAllLinks(){
+    public void deleteAllLinks() throws IOException{
+
+        List<Link> links = linkRepository.findAll();
+
+        for(Link link : links){
+            String videoUrl = link.getVideo_url();
+            String pdfUrl = link.getPdf_url();
+
+            deleteFileFromPath(pdfUrl, videoUrl);
+        }
+
         linkRepository.deleteAll();
     } 
+
+
+    private void deleteFileFromPath(String deletingPDFFile, String deletingVideoFile) throws IOException{
+        String folderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
+
+        Path file = Paths.get(folderStringPath);
+
+        Path pdfFolderPath = file.resolve(deletingPDFFile);
+        Path videoFolderPath = file.resolve(deletingVideoFile);
+
+
+        try{
+            Files.delete(pdfFolderPath);
+        } catch(IOException e){
+            throw new IOException("Failed to remove pdf due to incorrect path: " + pdfFolderPath, e);
+        }   
+
+        
+        try{
+            Files.delete(videoFolderPath);
+        } catch(IOException e){
+            throw new IOException("Failed to remove video due to incorrect path: " + videoFolderPath, e);
+        }
+    }
 }
