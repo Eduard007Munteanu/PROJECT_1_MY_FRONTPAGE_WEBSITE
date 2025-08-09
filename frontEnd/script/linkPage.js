@@ -149,6 +149,8 @@ function projectCreator(projectData){
     const videoP = createElement("p", "", "Video folder: " + projectData.video_url)
 
 
+    let videoTrigger = false;
+
 
 
     pdfP.addEventListener("click", async () => {
@@ -158,9 +160,36 @@ function projectCreator(projectData){
     });
 
     videoP.addEventListener("click", async () => {
-        const blobResponse = await getSpecificVideoFromLink(projectData.id);
-        const url = URL.createObjectURL(blobResponse);
-        window.open(url, "_blank"); // Opens video in new tab
+        if(videoTrigger){
+            let videoTag = document.getElementById("Video-id-" + projectData.id);
+            videoTag.remove();
+            videoTrigger = false;
+
+
+
+        } else if(!videoTrigger){
+            if(document.getElementById("Video-id-" + projectData.id)){
+                return;
+            }
+            const blobResponse = await getSpecificVideoFromLink(projectData.id);
+            const url = URL.createObjectURL(blobResponse);
+            let videoTag = document.createElement("video");
+            videoTag.className = "dynamicVideoLink"
+            videoTag.src = url;
+            videoTag.id = "Video-id-" + projectData.id;
+            videoTag.controls = true;
+            
+            let videoDivContainer = createElement("div", "videoContainer");
+            
+            divContent.append(videoDivContainer)
+
+            videoDivContainer.append(videoTag);
+
+            videoTrigger = true;
+
+
+
+        }
     });
 
     divTools.append(createElement("button", "deleteButton", "Delete"));
