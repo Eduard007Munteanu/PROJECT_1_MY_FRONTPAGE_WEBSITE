@@ -187,3 +187,8 @@ body{
     flex: 1
 }
 
+
+.Description{
+  word-break: break-word;  
+  max-width: 100%;
+}

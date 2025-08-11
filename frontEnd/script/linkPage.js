@@ -199,7 +199,7 @@ function projectCreator(projectData){
     divInfoContent.append(
             createElement("p", "", "Project name: " + projectData.project_name),
             createElement("p", "", "URL link: " + projectData.github_link),
-            createElement("p", "", "Description: " + projectData.description),
+            createElement("p", "Description", "Description: " + projectData.description),
             pdfP,
             videoP
     );
