@@ -78,6 +78,27 @@ public class LinkControllerAPI {
 
 
 
+
+    @GetMapping("/videoFilesPLAY/{id}")
+    public void getVideoPacketsToSend(@PathVariable Long id){
+        Optional<Link> theLink = linkRepository.findById(id);
+        
+        if(theLink.isPresent()){
+            Link theActualLink = theLink.get();
+
+            String videoUrl = theActualLink.getVideo_url();
+            
+            String pdfFolderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
+
+            Path file = Paths.get(pdfFolderStringPath);
+
+            Path pdfFolderPath = file.resolve(videoUrl);
+
+        }
+    }
+    
+
+
     @GetMapping("/videoFiles/{id}")
     public ResponseEntity<Resource> getSpecificVideoFile(@PathVariable Long id){
         Optional<Link> theLink = linkRepository.findById(id);

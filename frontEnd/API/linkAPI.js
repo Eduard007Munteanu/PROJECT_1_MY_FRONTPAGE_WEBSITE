@@ -76,3 +76,20 @@ export async function deleteAllLinks(){
 
 }
 
+
+export async function getVideoPacketsToPlay(byteStart, byteEnd){
+    const response = await fetch(`${BASE_URL}/videoFilesPLAY/${specific_id}`, {
+        method: "GET",
+        headers: {
+            Range: `bytes=${byteStart}-${byteEnd}`
+
+        },
+        
+    });
+    if(!response.ok){
+        throw new Error(`failed to fetch that specific link with id: ${specific_id}`)
+    }
+
+    return await response.blob();
+
+}

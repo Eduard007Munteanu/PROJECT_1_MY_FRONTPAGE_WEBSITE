@@ -161,15 +161,44 @@ function projectCreator(projectData){
     videoP.append(buttonDownloadVideo, buttonPlayVideo);
 
 
-    let videoTrigger = false;
+    downloadVideoButton(buttonDownloadVideo, projectData);
+    openPDFFile(a, projectData);
+
+    
+
+    divTools.append(createElement("button", "deleteButton", "Delete"));
+    divInfoContent.append(
+            createElement("p", "", "Project name: " + projectData.project_name),
+            createElement("p", "", "URL link: " + projectData.github_link),
+            createElement("p", "Description", "Description: " + projectData.description),
+            pdfP,
+            videoP
+    );
+
+    li.appendChild(div);
+    listLink.appendChild(li);
+
+}
 
 
-
+function openPDFFile(a, projectData){
     a.addEventListener("click", async () => {
         const blobResponse = await getSpecificPDFFromLink(projectData.id);
         const url = URL.createObjectURL(blobResponse);
         window.open(url, "_blank"); // Opens PDF in new tab
     });
+}
+
+
+
+
+function playVideoButton(){
+
+}
+
+
+function downloadVideoButton(buttonDownloadVideo, projectData){
+    let videoTrigger = false;
 
     buttonDownloadVideo.addEventListener("click", async () => {
         if(videoTrigger){
@@ -207,19 +236,6 @@ function projectCreator(projectData){
 
         }
     });
-
-    divTools.append(createElement("button", "deleteButton", "Delete"));
-    divInfoContent.append(
-            createElement("p", "", "Project name: " + projectData.project_name),
-            createElement("p", "", "URL link: " + projectData.github_link),
-            createElement("p", "Description", "Description: " + projectData.description),
-            pdfP,
-            videoP
-    );
-
-    li.appendChild(div);
-    listLink.appendChild(li);
-
 }
 
 
