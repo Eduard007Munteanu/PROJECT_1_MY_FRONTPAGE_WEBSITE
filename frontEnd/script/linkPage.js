@@ -148,41 +148,54 @@ function projectCreator(projectData){
     divContent.append(divInfoContent);
 
 
-    const pdfP = createElement("p", "", "PDF folder: " + projectData.pdf_url)
-    const videoP = createElement("p", "", "Video folder: " + projectData.video_url)
+    const pdfP = createElement("p", "", "PDF folder: ");
+    const a = createElement("a");
+    a.setAttribute('href', "#");
+    a.textContent = "Download PDF";
+    pdfP.append(a);
+
+    const videoP = createElement("p", "", "Video folder: ")
+    const buttonDownloadVideo = createElement("button", "", "Download"); 
+    const buttonPlayVideo = createElement("button", "", "Play");
+
+    videoP.append(buttonDownloadVideo, buttonPlayVideo);
 
 
     let videoTrigger = false;
 
 
 
-    pdfP.addEventListener("click", async () => {
+    a.addEventListener("click", async () => {
         const blobResponse = await getSpecificPDFFromLink(projectData.id);
         const url = URL.createObjectURL(blobResponse);
         window.open(url, "_blank"); // Opens PDF in new tab
     });
 
-    videoP.addEventListener("click", async () => {
+    buttonDownloadVideo.addEventListener("click", async () => {
         if(videoTrigger){
-            let videoTag = document.getElementById("Video-id-" + projectData.id);
-            videoTag.remove();
+            let videoContainer = document.getElementById("videoContainer-Id-" + projectData.id);
+            videoContainer.remove();
             videoTrigger = false;
 
 
 
         } else if(!videoTrigger){
-            if(document.getElementById("Video-id-" + projectData.id)){
+            if(document.getElementById("videoContainer-Id-" + projectData.id)){
                 return;
             }
             const blobResponse = await getSpecificVideoFromLink(projectData.id);
             const url = URL.createObjectURL(blobResponse);
-            let videoTag = document.createElement("video");
-            videoTag.className = "dynamicVideoLink"
+            let videoTag = document.createElement("a");
+            videoTag.setAttribute('href', url);
+            videoTag.setAttribute('download', "folder.mp4");
+            videoTag.className = "dynamicVideoLink";
             videoTag.src = url;
-            videoTag.id = "Video-id-" + projectData.id;
             videoTag.controls = true;
+            videoTag.click();
             
             let videoDivContainer = createElement("div", "videoContainer");
+
+            videoDivContainer.id = "videoContainer-Id-" + projectData.id;
             
             divContent.append(videoDivContainer)
 
