@@ -93,3 +93,9 @@ export async function getVideoPacketsToPlay(byteStart, byteEnd){
     return await response.blob();
 
 }
+
+
+export  function getVideoPath(specific_id){
+    const finder = `${BASE_URL}/videoFilesPLAY/${specific_id}`
+    return finder;
+}

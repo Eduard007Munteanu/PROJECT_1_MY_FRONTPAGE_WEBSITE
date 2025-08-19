@@ -7,10 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -80,23 +85,91 @@ public class LinkControllerAPI {
 
 
     @GetMapping("/videoFilesPLAY/{id}")
-    public void getVideoPacketsToSend(@PathVariable Long id){
+    public void getVideoPacketsToSend(@PathVariable Long id,
+                                    HttpServletRequest request,
+                                    HttpServletResponse response) throws IOException {
         Optional<Link> theLink = linkRepository.findById(id);
-        
-        if(theLink.isPresent()){
+
+        if (theLink.isPresent()) {
             Link theActualLink = theLink.get();
-
             String videoUrl = theActualLink.getVideo_url();
-            
-            String pdfFolderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
 
-            Path file = Paths.get(pdfFolderStringPath);
+            String pdfFolderStringPath = "E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload";
+            Path pdfFolderPath = Paths.get(pdfFolderStringPath).resolve(videoUrl);
 
-            Path pdfFolderPath = file.resolve(videoUrl);
+            System.out.println("Resolved path: " + pdfFolderPath.toAbsolutePath());
+            System.out.println("File exists? " + Files.exists(pdfFolderPath));
 
+
+            long fileSize = Files.size(pdfFolderPath);
+            String contentType = Files.probeContentType(pdfFolderPath);
+            if (contentType == null) contentType = "video/mp4";
+
+            response.setHeader("Content-Type", contentType);
+            response.setHeader("Accept-Ranges", "bytes");
+
+            // HEAD: only headers, no body
+            if ("HEAD".equalsIgnoreCase(request.getMethod())) {
+                response.setHeader("Content-Length", String.valueOf(fileSize));
+                response.setStatus(HttpServletResponse.SC_OK);
+                return;
+            }
+
+            String rangeHeader = request.getHeader("Range");
+
+            if (rangeHeader == null) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setHeader("Content-Length", String.valueOf(fileSize));
+
+                try (InputStream inputStream = Files.newInputStream(pdfFolderPath);
+                    ServletOutputStream outputStream = response.getOutputStream()) {
+
+                    byte[] buffer = new byte[8192];
+                    for (int bytesRead; (bytesRead = inputStream.read(buffer)) != -1; ) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    outputStream.flush();
+                }
+
+            } else if (rangeHeader.startsWith("bytes=")) {
+                String[] ranges = rangeHeader.substring(6).split("-");
+                long start = Long.parseLong(ranges[0]);
+                long end = ranges.length > 1 && !ranges[1].isEmpty()
+                        ? Long.parseLong(ranges[1])
+                        : fileSize - 1;
+
+                if (start < 0 || end >= fileSize || start > end) {
+                    response.setStatus(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+                    response.setHeader("Content-Range", "bytes */" + fileSize);
+                } else {
+                    long length = end - start + 1;
+
+                    response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+                    response.setHeader("Content-Range", "bytes " + start + "-" + end + "/" + fileSize);
+                    response.setHeader("Content-Length", String.valueOf(length));
+                    response.setHeader("Content-Type", contentType);
+
+                    try (RandomAccessFile randomAccessFile = new RandomAccessFile(pdfFolderPath.toFile(), "r");
+                        ServletOutputStream outputStream = response.getOutputStream()) {
+
+                        randomAccessFile.seek(start);
+                        byte[] buffer = new byte[8192];
+                        long remaining = length;
+
+                        while (remaining > 0) {
+                            int bytesToRead = (int) Math.min(buffer.length, remaining);
+                            int bytesRead = randomAccessFile.read(buffer, 0, bytesToRead);
+                            if (bytesRead == -1) break;
+
+                            outputStream.write(buffer, 0, bytesRead);
+                            remaining -= bytesRead;
+                        }
+                        outputStream.flush();
+                    }
+                }
+            }
         }
     }
-    
 
 
     @GetMapping("/videoFiles/{id}")

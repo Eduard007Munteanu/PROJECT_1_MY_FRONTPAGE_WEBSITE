@@ -1,6 +1,7 @@
 // import projectDatabase from "../database/projectDatabase.js";
 import { getAllLinks, getSpecificPDFFromLink, 
-    getSpecificVideoFromLink, deleteAllLinks, deleteLink, createLink } from "../API/linkAPI.js";
+    getSpecificVideoFromLink, deleteAllLinks,
+     getVideoPath, deleteLink, createLink } from "../API/linkAPI.js";
 
 
 
@@ -162,6 +163,7 @@ function projectCreator(projectData){
 
 
     downloadVideoButton(buttonDownloadVideo, projectData);
+    playVideoButton(buttonPlayVideo, projectData, divContent);
     openPDFFile(a, projectData);
 
     
@@ -192,8 +194,37 @@ function openPDFFile(a, projectData){
 
 
 
-function playVideoButton(){
+function playVideoButton(buttonPlayVideo, projectData, divContent){
+    buttonPlayVideo.addEventListener("click", async () => {
 
+        
+        if(document.getElementById("videoContainer-Id-" + projectData.id)){
+            let videoContainer = document.getElementById("videoContainer-Id-" + projectData.id);
+            videoContainer.remove();
+        }
+
+
+        let videoContainer = document.createElement("div");
+        videoContainer.id = "videoContainer-Id-" + projectData.id;
+
+
+        let videoTag = document.createElement("video");
+        videoTag.src = getVideoPath(projectData.id);
+        videoTag.controls = true;
+        videoTag.autoplay = true;
+        videoTag.type = "video/mp4";
+        videoTag.style.maxWidth = "100%";
+
+
+        videoContainer.appendChild(videoTag);
+        divContent.appendChild(videoContainer);
+
+
+
+
+
+
+    });
 }
 
 
@@ -201,40 +232,17 @@ function downloadVideoButton(buttonDownloadVideo, projectData){
     let videoTrigger = false;
 
     buttonDownloadVideo.addEventListener("click", async () => {
-        if(videoTrigger){
-            let videoContainer = document.getElementById("videoContainer-Id-" + projectData.id);
-            videoContainer.remove();
-            videoTrigger = false;
-
-
-
-        } else if(!videoTrigger){
-            if(document.getElementById("videoContainer-Id-" + projectData.id)){
-                return;
-            }
-            const blobResponse = await getSpecificVideoFromLink(projectData.id);
-            const url = URL.createObjectURL(blobResponse);
-            let videoTag = document.createElement("a");
-            videoTag.setAttribute('href', url);
-            videoTag.setAttribute('download', "folder.mp4");
-            videoTag.className = "dynamicVideoLink";
-            videoTag.src = url;
-            videoTag.controls = true;
-            videoTag.click();
-            
-            let videoDivContainer = createElement("div", "videoContainer");
-
-            videoDivContainer.id = "videoContainer-Id-" + projectData.id;
-            
-            divContent.append(videoDivContainer)
-
-            videoDivContainer.append(videoTag);
-
-            videoTrigger = true;
-
-
-
-        }
+        
+        const blobResponse = await getSpecificVideoFromLink(projectData.id);
+        const url = URL.createObjectURL(blobResponse);
+        let videoTag = document.createElement("a");
+        videoTag.setAttribute('href', url);
+        videoTag.setAttribute('download', "folder.mp4");
+        videoTag.className = "dynamicVideoLink";
+        videoTag.src = url;
+        videoTag.controls = true;
+        videoTag.click();
+        videoTrigger = true;
     });
 }
 
