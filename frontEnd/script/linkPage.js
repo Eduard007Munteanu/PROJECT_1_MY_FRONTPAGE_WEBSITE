@@ -157,7 +157,7 @@ function projectCreator(projectData){
 
     const videoP = createElement("p", "", "Video folder: ")
     const buttonDownloadVideo = createElement("button", "", "Download"); 
-    const buttonPlayVideo = createElement("button", "", "Play");
+    const buttonPlayVideo = createElement("button", "", "Show Video");
 
     videoP.append(buttonDownloadVideo, buttonPlayVideo);
 
@@ -201,6 +201,8 @@ function playVideoButton(buttonPlayVideo, projectData, divContent){
         if(document.getElementById("videoContainer-Id-" + projectData.id)){
             let videoContainer = document.getElementById("videoContainer-Id-" + projectData.id);
             videoContainer.remove();
+            buttonPlayVideo.textContent = "Show Video";
+            return;
         }
 
 
@@ -218,6 +220,8 @@ function playVideoButton(buttonPlayVideo, projectData, divContent){
 
         videoContainer.appendChild(videoTag);
         divContent.appendChild(videoContainer);
+
+        buttonPlayVideo.textContent = "Hide Video";
 
 
 
