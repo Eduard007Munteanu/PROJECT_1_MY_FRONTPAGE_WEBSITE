@@ -17,13 +17,89 @@ export function insertLinkContent(){
 function togglePopUp(){
     let overlay = document.querySelector(".overlay-insert-link");
     overlay.style.display = "flex";
-
 }
 
 function removePopUp(){
+    document.querySelectorAll(".project-data").forEach((input) => {
+        input.value = "";
+    });
     let overlay = document.querySelector(".overlay-insert-link");
     overlay.style.display = "none";
+
+    
+    const previewPDFContent = document.querySelector(".preview-pdf-button");
+    const previewVideoContent  = document.querySelector(".preview-video-button");
+
+    if(previewPDFContent && previewVideoContent){
+        previewPDFContent.remove();
+        previewVideoContent.remove();
+    }
+
 }
+
+
+
+async function toggleEditPopUp(projectData){
+    let overlay = document.querySelector(".overlay-insert-link");
+    const overlayObject = document.querySelector(".overlay-object");
+
+    let projectNameData = projectData.project_name;
+    let githubLinkData = projectData.github_link;
+    let descriptionData = projectData.description;
+
+
+
+    
+
+
+    const previewPDFContent = createElement("button", "preview-pdf-button", "Preview PDF");
+    const previewVideoContent  = createElement("button", "preview-video-button", "Preview Video");
+
+    overlayObject.append(
+        previewPDFContent,
+        previewVideoContent
+    );
+
+
+    previewContentFunction(previewPDFContent, previewVideoContent, overlayObject, projectData);
+    
+
+
+
+
+    let projectNameElement = document.querySelector('.project-data[name="project_name"]');
+    let githubLinkElement = document.querySelector('.project-data[name="github_link"]');
+    let descriptionElement = document.querySelector('.project-data[name="description"]');
+    
+    projectNameElement.value = projectNameData;
+    githubLinkElement.value = githubLinkData;
+    descriptionElement.value = descriptionData;
+    
+
+    
+    overlay.style.display = "flex";
+
+}
+
+
+function previewContentFunction(previewPDFContent, previewVideoContent, overlayObject, projectData){
+    previewPDFContent.addEventListener("click", async () => {
+        const blobPDFResponse = await getSpecificPDFFromLink(projectData.id);
+        const url = URL.createObjectURL(blobPDFResponse);
+        window.open(url, "_blank"); // Opens PDF in new tab
+    });
+
+    playVideoButton(previewVideoContent, projectData, overlayObject);
+}
+
+
+
+
+
+
+
+
+
 
 
 export async function projectFULLCreator(){
@@ -92,6 +168,11 @@ export async function projectFULLCreator(){
             removePopUp();
         }
     })
+
+
+    
+
+
 }
 
 
@@ -125,6 +206,19 @@ export function deleteAllInteractorButton(){
 }
 
 
+function editInteractorButton(editButton, projectData){
+
+    editButton.addEventListener("click", (event) => {
+        toggleEditPopUp(projectData);
+
+    });
+}
+
+
+
+
+
+
 
 
 
@@ -156,8 +250,8 @@ function projectCreator(projectData){
     pdfP.append(a);
 
     const videoP = createElement("p", "", "Video folder: ")
-    const buttonDownloadVideo = createElement("button", "", "Download"); 
-    const buttonPlayVideo = createElement("button", "", "Show Video");
+    const buttonDownloadVideo = createElement("button", "download-button", "Download"); 
+    const buttonPlayVideo = createElement("button", "show-video-button", "Show Video");
 
     videoP.append(buttonDownloadVideo, buttonPlayVideo);
 
@@ -169,6 +263,19 @@ function projectCreator(projectData){
     
 
     divTools.append(createElement("button", "deleteButton", "Delete"));
+
+
+    const editButton = createElement("button", "editButton", "Edit");
+
+    editInteractorButton(editButton, projectData);
+
+    
+
+    divTools.append(editButton);
+
+
+
+
     divInfoContent.append(
             createElement("p", "", "Project name: " + projectData.project_name),
             createElement("p", "", "URL link: " + projectData.github_link),
