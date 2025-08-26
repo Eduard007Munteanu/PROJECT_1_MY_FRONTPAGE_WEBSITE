@@ -1,14 +1,19 @@
 // import projectDatabase from "../database/projectDatabase.js";
 import { getAllLinks, getSpecificPDFFromLink, 
     getSpecificVideoFromLink, deleteAllLinks,
-     getVideoPath, deleteLink, createLink } from "../API/linkAPI.js";
+     getVideoPath, deleteLink, createLink, editBigData, 
+    editTextData } from "../API/linkAPI.js";
 
+
+let sendEdiButtonSwitch = "send";
+let editPanelProjectID = null;
 
 
 export function insertLinkContent(){
     let insertLinkButton = document.querySelector(".insert-link-button");
 
     insertLinkButton.addEventListener('click', () => {
+        sendEdiButtonSwitch = "send";
         togglePopUp();
     })
 }
@@ -46,6 +51,8 @@ async function toggleEditPopUp(projectData){
     let projectNameData = projectData.project_name;
     let githubLinkData = projectData.github_link;
     let descriptionData = projectData.description;
+
+    editPanelProjectID = projectData.id;
 
 
 
@@ -114,66 +121,161 @@ export async function projectFULLCreator(){
 
 
     sendDataButton.addEventListener("click", async () => {
-        let projectData = {
-            project_name : null,
-            github_link: null,
-            description : null,
-            pdf_folder : null, //Actual files
-            video_folder: null,
+        if(sendEdiButtonSwitch == "send"){
+            await sendButtonFunction();
+        } else if(sendEdiButtonSwitch == "edit"){
+            await editButtonFunction();
         }
-
-        let projectDataInput = document.querySelectorAll(".project-data");
         
-
-        console.log("being called");
-
-        
-        for (const eachProject of projectDataInput) {
-
-            const key = eachProject.name;
-
-            if(eachProject.name == "pdf_folder" || eachProject.name == "video_folder"){
-                const file = eachProject.files[0];
-                projectData[key] = file;
-            }
-            else if(eachProject.value.trim()){
-                projectData[key] = eachProject.value.trim();
-            } else{
-                projectData = null;
-                break;
-            }
-        }
-
-        if(projectData != null){
-            try{
-                console.log("At projectData check if not null");
-                const formData = new FormData();
-                console.log("At projectData, FormData() created")
-                for (const key in projectData) {
-                    console.log("At projectData, in the loop ", key)
-                    const value = projectData[key];
-                    console.log("Value defined as ", value)
-                    if (typeof value === "string") {
-                        formData.append(key, value);
-                    } else {
-                        formData.append(key, value, value.name);
-                    }
-                }
-                console.log("Yuppi, formData is ", formData);
-                let projectBackEndData = await createLink(formData);  //Back the data from backend + ID
-                projectCreator(projectBackEndData);
-            } catch{
-                throw new Error("Failed retrieval of data POST");
-            }
-            removePopUp();
-        }
     })
+}
 
+
+
+async function sendButtonFunction(){
+    let projectData = {
+        project_name : null,
+        github_link: null,
+        description : null,
+        pdf_folder : null, //Actual files
+        video_folder: null,
+    }
+
+    let projectDataInput = document.querySelectorAll(".project-data");
+    
+
+    console.log("being called");
 
     
+    for (const eachProject of projectDataInput) {
+
+        const key = eachProject.name;
+
+        if(eachProject.name == "pdf_folder" || eachProject.name == "video_folder"){
+            const file = eachProject.files[0];
+            projectData[key] = file;
+        }
+        else if(eachProject.value.trim()){
+            projectData[key] = eachProject.value.trim();
+        } else{
+            projectData = null;
+            break;
+        }
+    }
+
+    if(projectData != null){
+        try{
+            console.log("At projectData check if not null");
+            const formData = new FormData();
+            console.log("At projectData, FormData() created")
+            for (const key in projectData) {
+                console.log("At projectData, in the loop ", key)
+                const value = projectData[key];
+                console.log("Value defined as ", value)
+                if (typeof value === "string") {
+                    formData.append(key, value);
+                } else {
+                    formData.append(key, value, value.name);
+                }
+            }
+            console.log("Yuppi, formData is ", formData);
+            let projectBackEndData = await createLink(formData);  //Back the data from backend + ID
+            projectCreator(projectBackEndData);
+        } catch{
+            throw new Error("Failed retrieval of data POST");
+        }
+        removePopUp();
+    }
+}
+
+
+async function editButtonFunction(){
+
+    console.log("We are at editButtonFunction()");
+
+
+    let projectData = {
+        project_name : null,
+        github_link: null,
+        description : null,
+        pdf_folder : null, //Actual files
+        video_folder: null,
+    }
+
+    let projectDataInput = document.querySelectorAll(".project-data");
+
+   
+
+    
+    for (const eachProject of projectDataInput) {
+
+        const key = eachProject.name;
+
+        if(eachProject.name == "pdf_folder" || eachProject.name == "video_folder"){
+            if(eachProject.files.length == 0){
+                projectData[key] = null;
+                continue;
+            }
+            const file = eachProject.files[0];
+            projectData[key] = file;
+        }
+        else if(eachProject.value.trim()){
+            projectData[key] = eachProject.value.trim();
+        } else{
+            projectData = null;
+            break;
+        }
+    }
+
+    if(projectData != null){
+        try{
+            console.log("At projectData check if not null");
+            const textData = new FormData();
+            const bigData  = new FormData();
+            console.log("At projectData, FormData() created")
+            for (const key in projectData) {
+                if(key == "pdf_folder" || key == "video_folder"){
+                    const value = projectData[key];
+                    if(value != null){
+                        bigData.append(key, value, value.name);
+                    }
+                }
+                else{
+                    console.log("At projectData, in the loop ", key)
+                    const value = projectData[key];
+                    console.log("Value defined as ", value);
+                    if(value != null){
+                        textData.append(key, value);
+                    }
+                }
+            }
+
+
+            if([...bigData.keys()].length > 0){
+                await editBigData(bigData, editPanelProjectID);   //Nothing back from editBigData, data retrieved in the pdf and video functions
+                     
+            }
+            if([...textData.keys()].length > 0){
+                let textDataResponse = await editTextData(textData, editPanelProjectID);
+                editSmallData(textDataResponse, editPanelProjectID);
+                
+            }
+        } catch{
+            throw new Error("Failed retrieval of data POST");
+        }
+        removePopUp();
+    }
+
+
 
 
 }
+
+
+
+
+
+
 
 
 
@@ -210,15 +312,10 @@ function editInteractorButton(editButton, projectData){
 
     editButton.addEventListener("click", (event) => {
         toggleEditPopUp(projectData);
+        sendEdiButtonSwitch = "edit";
 
     });
 }
-
-
-
-
-
-
 
 
 
@@ -277,8 +374,8 @@ function projectCreator(projectData){
 
 
     divInfoContent.append(
-            createElement("p", "", "Project name: " + projectData.project_name),
-            createElement("p", "", "URL link: " + projectData.github_link),
+            createElement("p", "Project_name", "Project name: " + projectData.project_name),
+            createElement("p", "URL_Link", "URL link: " + projectData.github_link),
             createElement("p", "Description", "Description: " + projectData.description),
             pdfP,
             videoP
@@ -288,6 +385,43 @@ function projectCreator(projectData){
     listLink.appendChild(li);
 
 }
+
+
+
+
+
+
+function editSmallData(editedData, id){
+    const specificLink = document.getElementById(id);
+    const infoContent = specificLink.querySelector(".div-link-element-info-content");
+
+    console.log("Edit Small Data called with ", editedData , " and id ", id);
+
+    if(editedData.project_name){
+        console.log("Edited data project name is ", editedData.project_name);
+        const projectNameP = infoContent.querySelector(".Project_name");
+        projectNameP.textContent = "Project name: " + editedData.project_name;
+    }
+    if(editedData.github_link){
+        console.log("Edited data github link is ", editedData.github_link);
+        const urlLinkP = infoContent.querySelector(".URL_Link");
+        urlLinkP.textContent = "URL link: " + editedData.github_link;
+    }
+    if(editedData.description){
+        console.log("Edited data description is ", editedData.description);
+        const descriptionP = infoContent.querySelector(".Description");
+        descriptionP.textContent = "Description: " + editedData.description;
+    }
+}
+
+
+
+
+
+
+
+
+
 
 
 function openPDFFile(a, projectData){

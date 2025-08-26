@@ -99,3 +99,36 @@ export  function getVideoPath(specific_id){
     const finder = `${BASE_URL}/videoFilesPLAY/${specific_id}`
     return finder;
 }
+
+
+export async function editBigData(bigData, projectID){
+    const response = await fetch(`${BASE_URL}/bigData/${projectID}`, {
+        method: "PUT",
+        headers: {
+            
+        },
+        body: bigData,
+        mode: 'cors'
+    });
+
+    if(!response.ok){
+        throw new Error("failed to edit big data");
+    }
+}
+
+export async function editTextData(textData, projectID){
+    const response = await fetch(`${BASE_URL}/textData/${projectID}`, {
+        method: "PUT",
+        headers: {
+            
+        },
+        body: textData,
+        mode: 'cors'
+    });
+
+    if(!response.ok){
+        throw new Error("failed to edit text data");
+    }
+
+    return response.json();
+}

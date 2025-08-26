@@ -198,6 +198,44 @@ public class LinkControllerAPI {
 
     }
 
+
+    @PutMapping("/textData/{id}")
+    public ResponseEntity<Link> editTextData(@PathVariable Long id, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam("github_link") String github_link){
+        Optional<Link> theLink = linkRepository.findById(id);
+
+        if(theLink.isPresent()){
+            Link theActualLink = theLink.get();
+
+            theActualLink.setProject_name(project_name);
+            theActualLink.setDescription(description);
+            theActualLink.setGithub_link(github_link);
+
+            linkRepository.save(theActualLink);
+
+            return ResponseEntity.ok(theActualLink);
+        } else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+    @PutMapping("/bigData/{id}")
+    public void editBigData(@PathVariable Long id){
+        Optional<Link> theLink = linkRepository.findById(id);
+
+        if(theLink.isPresent()){
+            Link theActualLink = theLink.get();
+
+            theActualLink.setPdf_url(theActualLink.getPdf_url());
+            theActualLink.setVideo_url(theActualLink.getVideo_url());
+
+            linkRepository.save(theActualLink);
+        }
+    }
+
+
+
+
     // POST: Add a new link
     @PostMapping
     public Link createLink(@RequestParam("pdf_folder") MultipartFile pdf_folder, @RequestParam("video_folder") MultipartFile video_folder, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam("github_link") String github_link) throws IOException {
