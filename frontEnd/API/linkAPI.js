@@ -112,8 +112,10 @@ export async function editBigData(bigData, projectID){
     });
 
     if(!response.ok){
-        throw new Error("failed to edit big data");
+        throw new Error("failed to edit big data", response.status);
     }
+
+    return await response.json();
 }
 
 export async function editTextData(textData, projectID){
@@ -130,5 +132,5 @@ export async function editTextData(textData, projectID){
         throw new Error("failed to edit text data");
     }
 
-    return response.json();
+    return await response.json();
 }

@@ -220,17 +220,46 @@ public class LinkControllerAPI {
 
 
     @PutMapping("/bigData/{id}")
-    public void editBigData(@PathVariable Long id){
+    public ResponseEntity<Link> editBigData(@PathVariable Long id, @RequestParam(value = "pdf_folder", required = false) MultipartFile pdf_folder, @RequestParam(value = "video_folder", required = false) MultipartFile video_folder) throws IOException{
+
+        
+
         Optional<Link> theLink = linkRepository.findById(id);
 
         if(theLink.isPresent()){
             Link theActualLink = theLink.get();
 
-            theActualLink.setPdf_url(theActualLink.getPdf_url());
-            theActualLink.setVideo_url(theActualLink.getVideo_url());
+            String pdfFolderPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload");
 
-            linkRepository.save(theActualLink);
+            Path folder = Paths.get(pdfFolderPath);
+
+            Files.createDirectories(folder);
+
+
+            if(pdf_folder != null || video_folder != null){
+                if(pdf_folder != null) {
+                    System.out.println("PDF file received: " + pdf_folder.getOriginalFilename());
+                    String pdf_folder_name = pathNameSanitizing(pdf_folder.getOriginalFilename());
+                    String update_file_folder_name = pathCreator(pdf_folder_name, folder, pdf_folder);
+                    theActualLink.setPdf_url(update_file_folder_name);
+
+                    linkRepository.save(theActualLink);
+
+                    
+                }
+                if(video_folder != null) {
+                    System.out.println("Video file received: " + video_folder.getOriginalFilename());
+                    String video_folder_name = pathNameSanitizing(video_folder.getOriginalFilename());
+                    String update_video_folder_name = pathCreator(video_folder_name, folder, video_folder);
+                    theActualLink.setVideo_url(update_video_folder_name);
+
+                    linkRepository.save(theActualLink);
+                }  
+                return ResponseEntity.ok(theActualLink);
+            }
+                      
         }
+        return ResponseEntity.notFound().build();
     }
 
 

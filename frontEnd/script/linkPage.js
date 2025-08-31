@@ -252,7 +252,11 @@ async function editButtonFunction(){
 
 
             if([...bigData.keys()].length > 0){
-                await editBigData(bigData, editPanelProjectID);   //Nothing back from editBigData, data retrieved in the pdf and video functions
+                // let bigDataResponse = 
+                console.log("About to call editBigData with ", [...bigData.keys()] , " and id ", editPanelProjectID);
+                let bigDataResponse = await editBigData(bigData, editPanelProjectID);   //Nothing back from editBigData, data retrieved in the pdf and video functions
+                console.log("Edit Small Data called with ", bigDataResponse , " and id ", editPanelProjectID);
+                // editHugeData(bigDataResponse, editPanelProjectID);
                      
             }
             if([...textData.keys()].length > 0){
@@ -344,11 +348,14 @@ function projectCreator(projectData){
     const a = createElement("a");
     a.setAttribute('href', "#");
     a.textContent = "Download PDF";
+    a.id = "pdfLink-" + projectData.id;
     pdfP.append(a);
 
     const videoP = createElement("p", "", "Video folder: ")
     const buttonDownloadVideo = createElement("button", "download-button", "Download"); 
+    buttonDownloadVideo.id = "downloadVideo-" + projectData.id;
     const buttonPlayVideo = createElement("button", "show-video-button", "Show Video");
+    buttonPlayVideo.id = "playVideo-" + projectData.id;
 
     videoP.append(buttonDownloadVideo, buttonPlayVideo);
 
@@ -413,6 +420,26 @@ function editSmallData(editedData, id){
         descriptionP.textContent = "Description: " + editedData.description;
     }
 }
+
+
+// function editHugeData(editedData, id){
+//     const specificLink = document.getElementById(id);
+//     const infoContent = specificLink.querySelector(".div-link-element-info-content");
+
+//     console.log("Edit Huge Data called with ", editedData , " and id ", id);
+
+//     if(editedData.pdf_url){
+//         console.log("Edited data pdf_url is ", editedData.pdf_url);
+        
+//     }
+
+
+//     if(editedData.video_url){
+//         console.log("Edited data video_url is ", editedData.video_url);
+//     }
+        
+        
+// }
 
 
 
