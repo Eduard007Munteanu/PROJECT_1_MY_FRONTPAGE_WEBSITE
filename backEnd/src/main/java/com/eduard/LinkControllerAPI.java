@@ -238,6 +238,9 @@ public class LinkControllerAPI {
 
             if(pdf_folder != null || video_folder != null){
                 if(pdf_folder != null) {
+
+                    deletePDFFromPath(theActualLink.getPdf_url());
+
                     System.out.println("PDF file received: " + pdf_folder.getOriginalFilename());
                     String pdf_folder_name = pathNameSanitizing(pdf_folder.getOriginalFilename());
                     String update_file_folder_name = pathCreator(pdf_folder_name, folder, pdf_folder);
@@ -248,6 +251,9 @@ public class LinkControllerAPI {
                     
                 }
                 if(video_folder != null) {
+
+                    deleteVideoFromPath(theActualLink.getVideo_url());
+
                     System.out.println("Video file received: " + video_folder.getOriginalFilename());
                     String video_folder_name = pathNameSanitizing(video_folder.getOriginalFilename());
                     String update_video_folder_name = pathCreator(video_folder_name, folder, video_folder);
@@ -405,5 +411,40 @@ public class LinkControllerAPI {
         } catch(IOException e){
             throw new IOException("Failed to remove video due to incorrect path: " + videoFolderPath, e);
         }
+    }
+
+
+
+    private void deletePDFFromPath(String deletingPDFFile)  throws IOException{
+
+        String folderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
+
+        Path file = Paths.get(folderStringPath);
+
+        Path pdfFolderPath = file.resolve(deletingPDFFile);
+
+        try{
+            Files.delete(pdfFolderPath);
+        } catch(IOException e){
+            throw new IOException("Failed to remove pdf due to incorrect path: " + pdfFolderPath, e);
+        }
+
+    }
+
+
+    private void deleteVideoFromPath(String deletingVideoFile)  throws IOException{
+
+        String folderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
+
+        Path file = Paths.get(folderStringPath);
+
+        Path videoFolderPath = file.resolve(deletingVideoFile);
+
+        try{
+            Files.delete(videoFolderPath);
+        } catch(IOException e){
+            throw new IOException("Failed to remove video due to incorrect path: " + videoFolderPath, e);
+        }
+
     }
 }
