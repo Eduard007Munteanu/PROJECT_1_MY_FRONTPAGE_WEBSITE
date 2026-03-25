@@ -43,7 +43,7 @@ body{
 }
 
 
-.info-content{
+#info-content{
     display: flex;
     flex-direction: row;
     /* margin:auto; */
@@ -59,42 +59,6 @@ body{
 }
 
 
-
-
-.info-content-main-info{
-    flex: 4;
-    margin-right: 20px;
-    border-right: 1px solid black;
-    padding: 10px;
-    
-}
-
-.info-content-secondary-info{
-    flex: 1;
-}
-
-
-
-.info-content-secondary-info{
-    display:flex;
-    align-items: center; /*Able to modify the height, not default = stretch on parent */
-    flex-direction: column;
-    text-align: center;  /*Centralize the text */
-    
-}
-
-.profile-picture{
-    width: 40%;
-    aspect-ratio: 1/1;
-    border-radius: 50%;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.secondary-info-default-font{
-    max-width: 100%;
-    font-size: 100%  /* WARNING: Font size percentage different given different viewpoints */
-}
 
 
 .links-content{

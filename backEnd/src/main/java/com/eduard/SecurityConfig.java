@@ -19,6 +19,12 @@ public class SecurityConfig {
       .cors(Customizer.withDefaults())
       .csrf(csrf -> csrf.disable())
       .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+
+
+    //For now, local development
+    http.headers(headers -> headers
+    .frameOptions(frame -> frame.disable())
+    );
     return http.build();
   }
 
