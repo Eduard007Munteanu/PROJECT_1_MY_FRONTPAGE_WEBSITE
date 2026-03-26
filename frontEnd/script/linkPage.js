@@ -18,6 +18,12 @@ let editPanelProjectID = null;
 
 
 
+
+
+
+
+
+
 //(1) General interaction bar for all list content
 
 export function insertLinkContent(){
@@ -37,7 +43,24 @@ export function deleteAllInteractorButton(){
     })
 }
 
+function fullProjectDeletor(){
+    deleteAllLinks();
+    // projectDatabase.deleteAllElements(); API
+    flushVisualLinks();
+}
+
+function flushVisualLinks(){
+    let listlink = document.querySelector(".list-links");
+    listlink.innerHTML = "";
+}
+
+
 //General interaction bar for all list content
+
+
+
+
+
 
 
 
@@ -154,6 +177,11 @@ function getProjectData() {
 
 
 
+
+
+
+
+
 //(3) Insert/Edit pop up toolbar close/opening cleanup:
 
 function togglePopUp(){
@@ -228,7 +256,35 @@ async function toggleEditPopUp(projectData){
 
 
 
-//(4) Per link current content:
+
+
+
+
+
+//(4) All link content:
+export async function RenderDataOnPage(){
+    let data = await getAllLinks();
+    data.forEach((dataObject) => {
+        projectCreator(dataObject)
+    })
+}
+//
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//(5) Per link current content:
 function projectCreator(projectData){
     let listLink = document.querySelector(".list-links");
     const li = createElement("li", "Link-element");
@@ -269,7 +325,11 @@ function previewContent(divContent, projectData){
     );
 }
 
-
+/**per link EDIT listener + single listener DELETE per all links  
+ * WHY? 
+ *  => delete required a simple id tracking, edit requires diff big packages
+ *     per link
+*/
 function editToolKitInit(divTools, projectData){
     divTools.append(createElement("button", "deleteButton", "Delete"));
     const editButton = createElement("button", "editButton", "Edit");
@@ -277,10 +337,57 @@ function editToolKitInit(divTools, projectData){
     divTools.append(editButton);
 }
 
+function editInteractorButton(editButton, projectData){
+
+    editButton.addEventListener("click", (event) => {
+        toggleEditPopUp(projectData);
+        sendEdiButtonSwitch = "edit";
+
+    });
+}
+
+export function deleterInteractorButton(){
+    let parent = document.querySelector(".list-links");
+    parent.addEventListener("click", (event) => {
+        let deleteButton = event.target.closest(".deleteButton");
+         
+        if(deleteButton){
+            let objectToDelete = deleteButton.closest(".Link-element");
+            projectDeletor(objectToDelete);
+        }
+
+    })
+}
+
+function projectDeletor(deletedElement){
+    // projectDatabase.deleteElement(deletedElement); /API 
+    let id = deletedElement.id;
+    deleteLink(id);
+    flushSpecificLink(deletedElement.id);
+}
+
+function flushSpecificLink(id){
+    let listlink = document.querySelector(".list-links");
+    let specificLink = document.getElementById(id);
+    listlink.removeChild(specificLink);
+}
 //Per link current content:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+// Rest, more practical:
 function previewContentFunction(previewPDFContent, previewVideoContent, overlayObject, projectData){
     previewPDFContent.addEventListener("click", async () => {
         const blobPDFResponse = await getSpecificPDFFromLink(projectData.id);
@@ -290,15 +397,6 @@ function previewContentFunction(previewPDFContent, previewVideoContent, overlayO
 
     playVideoButton(previewVideoContent, projectData, overlayObject);
 }
-
-
-
-
-
-
-
-
-
 
 
 function editSmallData(editedData, id){
@@ -323,47 +421,6 @@ function editSmallData(editedData, id){
         descriptionP.textContent = "Description: " + editedData.description;
     }
 }
-
-
-
-
-export async function RenderDataOnPage(){
-    let data = await getAllLinks();
-    data.forEach((dataObject) => {
-        projectCreator(dataObject)
-    })
-}
-
-
-export function deleterInteractorButton(){
-    let parent = document.querySelector(".list-links");
-    parent.addEventListener("click", (event) => {
-        let deleteButton = event.target.closest(".deleteButton");
-         
-        if(deleteButton){
-            let objectToDelete = deleteButton.closest(".Link-element");
-            projectDeletor(objectToDelete);
-        }
-
-    })
-}
-
-
-
-
-function editInteractorButton(editButton, projectData){
-
-    editButton.addEventListener("click", (event) => {
-        toggleEditPopUp(projectData);
-        sendEdiButtonSwitch = "edit";
-
-    });
-}
-
-
-
-
-
 
 
 
@@ -397,10 +454,6 @@ function playVideoButton(buttonPlayVideo, projectData, divContent){
         buttonPlayVideo.textContent = "Hide Video";
 
 
-
-
-
-
     });
 }
 
@@ -424,7 +477,6 @@ function downloadVideoButton(buttonDownloadVideo, projectData){
 }
 
 
-
 function createElement(tag, className, textContent) {
     const el = document.createElement(tag);
     if (className) el.className = className;
@@ -432,33 +484,4 @@ function createElement(tag, className, textContent) {
     return el;
 }
 
-
-
-
-
-
-function projectDeletor(deletedElement){
-    // projectDatabase.deleteElement(deletedElement); /API 
-    let id = deletedElement.id;
-    deleteLink(id);
-    flushSpecificLink(deletedElement.id);
-}
-
-function fullProjectDeletor(){
-    deleteAllLinks();
-    // projectDatabase.deleteAllElements(); API
-    flushVisualLinks();
-}
-
-
-function flushVisualLinks(){
-    let listlink = document.querySelector(".list-links");
-    listlink.innerHTML = "";
-}
-
-function flushSpecificLink(id){
-    let listlink = document.querySelector(".list-links");
-    let specificLink = document.getElementById(id);
-    listlink.removeChild(specificLink);
-}
-
+// Rest, more practical
