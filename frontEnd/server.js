@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 const PORT = 3000;
 
-// ✅ No 'frontEnd' here — you're already in it
+
 app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {

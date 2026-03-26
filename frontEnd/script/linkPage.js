@@ -8,6 +8,17 @@ import { getAllLinks, getSpecificPDFFromLink,
 let sendEdiButtonSwitch = "send";
 let editPanelProjectID = null;
 
+//import projectDatabase section
+
+
+
+
+
+
+
+
+
+//(1) General interaction bar for all list content
 
 export function insertLinkContent(){
     let insertLinkButton = document.querySelector(".insert-link-button");
@@ -18,6 +29,132 @@ export function insertLinkContent(){
     })
 }
 
+
+export function deleteAllInteractorButton(){
+    let allDeletebutton = document.querySelector(".remove-all-button");
+    allDeletebutton.addEventListener("click", () => {
+        fullProjectDeletor();
+    })
+}
+
+//General interaction bar for all list content
+
+
+
+
+
+
+
+
+
+
+//(2) Link edit/insertion toolbar settings
+
+export async function projectFULLCreator(){
+    let sendDataButton = document.querySelector(".send-project-data-button");
+    let closeDataButton = document.querySelector(".close-project-data-button");
+
+
+    closeDataButton.addEventListener("click", async () => {
+        removePopUp();
+    })
+
+
+
+    sendDataButton.addEventListener("click", async () => {
+        if(sendEdiButtonSwitch == "send"){
+            await sendButtonFunction();
+        } else if(sendEdiButtonSwitch == "edit"){
+            await editButtonFunction();
+        }
+        
+    })
+}
+
+async function sendButtonFunction() {
+    const projectData = getProjectData();
+    if (!projectData) return;
+
+    try {
+        const formData = new FormData();
+        for (const [key, value] of Object.entries(projectData)) {
+            // FormData handles both Strings and Files automatically!
+            if (value) formData.append(key, value);
+        }
+
+        const response = await createLink(formData);
+        projectCreator(response);
+        removePopUp();
+    } catch (err) {
+        console.error("Failed retrieval of data POST", err);
+    }
+}
+
+async function editButtonFunction() {
+    const projectData = getProjectData();
+    if (!projectData) return;
+
+    try {
+        const textData = new FormData();
+        const bigData = new FormData();
+
+        for (const [key, value] of Object.entries(projectData)) {
+            if (!value) continue;
+
+            if (key === "pdf_folder" || key === "video_folder") {
+                bigData.append(key, value);
+            } else {
+                textData.append(key, value);
+            }
+        }
+
+        // Logic for sending split data
+        if ([...bigData.keys()].length > 0) {
+            await editBigData(bigData, editPanelProjectID);
+        }
+        if ([...textData.keys()].length > 0) {
+            const response = await editTextData(textData, editPanelProjectID);
+            editSmallData(response, editPanelProjectID);
+        }
+        
+        removePopUp();
+    } catch (err) {
+        console.error("Edit failed", err);
+    }
+}
+
+
+function getProjectData() {
+    let projectData = {};
+    const inputs = document.querySelectorAll(".project-data");
+
+    for (const input of inputs) {
+        const key = input.name;
+
+        if (input.type === "file") {
+            // If file exists, grab it; otherwise null
+            projectData[key] = input.files.length > 0 ? input.files[0] : null;
+        } else {
+            const value = input.value.trim();
+            if (!value) return null; // Validation: if a text field is empty, fail fast
+            projectData[key] = value;
+        }
+    }
+    return projectData;
+}
+
+//Link edit/insertion toolbar settings
+
+
+
+
+
+
+
+
+
+
+//(3) Insert/Edit pop up toolbar close/opening cleanup:
 
 function togglePopUp(){
     let overlay = document.querySelector(".overlay-insert-link");
@@ -43,7 +180,6 @@ function removePopUp(){
 }
 
 
-
 async function toggleEditPopUp(projectData){
     let overlay = document.querySelector(".overlay-insert-link");
     const overlayObject = document.querySelector(".overlay-object");
@@ -53,10 +189,6 @@ async function toggleEditPopUp(projectData){
     let descriptionData = projectData.description;
 
     editPanelProjectID = projectData.id;
-
-
-
-    
 
 
     const previewPDFContent = createElement("button", "preview-pdf-button", "Preview PDF");
@@ -71,9 +203,6 @@ async function toggleEditPopUp(projectData){
     previewContentFunction(previewPDFContent, previewVideoContent, overlayObject, projectData);
     
 
-
-
-
     let projectNameElement = document.querySelector('.project-data[name="project_name"]');
     let githubLinkElement = document.querySelector('.project-data[name="github_link"]');
     let descriptionElement = document.querySelector('.project-data[name="description"]');
@@ -87,6 +216,69 @@ async function toggleEditPopUp(projectData){
     overlay.style.display = "flex";
 
 }
+
+//Insert/Edit pop up toolbar close/opening cleanup:
+
+
+
+
+
+
+
+
+
+
+//(4) Per link current content:
+function projectCreator(projectData){
+    let listLink = document.querySelector(".list-links");
+    const li = createElement("li", "Link-element");
+    li.id = projectData.id;
+
+    let [div, divTools, divContent] = containerCreator()
+
+    
+    previewContent(divContent, projectData)
+    editToolKitInit(divTools, projectData)
+
+
+
+    li.appendChild(div);
+    listLink.appendChild(li);
+
+}
+
+function containerCreator(){
+    const div = createElement("div", "div-link-element");
+
+    const divContent = createElement("div", "div-link-element-content");
+    const divTools = createElement("div", "div-link-element-tools");
+
+    div.append(
+        divTools,
+        divContent
+    );
+
+    return [div, divTools, divContent];
+}
+
+function previewContent(divContent, projectData){
+    divContent.append(
+            createElement("p", "Project_name", "Project name: " + projectData.project_name),
+            createElement("p", "Description", "Description: " + projectData.description),
+            createElement("button", "view-project-button", "View Project")
+    );
+}
+
+
+function editToolKitInit(divTools, projectData){
+    divTools.append(createElement("button", "deleteButton", "Delete"));
+    const editButton = createElement("button", "editButton", "Edit");
+    editInteractorButton(editButton, projectData);
+    divTools.append(editButton);
+}
+
+//Per link current content:
+
 
 
 function previewContentFunction(previewPDFContent, previewVideoContent, overlayObject, projectData){
@@ -103,295 +295,6 @@ function previewContentFunction(previewPDFContent, previewVideoContent, overlayO
 
 
 
-
-
-
-
-
-
-export async function projectFULLCreator(){
-    let sendDataButton = document.querySelector(".send-project-data-button");
-    let closeDataButton = document.querySelector(".close-project-data-button");
-
-
-    closeDataButton.addEventListener("click", async () => {
-        removePopUp();
-    })
-
-
-
-    sendDataButton.addEventListener("click", async () => {
-        if(sendEdiButtonSwitch == "send"){
-            await sendButtonFunction();
-        } else if(sendEdiButtonSwitch == "edit"){
-            await editButtonFunction();
-        }
-        
-    })
-}
-
-
-
-async function sendButtonFunction(){
-    let projectData = {
-        project_name : null,
-        github_link: null,
-        description : null,
-        pdf_folder : null, //Actual files
-        video_folder: null,
-    }
-
-    let projectDataInput = document.querySelectorAll(".project-data");
-    
-
-    console.log("being called");
-
-    
-    for (const eachProject of projectDataInput) {
-
-        const key = eachProject.name;
-
-        if(eachProject.name == "pdf_folder" || eachProject.name == "video_folder"){
-            const file = eachProject.files[0];
-            projectData[key] = file;
-        }
-        else if(eachProject.value.trim()){
-            projectData[key] = eachProject.value.trim();
-        } else{
-            projectData = null;
-            break;
-        }
-    }
-
-    if(projectData != null){
-        try{
-            console.log("At projectData check if not null");
-            const formData = new FormData();
-            console.log("At projectData, FormData() created")
-            for (const key in projectData) {
-                console.log("At projectData, in the loop ", key)
-                const value = projectData[key];
-                console.log("Value defined as ", value)
-                if (typeof value === "string") {
-                    formData.append(key, value);
-                } else {
-                    formData.append(key, value, value.name);
-                }
-            }
-            console.log("Yuppi, formData is ", formData);
-            let projectBackEndData = await createLink(formData);  //Back the data from backend + ID
-            projectCreator(projectBackEndData);
-        } catch{
-            throw new Error("Failed retrieval of data POST");
-        }
-        removePopUp();
-    }
-}
-
-
-async function editButtonFunction(){
-
-    console.log("We are at editButtonFunction()");
-
-
-    let projectData = {
-        project_name : null,
-        github_link: null,
-        description : null,
-        pdf_folder : null, //Actual files
-        video_folder: null,
-    }
-
-    let projectDataInput = document.querySelectorAll(".project-data");
-
-   
-
-    
-    for (const eachProject of projectDataInput) {
-
-        const key = eachProject.name;
-
-        if(eachProject.name == "pdf_folder" || eachProject.name == "video_folder"){
-            if(eachProject.files.length == 0){
-                projectData[key] = null;
-                continue;
-            }
-            const file = eachProject.files[0];
-            projectData[key] = file;
-        }
-        else if(eachProject.value.trim()){
-            projectData[key] = eachProject.value.trim();
-        } else{
-            projectData = null;
-            break;
-        }
-    }
-
-    if(projectData != null){
-        try{
-            console.log("At projectData check if not null");
-            const textData = new FormData();
-            const bigData  = new FormData();
-            console.log("At projectData, FormData() created")
-            for (const key in projectData) {
-                if(key == "pdf_folder" || key == "video_folder"){
-                    const value = projectData[key];
-                    if(value != null){
-                        bigData.append(key, value, value.name);
-                    }
-                }
-                else{
-                    console.log("At projectData, in the loop ", key)
-                    const value = projectData[key];
-                    console.log("Value defined as ", value);
-                    if(value != null){
-                        textData.append(key, value);
-                    }
-                }
-            }
-
-
-            if([...bigData.keys()].length > 0){
-                // let bigDataResponse = 
-                console.log("About to call editBigData with ", [...bigData.keys()] , " and id ", editPanelProjectID);
-                let bigDataResponse = await editBigData(bigData, editPanelProjectID);   //Nothing back from editBigData, data retrieved in the pdf and video functions
-                console.log("Edit Small Data called with ", bigDataResponse , " and id ", editPanelProjectID);
-                // editHugeData(bigDataResponse, editPanelProjectID);
-                     
-            }
-            if([...textData.keys()].length > 0){
-                let textDataResponse = await editTextData(textData, editPanelProjectID);
-                editSmallData(textDataResponse, editPanelProjectID);
-                
-            }
-        } catch{
-            throw new Error("Failed retrieval of data POST");
-        }
-        removePopUp();
-    }
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-export async function RenderDataOnPage(){
-    let data = await getAllLinks();
-    data.forEach((dataObject) => {
-        projectCreator(dataObject)
-    })
-}
-
-
-export function deleterInteractorButton(){
-    let parent = document.querySelector(".list-links");
-    parent.addEventListener("click", (event) => {
-        let deleteButton = event.target.closest(".deleteButton");
-         
-        if(deleteButton){
-            let objectToDelete = deleteButton.closest(".Link-element");
-            projectDeletor(objectToDelete);
-        }
-
-    })
-}
-
-export function deleteAllInteractorButton(){
-    let allDeletebutton = document.querySelector(".remove-all-button");
-    allDeletebutton.addEventListener("click", () => {
-        fullProjectDeletor();
-    })
-}
-
-
-function editInteractorButton(editButton, projectData){
-
-    editButton.addEventListener("click", (event) => {
-        toggleEditPopUp(projectData);
-        sendEdiButtonSwitch = "edit";
-
-    });
-}
-
-
-
-
-function projectCreator(projectData){
-    let listLink = document.querySelector(".list-links");
-    const li = createElement("li", "Link-element");
-    li.id = projectData.id;
-
-    const div = createElement("div", "div-link-element");
-
-    const divContent = createElement("div", "div-link-element-content");
-    const divTools = createElement("div", "div-link-element-tools");
-
-
-    div.append(
-        divTools,
-        divContent
-    );
-
-    const divInfoContent = createElement("div", "div-link-element-info-content");
-    divContent.append(divInfoContent);
-
-
-    const pdfP = createElement("p", "", "PDF folder: ");
-    const a = createElement("a");
-    a.setAttribute('href', "#");
-    a.textContent = "Download PDF";
-    a.id = "pdfLink-" + projectData.id;
-    pdfP.append(a);
-
-    const videoP = createElement("p", "", "Video folder: ")
-    const buttonDownloadVideo = createElement("button", "download-button", "Download"); 
-    buttonDownloadVideo.id = "downloadVideo-" + projectData.id;
-    const buttonPlayVideo = createElement("button", "show-video-button", "Show Video");
-    buttonPlayVideo.id = "playVideo-" + projectData.id;
-
-    videoP.append(buttonDownloadVideo, buttonPlayVideo);
-
-
-    downloadVideoButton(buttonDownloadVideo, projectData);
-    playVideoButton(buttonPlayVideo, projectData, divContent);
-    openPDFFile(a, projectData);
-
-    
-
-    divTools.append(createElement("button", "deleteButton", "Delete"));
-
-
-    const editButton = createElement("button", "editButton", "Edit");
-
-    editInteractorButton(editButton, projectData);
-
-    
-
-    divTools.append(editButton);
-
-
-
-
-    divInfoContent.append(
-            createElement("p", "Project_name", "Project name: " + projectData.project_name),
-            createElement("p", "URL_Link", "URL link: " + projectData.github_link),
-            createElement("p", "Description", "Description: " + projectData.description),
-            pdfP,
-            videoP
-    );
-
-    li.appendChild(div);
-    listLink.appendChild(li);
-
-}
 
 
 
@@ -422,42 +325,44 @@ function editSmallData(editedData, id){
 }
 
 
-// function editHugeData(editedData, id){
-//     const specificLink = document.getElementById(id);
-//     const infoContent = specificLink.querySelector(".div-link-element-info-content");
-
-//     console.log("Edit Huge Data called with ", editedData , " and id ", id);
-
-//     if(editedData.pdf_url){
-//         console.log("Edited data pdf_url is ", editedData.pdf_url);
-        
-//     }
 
 
-//     if(editedData.video_url){
-//         console.log("Edited data video_url is ", editedData.video_url);
-//     }
-        
-        
-// }
+export async function RenderDataOnPage(){
+    let data = await getAllLinks();
+    data.forEach((dataObject) => {
+        projectCreator(dataObject)
+    })
+}
 
 
+export function deleterInteractorButton(){
+    let parent = document.querySelector(".list-links");
+    parent.addEventListener("click", (event) => {
+        let deleteButton = event.target.closest(".deleteButton");
+         
+        if(deleteButton){
+            let objectToDelete = deleteButton.closest(".Link-element");
+            projectDeletor(objectToDelete);
+        }
 
-
-
-
+    })
+}
 
 
 
 
+function editInteractorButton(editButton, projectData){
 
-function openPDFFile(a, projectData){
-    a.addEventListener("click", async () => {
-        const blobResponse = await getSpecificPDFFromLink(projectData.id);
-        const url = URL.createObjectURL(blobResponse);
-        window.open(url, "_blank"); // Opens PDF in new tab
+    editButton.addEventListener("click", (event) => {
+        toggleEditPopUp(projectData);
+        sendEdiButtonSwitch = "edit";
+
     });
 }
+
+
+
+
 
 
 
