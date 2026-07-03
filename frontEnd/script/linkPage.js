@@ -3,6 +3,7 @@ import { getAllLinks,
     getSpecificVideoFromLink, deleteAllLinks,
      getVideoPath, deleteLink, createLink, editBigData, 
     editTextData } from "../API/linkAPI.js";
+import { isAdmin } from "./siteState.js";
 
 
 let sendEdiButtonSwitch = "send";
@@ -29,7 +30,10 @@ const feedbackDurationMs = 1000;
 //(1) General interaction bar for all list content
 
 export function insertLinkContent(){
+    if (!isAdmin()) return;
+
     let insertLinkButton = document.querySelector(".insert-link-button");
+    if (!insertLinkButton) return;
 
     insertLinkButton.addEventListener('click', () => {
         sendEdiButtonSwitch = "send";
@@ -41,7 +45,11 @@ export function insertLinkContent(){
 
 
 export function deleteAllInteractorButton(){
+    if (!isAdmin()) return;
+
     let allDeletebutton = document.querySelector(".remove-all-button");
+    if (!allDeletebutton) return;
+
     allDeletebutton.addEventListener("click", () => {
         fullProjectDeletor();
     })
@@ -78,8 +86,15 @@ function flushVisualLinks(){
 //(2) Link edit/insertion toolbar settings
 
 export async function projectFULLCreator(){
+    if (!isAdmin()) {
+        const overlay = document.querySelector(".overlay-insert-link");
+        if (overlay) overlay.hidden = true;
+        return;
+    }
+
     let sendDataButton = document.querySelector(".send-project-data-button");
     let closeDataButton = document.querySelector(".close-project-data-button");
+    if (!sendDataButton || !closeDataButton) return;
 
 
     closeDataButton.addEventListener("click", async () => {
@@ -228,6 +243,7 @@ function getProjectData(mode) {
 
 function togglePopUp(){
     let overlay = document.querySelector(".overlay-insert-link");
+    if (!overlay) return;
     overlay.style.display = "flex";
     resetButtonFeedback();
     clearInvalidFieldMarks();
@@ -348,6 +364,18 @@ export async function RenderDataOnPage(){
         projectCreator(dataObject)
     })
 }
+
+export function applyProjectAccess(){
+    const adminOnly = document.querySelector(".admin-only");
+    if (adminOnly) {
+        adminOnly.hidden = !isAdmin();
+    }
+
+    const overlay = document.querySelector(".overlay-insert-link");
+    if (overlay) {
+        overlay.hidden = !isAdmin();
+    }
+}
 //
 
 
@@ -367,6 +395,7 @@ export async function RenderDataOnPage(){
 //(5) Per link current content:
 function projectCreator(projectData){
     let listLink = document.querySelector(".list-links");
+    if (!listLink) return;
     const li = createElement("li", "Link-element");
     li.id = projectData.id;
 
@@ -418,6 +447,8 @@ function previewContent(divContent, projectData){
  *     per link
 */
 function editToolKitInit(divTools, projectData){
+    if (!isAdmin()) return;
+
     divTools.append(createElement("button", "deleteButton", "Delete"));
     const editButton = createElement("button", "editButton", "Edit");
     editInteractorButton(editButton, projectData);
@@ -436,7 +467,10 @@ function editInteractorButton(editButton, projectData){
 }
 
 export function deleterInteractorButton(){
+    if (!isAdmin()) return;
+
     let parent = document.querySelector(".list-links");
+    if (!parent) return;
     parent.addEventListener("click", (event) => {
         let deleteButton = event.target.closest(".deleteButton");
          

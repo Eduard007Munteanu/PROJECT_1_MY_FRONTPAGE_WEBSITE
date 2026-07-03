@@ -24,6 +24,23 @@ body{
     border: 1px solid black;
 }
 
+.session-controls{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.session-role-badge{
+    padding: 4px 8px;
+    border: 1px solid black;
+}
+
+.session-role-button{
+    padding: 4px 10px;
+}
+
 .vertical-change-page{
     display: flex;
     flex-direction: column;
@@ -121,6 +138,10 @@ body{
     padding: 14px;
     box-sizing: border-box;
     flex-direction: column;
+}
+
+.admin-only[hidden]{
+    display: none !important;
 }
 
 .link-general-options{
@@ -237,4 +258,78 @@ body{
 .Description{
   word-break: break-word;  
   max-width: 100%;
+}
+
+.home-content{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+}
+
+.home-section{
+    border: 1px solid black;
+    padding: 14px;
+}
+
+.home-section h1,
+.home-section h2,
+.home-section p{
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.home-actions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.home-action-link,
+.home-quick-admin-link{
+    display: inline-block;
+    padding: 8px 12px;
+    border: 1px solid black;
+    text-decoration: none;
+    color: inherit;
+}
+
+.home-admin-fields{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.home-admin-fields input{
+    padding: 6px;
+}
+
+.admin-access-content{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+}
+
+.admin-access-panel{
+    max-width: 720px;
+}
+
+.admin-access-fields{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.admin-access-fields input{
+    padding: 6px;
+}
+
+.admin-access-actions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
 }

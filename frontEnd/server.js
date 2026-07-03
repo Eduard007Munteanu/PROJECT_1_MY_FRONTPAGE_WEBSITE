@@ -8,7 +8,7 @@ const PORT = 3000;
 app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
-    res.redirect('/html/CV.html');
+    res.redirect('/html/Home.html');
 });
 
 app.listen(PORT, () => {
