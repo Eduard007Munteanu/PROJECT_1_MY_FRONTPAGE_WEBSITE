@@ -70,7 +70,8 @@ export async function createLink(linkData){
     });
 
     if(!response.ok){
-        throw new Error('failed to create link');
+        const message = await response.text();
+        throw new Error(message || 'failed to create link');
     }
 
     return await response.json();

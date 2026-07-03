@@ -7,6 +7,8 @@ import { getAllLinks,
 
 let sendEdiButtonSwitch = "send";
 let editPanelProjectID = null;
+const createButtonLabel = "Create";
+const feedbackDurationMs = 1000;
 
 //import projectDatabase section
 
@@ -31,6 +33,8 @@ export function insertLinkContent(){
 
     insertLinkButton.addEventListener('click', () => {
         sendEdiButtonSwitch = "send";
+        const sendDataButton = document.querySelector(".send-project-data-button");
+        if (sendDataButton) sendDataButton.textContent = createButtonLabel;
         togglePopUp();
     })
 }
@@ -95,33 +99,50 @@ export async function projectFULLCreator(){
 }
 
 async function sendButtonFunction() {
-    const projectData = getProjectData();
-    if (!projectData) return;
+    const validation = getProjectData("create");
+    if (!validation.valid) {
+        showButtonFeedback("error", "Important field missing");
+        flashInvalidFields(validation.invalidFields);
+        return;
+    }
 
     try {
         const formData = new FormData();
-        for (const [key, value] of Object.entries(projectData)) {
+        for (const [key, value] of Object.entries(validation.data)) {
             // FormData handles both Strings and Files automatically!
+            if (key === "github_link") {
+                formData.append(key, value ?? "");
+                continue;
+            }
             if (value) formData.append(key, value);
         }
 
         const response = await createLink(formData);
-        projectCreator(response);
-        removePopUp();
+        showButtonFeedback("success", "Project created!");
+        window.setTimeout(() => {
+            projectCreator(response);
+            removePopUp();
+            resetButtonFeedback();
+        }, feedbackDurationMs);
     } catch (err) {
         console.error("Failed retrieval of data POST", err);
+        showButtonFeedback("error", "Create failed");
     }
 }
 
 async function editButtonFunction() {
-    const projectData = getProjectData();
-    if (!projectData) return;
+    const validation = getProjectData("edit");
+    if (!validation.valid) {
+        showButtonFeedback("error", "Important field missing");
+        flashInvalidFields(validation.invalidFields);
+        return;
+    }
 
     try {
         const textData = new FormData();
         const bigData = new FormData();
 
-        for (const [key, value] of Object.entries(projectData)) {
+        for (const [key, value] of Object.entries(validation.data)) {
             if (!value) continue;
 
             if (key === "pdf_folder" || key === "video_folder") {
@@ -140,30 +161,51 @@ async function editButtonFunction() {
             editSmallData(response, editPanelProjectID);
         }
         
+        showButtonFeedback("success", "Project updated!");
         removePopUp();
+        window.setTimeout(() => resetButtonFeedback(), feedbackDurationMs);
     } catch (err) {
         console.error("Edit failed", err);
+        showButtonFeedback("error", "Update failed");
     }
 }
 
 
-function getProjectData() {
-    let projectData = {};
+function getProjectData(mode) {
+    const projectData = {};
+    const invalidFields = [];
     const inputs = document.querySelectorAll(".project-data");
+    const requiredFields = mode === "create"
+        ? new Set(["project_name", "description", "pdf_folder", "video_folder"])
+        : new Set(["project_name", "description"]);
 
     for (const input of inputs) {
         const key = input.name;
 
         if (input.type === "file") {
-            // If file exists, grab it; otherwise null
-            projectData[key] = input.files.length > 0 ? input.files[0] : null;
+            const file = input.files.length > 0 ? input.files[0] : null;
+            projectData[key] = file;
+            if (requiredFields.has(key) && !file) {
+                invalidFields.push(input.closest(".project-field"));
+            }
         } else {
             const value = input.value.trim();
-            if (!value) return null; // Validation: if a text field is empty, fail fast
             projectData[key] = value;
+            if (requiredFields.has(key) && !value) {
+                invalidFields.push(input.closest(".project-field"));
+            }
         }
     }
-    return projectData;
+
+    if (mode === "create" && invalidFields.length > 0) {
+        return { valid: false, data: projectData, invalidFields };
+    }
+
+    if (mode === "edit" && invalidFields.length > 0) {
+        return { valid: false, data: projectData, invalidFields };
+    }
+
+    return { valid: true, data: projectData, invalidFields: [] };
 }
 
 //Link edit/insertion toolbar settings
@@ -187,12 +229,15 @@ function getProjectData() {
 function togglePopUp(){
     let overlay = document.querySelector(".overlay-insert-link");
     overlay.style.display = "flex";
+    resetButtonFeedback();
+    clearInvalidFieldMarks();
 }
 
 function removePopUp(){
     document.querySelectorAll(".project-data").forEach((input) => {
         input.value = "";
     });
+    clearInvalidFieldMarks();
     let overlay = document.querySelector(".overlay-insert-link");
     overlay.style.display = "none";
 
@@ -205,6 +250,41 @@ function removePopUp(){
         previewVideoContent.remove();
     }
 
+}
+
+function clearInvalidFieldMarks(){
+    document.querySelectorAll(".project-field.invalid-field").forEach((field) => {
+        field.classList.remove("invalid-field");
+    });
+}
+
+function flashInvalidFields(fields){
+    fields.filter(Boolean).forEach((field) => {
+        field.classList.add("invalid-field");
+        window.setTimeout(() => field.classList.remove("invalid-field"), feedbackDurationMs);
+    });
+}
+
+function showButtonFeedback(state, label){
+    const button = document.querySelector(".send-project-data-button");
+    if (!button) return;
+
+    resetButtonFeedback();
+    button.textContent = label;
+    button.classList.add(state === "success" ? "success-state" : "error-state");
+
+    window.setTimeout(() => {
+        resetButtonFeedback();
+        clearInvalidFieldMarks();
+    }, feedbackDurationMs);
+}
+
+function resetButtonFeedback(){
+    const button = document.querySelector(".send-project-data-button");
+    if (!button) return;
+
+    button.classList.remove("success-state", "error-state");
+    button.textContent = createButtonLabel;
 }
 
 
@@ -349,6 +429,8 @@ function editInteractorButton(editButton, projectData){
     editButton.addEventListener("click", (event) => {
         toggleEditPopUp(projectData);
         sendEdiButtonSwitch = "edit";
+        const sendDataButton = document.querySelector(".send-project-data-button");
+        if (sendDataButton) sendDataButton.textContent = "Update";
 
     });
 }
@@ -420,7 +502,7 @@ function editSmallData(editedData, id){
     if(editedData.github_link){
         console.log("Edited data github link is ", editedData.github_link);
         const urlLinkP = infoContent.querySelector(".URL_Link");
-        urlLinkP.textContent = "Project URL: " + editedData.github_link;
+        urlLinkP.textContent = "GitHub URL: " + editedData.github_link;
     }
     if(editedData.description){
         console.log("Edited data description is ", editedData.description);

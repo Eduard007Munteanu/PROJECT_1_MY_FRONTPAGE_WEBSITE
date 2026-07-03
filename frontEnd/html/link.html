@@ -33,13 +33,28 @@
             <div class="overlay-object">
                 <button class="close-project-data-button">X</button>
                 <p>Please insert the following</p>
-                <p>Project name: <input type="text" class="project-data" name="project_name"> </p>
-                <p>Meta Description: <textarea cols="50" rows="5" class="project-data" name="description"></textarea></p> 
-                <p>Project URL: <input type="text" class="project-data" name="github_link"></p>
-                <p>Project PDF file: <input type="file" class="project-data" name="pdf_folder" accept=".pdf"></p>
-                <p>Project video file: <input type="file" class="project-data" name="video_folder" accept=".mp4"></p>
+                <div class="project-field" data-field="project_name">
+                    <label>Project name <span class="required-mark">*</span></label>
+                    <input type="text" class="project-data" name="project_name">
+                </div>
+                <div class="project-field" data-field="description">
+                    <label>Meta description <span class="required-mark">*</span></label>
+                    <textarea cols="50" rows="5" class="project-data" name="description"></textarea>
+                </div>
+                <div class="project-field" data-field="github_link">
+                    <label>GitHub URL</label>
+                    <input type="text" class="project-data" name="github_link" placeholder="Optional">
+                </div>
+                <div class="project-field" data-field="pdf_folder">
+                    <label>Project PDF file <span class="required-mark">*</span></label>
+                    <input type="file" class="project-data" name="pdf_folder" accept=".pdf">
+                </div>
+                <div class="project-field" data-field="video_folder">
+                    <label>Project video file <span class="required-mark">*</span></label>
+                    <input type="file" class="project-data" name="video_folder" accept=".mp4">
+                </div>
                 
-                <button class="send-project-data-button">Send</button>
+                <button class="send-project-data-button">Create</button>
 
             </div>
         </div>

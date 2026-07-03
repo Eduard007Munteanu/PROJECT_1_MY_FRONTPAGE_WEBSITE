@@ -147,6 +147,8 @@ body{
     border: 1px solid black;
     padding: 14px;
     flex-direction: column;
+    gap: 10px;
+    width: min(90vw, 720px);
     opacity: 100%;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3)
@@ -159,6 +161,38 @@ body{
     background-color: red;
 }
 
+.project-field{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    margin-top: 10px;
+    border: 1px solid black;
+}
+
+.project-field input,
+.project-field textarea{
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.project-field.invalid-field{
+    box-shadow: 0 0 0 2px red;
+}
+
+.send-project-data-button.success-state{
+    background-color: #2f9e44;
+    color: white;
+}
+
+.send-project-data-button.error-state{
+    background-color: #d94848;
+    color: white;
+}
+
+.required-mark{
+    color: red;
+}
 
 
 .list-links{

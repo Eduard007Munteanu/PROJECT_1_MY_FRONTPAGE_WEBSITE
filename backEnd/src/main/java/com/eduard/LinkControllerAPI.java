@@ -214,7 +214,7 @@ public class LinkControllerAPI {
 
 
     @PutMapping("/textData/{id}")
-    public ResponseEntity<Link> editTextData(@PathVariable Long id, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam("github_link") String github_link){
+    public ResponseEntity<Link> editTextData(@PathVariable Long id, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam(value = "github_link", required = false) String github_link){
         Optional<Link> theLink = linkRepository.findById(id);
 
         if(theLink.isPresent()){
@@ -222,7 +222,9 @@ public class LinkControllerAPI {
 
             theActualLink.setProject_name(project_name);
             theActualLink.setDescription(description);
-            theActualLink.setGithub_link(github_link);
+            if(github_link != null){
+                theActualLink.setGithub_link(github_link);
+            }
 
             linkRepository.save(theActualLink);
 
@@ -287,7 +289,20 @@ public class LinkControllerAPI {
 
     // POST: Add a new link
     @PostMapping
-    public Link createLink(@RequestParam("pdf_folder") MultipartFile pdf_folder, @RequestParam("video_folder") MultipartFile video_folder, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam("github_link") String github_link) throws IOException {
+    public ResponseEntity<?> createLink(
+            @RequestParam(value = "pdf_folder", required = false) MultipartFile pdf_folder,
+            @RequestParam(value = "video_folder", required = false) MultipartFile video_folder,
+            @RequestParam(value = "project_name", required = false) String project_name,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "github_link", required = false) String github_link) throws IOException {
+
+        if (project_name == null || project_name.isBlank()
+                || description == null || description.isBlank()
+                || pdf_folder == null || pdf_folder.isEmpty()
+                || video_folder == null || video_folder.isEmpty()) {
+            return ResponseEntity.badRequest().body("Missing required project fields.");
+        }
+
         String pdfFolderPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
 
 
@@ -312,13 +327,13 @@ public class LinkControllerAPI {
         Link link = new Link();
         link.setProject_name(project_name);
         link.setDescription(description);
-        link.setGithub_link(github_link);
+        link.setGithub_link(github_link != null ? github_link : "");
         link.setPdf_url(update_file_folder_name);
         link.setVideo_url(update_video_folder_name);
 
         
         
-        return linkRepository.save(link);
+        return ResponseEntity.ok(linkRepository.save(link));
 
     }
 
