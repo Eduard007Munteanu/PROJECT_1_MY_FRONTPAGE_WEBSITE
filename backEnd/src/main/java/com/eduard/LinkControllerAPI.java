@@ -53,33 +53,47 @@ public class LinkControllerAPI {
 
     }
 
-
-
     @GetMapping("/pdfFiles/{id}")
-    public ResponseEntity<Resource> getSpecificPDFFile(@PathVariable Long id){
+    public ResponseEntity<Resource> getSpecificPDFFile(@PathVariable Long id) {
+        return servePdf(id, "inline");
+    }
+
+    @GetMapping("/pdfFiles/{id}/download")
+    public ResponseEntity<Resource> getSpecificPDFDownloadFile(@PathVariable Long id) {
+        return servePdf(id, "attachment");
+    }
+
+
+    
+    private ResponseEntity<Resource> servePdf(Long id, String dispositionType){
         Optional<Link> theLink = linkRepository.findById(id);
 
-        if(theLink.isPresent()){
-            Link theActualLink = theLink.get();
-
-            String pdfUrl = theActualLink.getPdf_url();
-            
-            String pdfFolderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
-
-            Path file = Paths.get(pdfFolderStringPath);
-
-            Path pdfFolderPath = file.resolve(pdfUrl);
-
-            Resource resource = new FileSystemResource(pdfFolderPath);
-            return ResponseEntity.ok()
-                .contentType(MediaType.valueOf("application/pdf"))
-                .body(resource);
-        } else{
+        if (theLink.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
+        Link theActualLink = theLink.get();
 
+        String pdfUrl = theActualLink.getPdf_url();
+        String basePath = "E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload";
+
+        Path pdfPath = Paths.get(basePath).resolve(pdfUrl);
+        Resource resource = new FileSystemResource(pdfPath);
+
+        if (!resource.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+            .header("Content-Disposition", dispositionType + "; filename=\"file.pdf\"")
+            .contentType(MediaType.APPLICATION_PDF)
+            .body(resource);
     }
+
+
+
+
+
 
 
 

@@ -1,5 +1,5 @@
 // import projectDatabase from "../database/projectDatabase.js";
-import { getAllLinks, getSpecificPDFFromLink, 
+import { getAllLinks,  
     getSpecificVideoFromLink, deleteAllLinks,
      getVideoPath, deleteLink, createLink, editBigData, 
     editTextData } from "../API/linkAPI.js";
@@ -318,10 +318,17 @@ function containerCreator(){
 }
 
 function previewContent(divContent, projectData){
+
+    let previewButton = createElement("button", "view-project-button", "View Project")
+
+    previewButton.addEventListener("click", () => {
+        window.location.href = `/html/specificLink.html?id=${projectData.id}`;
+    })
+
     divContent.append(
             createElement("p", "Project_name", "Project name: " + projectData.project_name),
             createElement("p", "Description", "Description: " + projectData.description),
-            createElement("button", "view-project-button", "View Project")
+            previewButton
     );
 }
 
@@ -390,7 +397,7 @@ function flushSpecificLink(id){
 // Rest, more practical:
 function previewContentFunction(previewPDFContent, previewVideoContent, overlayObject, projectData){
     previewPDFContent.addEventListener("click", async () => {
-        const blobPDFResponse = await getSpecificPDFFromLink(projectData.id);
+        const blobPDFResponse = await getShowPDF(projectData.id);
         const url = URL.createObjectURL(blobPDFResponse);
         window.open(url, "_blank"); // Opens PDF in new tab
     });

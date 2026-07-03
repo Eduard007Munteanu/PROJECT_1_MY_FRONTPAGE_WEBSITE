@@ -1,0 +1,27 @@
+.vertical-content-boxes{
+    display: flex;
+    flex-direction: column;
+}
+
+
+.header-box{
+    display: flex;
+    justify-content: center;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+}
+
+
+
+.vertical-specific-link-content-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: black;
+    height: 100%;
+}

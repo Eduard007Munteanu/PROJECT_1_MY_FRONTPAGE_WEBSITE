@@ -18,7 +18,7 @@ export async function getSpecificLink(specific_id){
 }
 
 
-export async function getSpecificPDFFromLink(specific_id){
+export async function getShowPDF(specific_id){
     const response = await fetch(`${BASE_URL}/pdfFiles/${specific_id}`);
     if(!response.ok){
         throw new Error(`failed to fetch that specific link with id: ${specific_id}`)
@@ -26,6 +26,29 @@ export async function getSpecificPDFFromLink(specific_id){
 
     return await response.blob();
 }
+
+
+export  function getShowPDFPath(specific_id){
+    const finder = `${BASE_URL}/pdfFiles/${specific_id}`
+    return finder;
+}
+
+
+
+
+export async function getDownloadPDF(specific_id){
+    const response = await fetch(`${BASE_URL}/pdfFiles/${specific_id}/download`);
+    if(!response.ok){
+        throw new Error(`failed to fetch that specific link with id: ${specific_id}`)
+    }
+
+    return await response.blob();
+}
+
+
+
+
+
 
 export async function getSpecificVideoFromLink(specific_id){
     const response = await fetch(`${BASE_URL}/videoFiles/${specific_id}`);
