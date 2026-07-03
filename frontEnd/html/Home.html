@@ -15,7 +15,6 @@
                         <option value="Home">Home</option>
                         <option value="CV">CV</option>
                         <option value="link">Personal Projects</option>
-                        <option value="login">Admin Access</option>
                     </select>
                 </div> 
             </div>
@@ -28,9 +27,29 @@
                     <div class="home-actions">
                         <a class="home-action-link" href="/html/CV.html">View CV</a>
                         <a class="home-action-link" href="/html/link.html">Personal Projects</a>
-                        <a class="home-action-link" href="/html/login.html">Admin Access</a>
+                        <button class="home-action-link home-admin-open-button" type="button">Admin Access</button>
                     </div>
                 </section>
+            </div>
+        </div>
+
+        <div class="overlay-insert-link overlay-admin-access">
+            <div class="overlay-object admin-access-object">
+                <div class="admin-access-header">
+                    <p class="admin-access-mode"></p>
+                    <button class="close-admin-data-button" type="button">X</button>
+                </div>
+                <p>Please insert the following</p>
+                <p class="admin-access-status"></p>
+                <div class="project-field admin-access-field" data-field="username">
+                    <label>Username <span class="required-mark">*</span></label>
+                    <input type="text" class="admin-access-username" placeholder="Username">
+                </div>
+                <div class="project-field admin-access-field" data-field="password">
+                    <label>Password <span class="required-mark">*</span></label>
+                    <input type="password" class="admin-access-password" placeholder="Password">
+                </div>
+                <button class="admin-access-button" type="button">Enter Admin</button>
             </div>
         </div>
 

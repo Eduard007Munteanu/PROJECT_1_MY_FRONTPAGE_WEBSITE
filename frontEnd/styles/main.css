@@ -175,11 +175,26 @@ body{
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3)
 }
 
+.admin-access-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.admin-access-mode{
+    margin: 0;
+}
 
 .close-project-data-button{
     display: flex;
     margin-left: auto;
     background-color: red;
+}
+
+.close-admin-data-button{
+    align-self: flex-start;
+    padding: 2px 10px;
 }
 
 .project-field{
@@ -294,6 +309,12 @@ body{
     color: inherit;
 }
 
+button.home-action-link{
+    background: white;
+    cursor: pointer;
+    font: inherit;
+}
+
 .home-admin-fields{
     display: flex;
     flex-direction: column;
@@ -332,4 +353,12 @@ body{
     flex-wrap: wrap;
     gap: 10px;
     align-items: center;
+}
+
+.overlay-admin-access{
+    display: none;
+}
+
+.admin-access-status{
+    margin: 0;
 }
