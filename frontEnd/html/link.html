@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <Title>Links page</Title>
+        <Title>Projects page</Title>
         <link rel="stylesheet" href="/styles/main.css">
     </head>
     <body>
         <div class="vertical-head-body-allign">
             <div class="horizontal-Menu-Option">
-                <p class="main-info">Links</p>
+                <p class="main-info">Personal Projects</p>
                 <div class="vertical-change-page">
                     <p class="change-page-text">Change options</p>
                     <select class="change-page-option">Change options
                         <option value="default" selected class="change-page-option-default">-</option>
-                        <option value="link" class="change-page-option-link">Links</option>
+                        <option value="link" class="change-page-option-link">Personal Projects</option>
                         <option value="CV" class="change-page-option-main">CV</option>
                     </select>
                 </div> 
             </div>
             <div class="links-content">
                 <div class="link-general-options">
-                    <button class="insert-link-button">Insert link content</button>
-                    <button class="remove-all-button">Remove all</button>
+                    <button class="insert-link-button">Insert project content</button>
+                    <button class="remove-all-button">Remove all projects</button>
                 </div>
                 <div class="links">
                     <ul class ="list-links">
@@ -35,9 +35,9 @@
                 <p>Please insert the following</p>
                 <p>Project name: <input type="text" class="project-data" name="project_name"> </p>
                 <p>Meta Description: <textarea cols="50" rows="5" class="project-data" name="description"></textarea></p> 
-                <p>URL link: <input type="text" class="project-data" name="github_link"></p>
-                <p>Actual PDF folder: <input type="file" class="project-data" name="pdf_folder" accept=".pdf"></p> <!--Both zip but no check if video or pdf-->
-                <p>Actual project video folder <input type="file" class="project-data" name="video_folder" accept=".mp4"></p>
+                <p>Project URL: <input type="text" class="project-data" name="github_link"></p>
+                <p>Project PDF file: <input type="file" class="project-data" name="pdf_folder" accept=".pdf"></p>
+                <p>Project video file: <input type="file" class="project-data" name="video_folder" accept=".mp4"></p>
                 
                 <button class="send-project-data-button">Send</button>
 
@@ -50,4 +50,4 @@
 
 
     </body>
-</html
+</html>

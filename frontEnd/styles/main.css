@@ -5,6 +5,12 @@ body{
     margin: 0;
 }
 
+.vertical-head-body-allign{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
 .horizontal-Menu-Option{
     display: flex;
     flex-direction: row; 
@@ -21,13 +27,6 @@ body{
 .vertical-change-page{
     display: flex;
     flex-direction: column;
-
-}
-
-.vertical-head-body-allign{
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
 }
 
 
@@ -46,33 +45,81 @@ body{
 #info-content{
     display: flex;
     flex-direction: row;
-    /* margin:auto; */
-    /* justify-content: center;
-    align-items: center; */
     flex-grow:  1;
     border: 1px solid black;
-    
+    padding: 20px;
+    box-sizing: border-box;
     margin-top: 20px;
     margin-bottom: 20px;
     margin-left: 20px;
     margin-right: 20px; 
 }
 
+.cv-content{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+}
 
+.cv-section{
+    border: 1px solid black;
+    padding: 14px;
+}
 
+.cv-section h1,
+.cv-section h2,
+.cv-section h3,
+.cv-section p{
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.cv-contact{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cv-columns{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.cv-column{
+    flex: 1 1 280px;
+    border: 1px solid black;
+    padding: 12px;
+}
+
+.cv-column ul,
+.cv-project ul{
+    margin: 0;
+    padding-left: 18px;
+}
+
+.cv-project{
+    border: 1px solid black;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+.cv-education{
+    border: 1px solid black;
+    padding: 12px;
+    margin-top: 10px;
+}
 
 .links-content{
      display: flex;
-    /* flex-direction: row;
-    flex-grow:  1; */ 
     border: 1px solid black;
     margin-top: 20px;
     margin-bottom: 20px;
     margin-left: 20px;
     margin-right: 20px; 
-    padding-left: 10px;
-    padding-top:10px;
-    padding-bottom:10px;
+    padding: 14px;
+    box-sizing: border-box;
     flex-direction: column;
 }
 
@@ -98,11 +145,11 @@ body{
 .overlay-object{
     display: flex;
     border: 1px solid black;
-    padding: 10px;
+    padding: 14px;
     flex-direction: column;
     opacity: 100%;
     background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) /* add black shadow of 10px and 30% opacity */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3)
 }
 
 
@@ -117,6 +164,7 @@ body{
 .list-links{
     list-style: none;
     padding: 0px;
+    margin: 0;
 }
 
 

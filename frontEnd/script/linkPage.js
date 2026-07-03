@@ -420,7 +420,7 @@ function editSmallData(editedData, id){
     if(editedData.github_link){
         console.log("Edited data github link is ", editedData.github_link);
         const urlLinkP = infoContent.querySelector(".URL_Link");
-        urlLinkP.textContent = "URL link: " + editedData.github_link;
+        urlLinkP.textContent = "Project URL: " + editedData.github_link;
     }
     if(editedData.description){
         console.log("Edited data description is ", editedData.description);
