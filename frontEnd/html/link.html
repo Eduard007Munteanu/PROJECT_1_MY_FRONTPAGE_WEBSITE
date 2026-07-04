@@ -14,7 +14,7 @@
                     <select class="change-page-option">Change options
                         <option value="Home" class="change-page-option-home">Home</option>
                         <option value="CV" class="change-page-option-main">CV</option>
-                        <option value="link" class="change-page-option-link">Personal Projects</option>
+                        <option value="link" class="change-page-option-link">Projects</option>
                     </select>
                 </div> 
             </div>
@@ -41,8 +41,12 @@
                     <label>Project name <span class="required-mark">*</span></label>
                     <input type="text" class="project-data" name="project_name">
                 </div>
+                <div class="project-field" data-field="project_summary">
+                    <label>Project summary <span class="required-mark">*</span></label>
+                    <textarea cols="50" rows="4" class="project-data" name="project_summary"></textarea>
+                </div>
                 <div class="project-field" data-field="description">
-                    <label>Meta description <span class="required-mark">*</span></label>
+                    <label>Detailed description</label>
                     <textarea cols="50" rows="5" class="project-data" name="description"></textarea>
                 </div>
                 <div class="project-field" data-field="github_link">

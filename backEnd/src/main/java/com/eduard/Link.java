@@ -20,6 +20,8 @@ public class Link {
     private String project_name;
     private String github_link;
     @Column(columnDefinition = "TEXT")
+    private String project_summary;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String project_category;
     private String image_url;
@@ -30,6 +32,7 @@ public class Link {
     public Long getId() { return id; }
     public String getProject_name() { return project_name; }
     public String getGithub_link() { return github_link; }
+    public String getProject_summary() { return project_summary; }
     public String getDescription() { return description; }
     public String getProject_category() { return project_category; }
     public String getImage_url() { return image_url; }
@@ -40,6 +43,7 @@ public class Link {
     public void setId(Long id) { this.id = id; }
     public void setProject_name(String project_name) { this.project_name = project_name; }
     public void setGithub_link(String github_link) { this.github_link = github_link; }
+    public void setProject_summary(String project_summary) { this.project_summary = project_summary; }
     public void setDescription(String description) { this.description = description; }
     public void setProject_category(String project_category) { this.project_category = project_category; }
     public void setImage_url(String image_url) { this.image_url = image_url; }

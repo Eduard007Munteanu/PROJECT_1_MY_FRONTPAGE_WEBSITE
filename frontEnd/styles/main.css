@@ -314,6 +314,13 @@ body{
     align-items: stretch;
 }
 
+.project-category-badge{
+    width: fit-content;
+    margin: 0;
+    padding: 2px 8px;
+    border: 1px solid black;
+}
+
 .project-preview-placeholder{
     display: flex;
     flex-direction: column;
@@ -345,6 +352,10 @@ body{
 }
 
 .project-preview-caption{
+    margin: 0;
+}
+
+.Project_name{
     margin: 0;
 }
 

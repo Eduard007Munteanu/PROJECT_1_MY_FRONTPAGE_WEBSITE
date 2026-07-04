@@ -200,8 +200,8 @@ function getProjectData(mode) {
     const invalidFields = [];
     const inputs = document.querySelectorAll(".project-data");
     const requiredFields = mode === "create"
-        ? new Set(["project_name", "description", "pdf_folder", "video_folder"])
-        : new Set(["project_name", "description"]);
+        ? new Set(["project_name", "project_summary", "pdf_folder", "video_folder"])
+        : new Set(["project_name", "project_summary"]);
 
     for (const input of inputs) {
         const key = input.name;
@@ -320,8 +320,9 @@ async function toggleEditPopUp(projectData){
     const overlayObject = document.querySelector(".overlay-object");
 
     let projectNameData = projectData.project_name;
+    let projectSummaryData = projectData.project_summary ?? projectData.description ?? "";
     let githubLinkData = projectData.github_link;
-    let descriptionData = projectData.description;
+    let descriptionData = projectData.description ?? "";
 
     editPanelProjectID = projectData.id;
     editPanelProjectCategory = normalizeCategory(projectData.project_category);
@@ -341,10 +342,12 @@ async function toggleEditPopUp(projectData){
     
 
     let projectNameElement = document.querySelector('.project-data[name="project_name"]');
+    let projectSummaryElement = document.querySelector('.project-data[name="project_summary"]');
     let githubLinkElement = document.querySelector('.project-data[name="github_link"]');
     let descriptionElement = document.querySelector('.project-data[name="description"]');
     
     projectNameElement.value = projectNameData;
+    projectSummaryElement.value = projectSummaryData;
     githubLinkElement.value = githubLinkData;
     descriptionElement.value = descriptionData;
     overlay.style.display = "flex";
@@ -508,20 +511,22 @@ function previewContent(divContent, projectData){
     const projectPreview = createProjectPreview(projectData);
     const projectMainContent = createElement("div", "project-card-main");
     const projectInfoContent = createElement("div", "div-link-element-info-content");
-    const projectDescriptionLabel = createElement("p", "project-description-label", "Description");
-    const projectDescriptionBox = createElement("div", "project-description-box");
-    const projectDescriptionText = createElement("p", "Description", projectData.description);
+    const categoryBadge = createElement("p", "project-category-badge", formatProjectCategory(projectData.project_category));
+    const projectSummaryLabel = createElement("p", "project-description-label", "Summary");
+    const projectSummaryBox = createElement("div", "project-description-box");
+    const projectSummaryText = createElement("p", "Description", getProjectSummary(projectData));
     const previewButton = createElement("button", "view-project-button", "View Project");
 
     previewButton.addEventListener("click", () => {
         window.location.href = `/html/specificLink.html?id=${projectData.id}`;
     })
 
-    projectDescriptionBox.append(projectDescriptionText);
+    projectSummaryBox.append(projectSummaryText);
     projectInfoContent.append(
-        createElement("p", "Project_name", "Project name: " + projectData.project_name),
-        projectDescriptionLabel,
-        projectDescriptionBox
+        categoryBadge,
+        createElement("p", "Project_name", projectData.project_name),
+        projectSummaryLabel,
+        projectSummaryBox
     );
     projectMainContent.append(
         projectInfoContent,
@@ -554,6 +559,14 @@ function createProjectPreview(projectData){
     );
 
     return previewContainer;
+}
+
+function getProjectSummary(projectData){
+    return projectData.project_summary?.trim() || projectData.description?.trim() || "No summary added yet.";
+}
+
+function formatProjectCategory(category){
+    return normalizeCategory(category) === academicCategory ? "Academic Project" : "Personal Project";
 }
 
 /**per link EDIT listener + single listener DELETE per all links  
@@ -646,22 +659,26 @@ function editSmallData(editedData, id){
     if(editedData.project_name){
         console.log("Edited data project name is ", editedData.project_name);
         const projectNameP = infoContent.querySelector(".Project_name");
-        projectNameP.textContent = "Project name: " + editedData.project_name;
+        projectNameP.textContent = editedData.project_name;
     }
     if(editedData.github_link){
         console.log("Edited data github link is ", editedData.github_link);
         const urlLinkP = infoContent.querySelector(".URL_Link");
         urlLinkP.textContent = "GitHub URL: " + editedData.github_link;
     }
-    if(editedData.description){
-        console.log("Edited data description is ", editedData.description);
+    if(editedData.project_summary || editedData.description){
+        console.log("Edited data summary is ", editedData.project_summary);
         const descriptionP = infoContent.querySelector(".Description");
-        descriptionP.textContent = editedData.description;
+        descriptionP.textContent = editedData.project_summary ?? editedData.description;
     }
 
     if (editedData.project_category) {
         const newCategory = normalizeCategory(editedData.project_category);
         specificLink.dataset.category = newCategory;
+        const categoryBadge = infoContent.querySelector(".project-category-badge");
+        if (categoryBadge) {
+            categoryBadge.textContent = formatProjectCategory(newCategory);
+        }
         const targetList = getListForCategory(newCategory);
         if (targetList && specificLink.parentElement !== targetList) {
             targetList.appendChild(specificLink);

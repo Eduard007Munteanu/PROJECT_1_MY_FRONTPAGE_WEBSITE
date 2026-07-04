@@ -247,14 +247,20 @@ public class LinkControllerAPI {
 
 
     @PutMapping("/textData/{id}")
-    public ResponseEntity<Link> editTextData(@PathVariable Long id, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam(value = "github_link", required = false) String github_link, @RequestParam(value = "project_category", required = false) String project_category){
+    public ResponseEntity<Link> editTextData(@PathVariable Long id,
+            @RequestParam("project_name") String project_name,
+            @RequestParam("project_summary") String project_summary,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "github_link", required = false) String github_link,
+            @RequestParam(value = "project_category", required = false) String project_category){
         Optional<Link> theLink = linkRepository.findById(id);
 
         if(theLink.isPresent()){
             Link theActualLink = theLink.get();
 
             theActualLink.setProject_name(project_name);
-            theActualLink.setDescription(description);
+            theActualLink.setProject_summary(project_summary);
+            theActualLink.setDescription(description != null ? description : "");
             if(github_link != null){
                 theActualLink.setGithub_link(github_link);
             }
@@ -343,12 +349,13 @@ public class LinkControllerAPI {
             @RequestParam(value = "video_folder", required = false) MultipartFile video_folder,
             @RequestParam(value = "image_folder", required = false) MultipartFile image_folder,
             @RequestParam(value = "project_name", required = false) String project_name,
+            @RequestParam(value = "project_summary", required = false) String project_summary,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "github_link", required = false) String github_link,
             @RequestParam(value = "project_category", required = false) String project_category) throws IOException {
 
         if (project_name == null || project_name.isBlank()
-                || description == null || description.isBlank()
+                || project_summary == null || project_summary.isBlank()
                 || pdf_folder == null || pdf_folder.isEmpty()
                 || video_folder == null || video_folder.isEmpty()) {
             return ResponseEntity.badRequest().body("Missing required project fields.");
@@ -382,7 +389,8 @@ public class LinkControllerAPI {
 
         Link link = new Link();
         link.setProject_name(project_name);
-        link.setDescription(description);
+        link.setProject_summary(project_summary);
+        link.setDescription(description != null ? description : "");
         link.setGithub_link(github_link != null ? github_link : "");
         link.setProject_category(project_category != null && !project_category.isBlank() ? project_category : "personal");
         link.setImage_url(update_image_folder_name);
