@@ -26,11 +26,11 @@ function downloadContentButton(fetchFunction, container, buttonText, extension){
     const downloadButton = document.createElement("button");
     downloadButton.textContent = buttonText;
     downloadButton.addEventListener("click", async () => {
-        const contentBlob = await fetchFunction;
+        const contentBlob = await fetchFunction();
         const url = URL.createObjectURL(contentBlob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = buttonText + extension; 
+        a.download = buttonText + extension;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -48,8 +48,7 @@ function showVideo(projectId, container){
     const videoElement = document.createElement("video");
     videoElement.src = getVideoPath(projectId);
     videoElement.controls = true;
-    videoElement.style.width = "60%";
-    videoElement.style.height = "auto";
+    videoElement.classList.add("specific-media-preview");
 
     videoContainer.appendChild(videoElement);
     container.appendChild(videoContainer);
@@ -63,8 +62,7 @@ function showPDF(projectId, container){
 
     const pdfIframe = document.createElement("iframe");
     pdfIframe.src = getShowPDFPath(projectId);
-    pdfIframe.style.width = "60%";
-    pdfIframe.style.height = "auto";
+    pdfIframe.classList.add("specific-media-preview");
 
     pdfContainer.appendChild(pdfIframe);
     container.appendChild(pdfContainer);

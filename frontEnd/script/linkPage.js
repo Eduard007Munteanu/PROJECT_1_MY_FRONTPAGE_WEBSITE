@@ -10,6 +10,10 @@ let sendEdiButtonSwitch = "send";
 let editPanelProjectID = null;
 const createButtonLabel = "Create";
 const feedbackDurationMs = 1000;
+const personalCategory = "personal";
+const academicCategory = "academic";
+let currentProjectCategory = personalCategory;
+let projectCache = [];
 
 //import projectDatabase section
 
@@ -50,20 +54,23 @@ export function deleteAllInteractorButton(){
     let allDeletebutton = document.querySelector(".remove-all-button");
     if (!allDeletebutton) return;
 
-    allDeletebutton.addEventListener("click", () => {
-        fullProjectDeletor();
+    allDeletebutton.addEventListener("click", async () => {
+        await fullProjectDeletor();
     })
 }
 
-function fullProjectDeletor(){
-    deleteAllLinks();
+async function fullProjectDeletor(){
+    await deleteAllLinks();
     // projectDatabase.deleteAllElements(); API
-    flushVisualLinks();
+    projectCache = [];
+    renderCurrentCategory();
 }
 
 function flushVisualLinks(){
-    let listlink = document.querySelector(".list-links");
-    listlink.innerHTML = "";
+    const listlink = document.querySelector(".list-links");
+    if (listlink) {
+        listlink.innerHTML = "";
+    }
 }
 
 
@@ -123,6 +130,7 @@ async function sendButtonFunction() {
 
     try {
         const formData = new FormData();
+        formData.append("project_category", currentProjectCategory);
         for (const [key, value] of Object.entries(validation.data)) {
             // FormData handles both Strings and Files automatically!
             if (key === "github_link") {
@@ -135,9 +143,9 @@ async function sendButtonFunction() {
         const response = await createLink(formData);
         showButtonFeedback("success", "Project created!");
         window.setTimeout(() => {
-            projectCreator(response);
             removePopUp();
             resetButtonFeedback();
+            RenderDataOnPage();
         }, feedbackDurationMs);
     } catch (err) {
         console.error("Failed retrieval of data POST", err);
@@ -178,7 +186,10 @@ async function editButtonFunction() {
         
         showButtonFeedback("success", "Project updated!");
         removePopUp();
-        window.setTimeout(() => resetButtonFeedback(), feedbackDurationMs);
+        window.setTimeout(() => {
+            resetButtonFeedback();
+            RenderDataOnPage();
+        }, feedbackDurationMs);
     } catch (err) {
         console.error("Edit failed", err);
         showButtonFeedback("error", "Update failed");
@@ -334,9 +345,6 @@ async function toggleEditPopUp(projectData){
     projectNameElement.value = projectNameData;
     githubLinkElement.value = githubLinkData;
     descriptionElement.value = descriptionData;
-    
-
-    
     overlay.style.display = "flex";
 
 }
@@ -359,10 +367,37 @@ async function toggleEditPopUp(projectData){
 
 //(4) All link content:
 export async function RenderDataOnPage(){
-    let data = await getAllLinks();
-    data.forEach((dataObject) => {
-        projectCreator(dataObject)
-    })
+    projectCache = await getAllLinks();
+    renderCurrentCategory();
+}
+
+export function initProjectCategorySwitcher(){
+    const buttons = document.querySelectorAll(".projects-category-button");
+    const title = document.querySelector(".projects-view-title");
+
+    if (!buttons.length || !title) return;
+
+    const renderSelection = () => {
+        buttons.forEach((button) => {
+            const active = button.dataset.category === currentProjectCategory;
+            button.classList.toggle("is-active", active);
+        });
+
+        title.textContent = currentProjectCategory === academicCategory
+            ? "Academic Projects"
+            : "Personal Projects";
+
+        renderCurrentCategory();
+    };
+
+    buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+            currentProjectCategory = normalizeCategory(button.dataset.category);
+            renderSelection();
+        });
+    });
+
+    renderSelection();
 }
 
 export function applyProjectAccess(){
@@ -398,6 +433,7 @@ function projectCreator(projectData){
     if (!listLink) return;
     const li = createElement("li", "Link-element");
     li.id = projectData.id;
+    li.dataset.category = normalizeCategory(projectData.project_category);
 
     let [div, divTools, divContent] = containerCreator()
 
@@ -410,6 +446,30 @@ function projectCreator(projectData){
     li.appendChild(div);
     listLink.appendChild(li);
 
+}
+
+function normalizeCategory(category){
+    return category === academicCategory ? academicCategory : personalCategory;
+}
+
+function getListForCategory(category){
+    const normalizedCategory = normalizeCategory(category);
+    if (normalizedCategory !== currentProjectCategory) {
+        return null;
+    }
+    return document.querySelector(".list-links");
+}
+
+function renderCurrentCategory(){
+    flushVisualLinks();
+    const listLink = document.querySelector(".list-links");
+    if (!listLink) return;
+
+    projectCache
+        .filter((projectData) => normalizeCategory(projectData.project_category) === currentProjectCategory)
+        .forEach((projectData) => {
+            projectCreator(projectData);
+        });
 }
 
 function containerCreator(){
@@ -427,17 +487,25 @@ function containerCreator(){
 }
 
 function previewContent(divContent, projectData){
-
-    let previewButton = createElement("button", "view-project-button", "View Project")
+    const projectDescriptionLabel = createElement("p", "project-description-label", "Description");
+    const projectDescriptionBox = createElement("div", "project-description-box");
+    const projectDescriptionText = createElement("p", "Description", projectData.description);
+    const previewButton = createElement("button", "view-project-button", "View Project");
 
     previewButton.addEventListener("click", () => {
         window.location.href = `/html/specificLink.html?id=${projectData.id}`;
     })
 
+    projectDescriptionBox.append(
+        projectDescriptionLabel,
+        projectDescriptionText
+    );
+
     divContent.append(
-            createElement("p", "Project_name", "Project name: " + projectData.project_name),
-            createElement("p", "Description", "Description: " + projectData.description),
-            previewButton
+        createElement("p", "Project_name", "Project name: " + projectData.project_name),
+        projectDescriptionLabel,
+        projectDescriptionBox,
+        previewButton
     );
 }
 
@@ -542,6 +610,15 @@ function editSmallData(editedData, id){
         console.log("Edited data description is ", editedData.description);
         const descriptionP = infoContent.querySelector(".Description");
         descriptionP.textContent = "Description: " + editedData.description;
+    }
+
+    if (editedData.project_category) {
+        const newCategory = normalizeCategory(editedData.project_category);
+        specificLink.dataset.category = newCategory;
+        const targetList = getListForCategory(newCategory);
+        if (targetList && specificLink.parentElement !== targetList) {
+            targetList.appendChild(specificLink);
+        }
     }
 }
 

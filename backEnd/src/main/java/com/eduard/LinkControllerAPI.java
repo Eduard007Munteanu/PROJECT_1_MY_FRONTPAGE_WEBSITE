@@ -214,7 +214,7 @@ public class LinkControllerAPI {
 
 
     @PutMapping("/textData/{id}")
-    public ResponseEntity<Link> editTextData(@PathVariable Long id, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam(value = "github_link", required = false) String github_link){
+    public ResponseEntity<Link> editTextData(@PathVariable Long id, @RequestParam("project_name") String project_name, @RequestParam("description") String description, @RequestParam(value = "github_link", required = false) String github_link, @RequestParam(value = "project_category", required = false) String project_category){
         Optional<Link> theLink = linkRepository.findById(id);
 
         if(theLink.isPresent()){
@@ -224,6 +224,9 @@ public class LinkControllerAPI {
             theActualLink.setDescription(description);
             if(github_link != null){
                 theActualLink.setGithub_link(github_link);
+            }
+            if(project_category != null && !project_category.isBlank()){
+                theActualLink.setProject_category(project_category);
             }
 
             linkRepository.save(theActualLink);
@@ -294,7 +297,8 @@ public class LinkControllerAPI {
             @RequestParam(value = "video_folder", required = false) MultipartFile video_folder,
             @RequestParam(value = "project_name", required = false) String project_name,
             @RequestParam(value = "description", required = false) String description,
-            @RequestParam(value = "github_link", required = false) String github_link) throws IOException {
+            @RequestParam(value = "github_link", required = false) String github_link,
+            @RequestParam(value = "project_category", required = false) String project_category) throws IOException {
 
         if (project_name == null || project_name.isBlank()
                 || description == null || description.isBlank()
@@ -328,6 +332,7 @@ public class LinkControllerAPI {
         link.setProject_name(project_name);
         link.setDescription(description);
         link.setGithub_link(github_link != null ? github_link : "");
+        link.setProject_category(project_category != null && !project_category.isBlank() ? project_category : "personal");
         link.setPdf_url(update_file_folder_name);
         link.setVideo_url(update_video_folder_name);
 

@@ -18,10 +18,61 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 20px;
     margin-top: 20px;
+    padding: 18px;
     border-width: 1px;
     border-style: solid;
     border-color: black;
     height: 100%;
+    box-sizing: border-box;
+}
+
+.vertical-specific-link-showcase-info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.video-container,
+.pdf-container,
+.vertical-specific-link-download-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 12px;
+}
+
+.vertical-specific-link-download-box{
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.vertical-specific-link-download-box button{
+    padding: 6px 12px;
+}
+
+.vertical-specific-link-showcase-info video,
+.vertical-specific-link-showcase-info iframe{
+    display: block;
+    margin: 0 auto;
+}
+
+.specific-media-preview{
+    width: min(72vw, 720px);
+    height: 420px;
+    box-sizing: border-box;
+}
+
+video.specific-media-preview{
+    object-fit: contain;
+}
+
+iframe.specific-media-preview{
+    border: 1px solid black;
 }

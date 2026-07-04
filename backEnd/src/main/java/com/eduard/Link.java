@@ -21,6 +21,7 @@ public class Link {
     private String project_name;
     private String github_link;
     private String description;
+    private String project_category;
     private String pdf_url;
     private String video_url;
 
@@ -29,6 +30,7 @@ public class Link {
     public String getProject_name() { return project_name; }
     public String getGithub_link() { return github_link; }
     public String getDescription() { return description; }
+    public String getProject_category() { return project_category; }
     public String getPdf_url() { return pdf_url; }
     public String getVideo_url() { return video_url; }
 
@@ -37,6 +39,7 @@ public class Link {
     public void setProject_name(String project_name) { this.project_name = project_name; }
     public void setGithub_link(String github_link) { this.github_link = github_link; }
     public void setDescription(String description) { this.description = description; }
+    public void setProject_category(String project_category) { this.project_category = project_category; }
     public void setPdf_url(String pdf_url) { this.pdf_url = pdf_url; }
     public void setVideo_url(String video_url) { this.video_url = video_url; }
 

@@ -1,7 +1,7 @@
 import { changeoption } from "./defaultPage.js";
 import { insertLinkContent, projectFULLCreator,
         deleterInteractorButton, deleteAllInteractorButton,
-        RenderDataOnPage, applyProjectAccess } from "./linkPage.js";
+        RenderDataOnPage, applyProjectAccess, initProjectCategorySwitcher } from "./linkPage.js";
 import { bindAdminPage } from "./loginPage.js";
 import { isAdmin } from "./siteState.js";
 
@@ -45,6 +45,7 @@ if (currentPage === "Home.html") {
 
 if (currentPage === "link.html") {
     applyProjectAccess();
+    initProjectCategorySwitcher();
     RenderDataOnPage();
     insertLinkContent();
     projectFULLCreator();
