@@ -57,6 +57,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    min-width: 0;
 }
 
 .specific-project-text h1,
@@ -117,6 +118,12 @@
     text-decoration: none;
 }
 
+.specific-project-media-column{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .specific-project-cover{
     width: 100%;
     min-height: 240px;
@@ -130,6 +137,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 16px;
+    text-align: center;
 }
 
 .vertical-specific-link-showcase-info{
@@ -138,6 +147,18 @@
     align-items: center;
     gap: 16px;
     width: 100%;
+}
+
+.specific-project-media-placeholder{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+    width: min(72vw, 720px);
+    border: 1px solid black;
+    padding: 16px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .video-container,
@@ -162,6 +183,52 @@
 
 .specific-project-open-document{
     width: fit-content;
+    padding: 6px 12px;
+}
+
+.admin-upload-control{
+    display: flex;
+    justify-content: center;
+}
+
+.admin-upload-control button{
+    padding: 6px 12px;
+}
+
+.admin-section-hint{
+    margin: 0;
+}
+
+.inline-editor-form{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.inline-editor-title{
+    margin: 0;
+}
+
+.inline-editor-field{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.inline-editor-field input,
+.inline-editor-field textarea{
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.inline-editor-actions{
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.inline-editor-actions button{
     padding: 6px 12px;
 }
 

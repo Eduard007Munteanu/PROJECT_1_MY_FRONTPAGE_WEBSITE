@@ -108,6 +108,9 @@ public class LinkControllerAPI {
         Link theActualLink = theLink.get();
 
         String pdfUrl = theActualLink.getPdf_url();
+        if (pdfUrl == null || pdfUrl.isBlank()) {
+            return ResponseEntity.notFound().build();
+        }
         String basePath = "E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload";
 
         Path pdfPath = Paths.get(basePath).resolve(pdfUrl);
@@ -140,6 +143,10 @@ public class LinkControllerAPI {
         if (theLink.isPresent()) {
             Link theActualLink = theLink.get();
             String videoUrl = theActualLink.getVideo_url();
+            if (videoUrl == null || videoUrl.isBlank()) {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
 
             String pdfFolderStringPath = "E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload";
             Path pdfFolderPath = Paths.get(pdfFolderStringPath).resolve(videoUrl);
@@ -227,6 +234,9 @@ public class LinkControllerAPI {
             Link theActualLink = theLink.get();
 
             String videoUrl = theActualLink.getVideo_url();
+            if (videoUrl == null || videoUrl.isBlank()) {
+                return ResponseEntity.notFound().build();
+            }
             
             String pdfFolderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
 
@@ -372,11 +382,8 @@ public class LinkControllerAPI {
             @RequestParam(value = "project_takeaways", required = false) String project_takeaways,
             @RequestParam(value = "project_category", required = false) String project_category) throws IOException {
 
-        if (project_name == null || project_name.isBlank()
-                || project_summary == null || project_summary.isBlank()
-                || pdf_folder == null || pdf_folder.isEmpty()
-                || video_folder == null || video_folder.isEmpty()) {
-            return ResponseEntity.badRequest().body("Missing required project fields.");
+        if (project_name == null || project_name.isBlank()) {
+            project_name = "Untitled Project";
         }
 
         String pdfFolderPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
@@ -386,16 +393,17 @@ public class LinkControllerAPI {
         
         Files.createDirectories(folder);
 
-        String pdf_folder_name = pathNameSanitizing(pdf_folder.getOriginalFilename());
+        String update_file_folder_name = "";
+        if (pdf_folder != null && !pdf_folder.isEmpty()) {
+            String pdf_folder_name = pathNameSanitizing(pdf_folder.getOriginalFilename());
+            update_file_folder_name = pathCreator(pdf_folder_name, folder, pdf_folder);
+        }
 
-
-        String update_file_folder_name = pathCreator(pdf_folder_name, folder, pdf_folder);
-
-        
-
-        String video_folder_name = pathNameSanitizing(video_folder.getOriginalFilename());
-
-        String update_video_folder_name = pathCreator(video_folder_name, folder, video_folder);
+        String update_video_folder_name = "";
+        if (video_folder != null && !video_folder.isEmpty()) {
+            String video_folder_name = pathNameSanitizing(video_folder.getOriginalFilename());
+            update_video_folder_name = pathCreator(video_folder_name, folder, video_folder);
+        }
 
         String update_image_folder_name = "";
         if (image_folder != null && !image_folder.isEmpty()) {
@@ -407,7 +415,7 @@ public class LinkControllerAPI {
 
         Link link = new Link();
         link.setProject_name(project_name);
-        link.setProject_summary(project_summary);
+        link.setProject_summary(project_summary != null ? project_summary : "");
         link.setDescription(description != null ? description : "");
         link.setGithub_link(github_link != null ? github_link : "");
         link.setProject_category(project_category != null && !project_category.isBlank() ? project_category : "personal");
@@ -516,24 +524,32 @@ public class LinkControllerAPI {
 
         Path file = Paths.get(folderStringPath);
 
-        Path pdfFolderPath = file.resolve(deletingPDFFile);
-        Path videoFolderPath = file.resolve(deletingVideoFile);
+        Path pdfFolderPath = deletingPDFFile == null || deletingPDFFile.isBlank()
+                ? null
+                : file.resolve(deletingPDFFile);
+        Path videoFolderPath = deletingVideoFile == null || deletingVideoFile.isBlank()
+                ? null
+                : file.resolve(deletingVideoFile);
         Path imageFolderPath = deletingImageFile == null || deletingImageFile.isBlank()
                 ? null
                 : file.resolve(deletingImageFile);
 
 
-        try{
-            Files.delete(pdfFolderPath);
-        } catch(IOException e){
-            throw new IOException("Failed to remove pdf due to incorrect path: " + pdfFolderPath, e);
-        }   
+        if (pdfFolderPath != null) {
+            try{
+                Files.deleteIfExists(pdfFolderPath);
+            } catch(IOException e){
+                throw new IOException("Failed to remove pdf due to incorrect path: " + pdfFolderPath, e);
+            }
+        }
 
         
-        try{
-            Files.delete(videoFolderPath);
-        } catch(IOException e){
-            throw new IOException("Failed to remove video due to incorrect path: " + videoFolderPath, e);
+        if (videoFolderPath != null) {
+            try{
+                Files.deleteIfExists(videoFolderPath);
+            } catch(IOException e){
+                throw new IOException("Failed to remove video due to incorrect path: " + videoFolderPath, e);
+            }
         }
 
         if (imageFolderPath != null) {
@@ -548,6 +564,9 @@ public class LinkControllerAPI {
 
 
     private void deletePDFFromPath(String deletingPDFFile)  throws IOException{
+        if (deletingPDFFile == null || deletingPDFFile.isBlank()) {
+            return;
+        }
 
         String folderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
 
@@ -556,7 +575,7 @@ public class LinkControllerAPI {
         Path pdfFolderPath = file.resolve(deletingPDFFile);
 
         try{
-            Files.delete(pdfFolderPath);
+            Files.deleteIfExists(pdfFolderPath);
         } catch(IOException e){
             throw new IOException("Failed to remove pdf due to incorrect path: " + pdfFolderPath, e);
         }
@@ -565,6 +584,9 @@ public class LinkControllerAPI {
 
 
     private void deleteVideoFromPath(String deletingVideoFile)  throws IOException{
+        if (deletingVideoFile == null || deletingVideoFile.isBlank()) {
+            return;
+        }
 
         String folderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
 
@@ -573,7 +595,7 @@ public class LinkControllerAPI {
         Path videoFolderPath = file.resolve(deletingVideoFile);
 
         try{
-            Files.delete(videoFolderPath);
+            Files.deleteIfExists(videoFolderPath);
         } catch(IOException e){
             throw new IOException("Failed to remove video due to incorrect path: " + videoFolderPath, e);
         }
