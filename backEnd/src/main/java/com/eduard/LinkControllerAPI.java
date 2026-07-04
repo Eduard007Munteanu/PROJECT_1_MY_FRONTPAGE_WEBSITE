@@ -252,6 +252,12 @@ public class LinkControllerAPI {
             @RequestParam("project_summary") String project_summary,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "github_link", required = false) String github_link,
+            @RequestParam(value = "project_context", required = false) String project_context,
+            @RequestParam(value = "project_role", required = false) String project_role,
+            @RequestParam(value = "project_goal", required = false) String project_goal,
+            @RequestParam(value = "project_languages", required = false) String project_languages,
+            @RequestParam(value = "project_technologies", required = false) String project_technologies,
+            @RequestParam(value = "project_takeaways", required = false) String project_takeaways,
             @RequestParam(value = "project_category", required = false) String project_category){
         Optional<Link> theLink = linkRepository.findById(id);
 
@@ -261,6 +267,12 @@ public class LinkControllerAPI {
             theActualLink.setProject_name(project_name);
             theActualLink.setProject_summary(project_summary);
             theActualLink.setDescription(description != null ? description : "");
+            theActualLink.setProject_context(project_context != null ? project_context : "");
+            theActualLink.setProject_role(project_role != null ? project_role : "");
+            theActualLink.setProject_goal(project_goal != null ? project_goal : "");
+            theActualLink.setProject_languages(project_languages != null ? project_languages : "");
+            theActualLink.setProject_technologies(project_technologies != null ? project_technologies : "");
+            theActualLink.setProject_takeaways(project_takeaways != null ? project_takeaways : "");
             if(github_link != null){
                 theActualLink.setGithub_link(github_link);
             }
@@ -352,6 +364,12 @@ public class LinkControllerAPI {
             @RequestParam(value = "project_summary", required = false) String project_summary,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "github_link", required = false) String github_link,
+            @RequestParam(value = "project_context", required = false) String project_context,
+            @RequestParam(value = "project_role", required = false) String project_role,
+            @RequestParam(value = "project_goal", required = false) String project_goal,
+            @RequestParam(value = "project_languages", required = false) String project_languages,
+            @RequestParam(value = "project_technologies", required = false) String project_technologies,
+            @RequestParam(value = "project_takeaways", required = false) String project_takeaways,
             @RequestParam(value = "project_category", required = false) String project_category) throws IOException {
 
         if (project_name == null || project_name.isBlank()
@@ -393,6 +411,12 @@ public class LinkControllerAPI {
         link.setDescription(description != null ? description : "");
         link.setGithub_link(github_link != null ? github_link : "");
         link.setProject_category(project_category != null && !project_category.isBlank() ? project_category : "personal");
+        link.setProject_context(project_context != null ? project_context : "");
+        link.setProject_role(project_role != null ? project_role : "");
+        link.setProject_goal(project_goal != null ? project_goal : "");
+        link.setProject_languages(project_languages != null ? project_languages : "");
+        link.setProject_technologies(project_technologies != null ? project_technologies : "");
+        link.setProject_takeaways(project_takeaways != null ? project_takeaways : "");
         link.setImage_url(update_image_folder_name);
         link.setPdf_url(update_file_folder_name);
         link.setVideo_url(update_video_folder_name);

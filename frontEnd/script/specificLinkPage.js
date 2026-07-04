@@ -11,15 +11,16 @@ async function fullProjectLoad(){
 
     document.title = `${projectData.project_name} | Projects`;
     const overviewContainer = document.querySelector(".specific-project-overview");
-    const detailsContainer = document.querySelector(".specific-project-details-panel");
+    const specificationsContainer = document.querySelector(".specific-project-specifications");
+    const descriptionContainer = document.querySelector(".specific-project-description-panel");
     const showcaseInfoContainer = document.querySelector(".vertical-specific-link-showcase-info");
     const downloadContainer = document.querySelector(".vertical-specific-link-download-box");
 
     renderProjectOverview(projectData, overviewContainer);
-    renderProjectDetails(projectData, detailsContainer);
+    renderProjectSpecifications(projectData, specificationsContainer);
+    renderProjectDescription(projectData, descriptionContainer, projectId);
 
     showVideo(projectId, showcaseInfoContainer);
-    showPDF(projectId, showcaseInfoContainer);
     downloadContentButton(() => getSpecificVideoFromLink(projectId), downloadContainer, "Download Video", ".mp4");
     downloadContentButton(() => getDownloadPDF(projectId), downloadContainer, "Download PDF", ".pdf");
 }
@@ -41,7 +42,7 @@ function renderProjectOverview(projectData, container){
 
     const summary = document.createElement("p");
     summary.className = "specific-project-summary";
-    summary.textContent = projectData.project_summary?.trim() || projectData.description?.trim() || "No summary added yet.";
+    summary.textContent = normalizeProjectText(projectData.project_summary?.trim() || projectData.description?.trim() || "No summary added yet.");
 
     textColumn.append(
         categoryBadge,
@@ -65,21 +66,82 @@ function renderProjectOverview(projectData, container){
     );
 }
 
-function renderProjectDetails(projectData, container){
+function renderProjectSpecifications(projectData, container){
     if (!container) return;
 
     container.innerHTML = "";
 
     const sectionTitle = document.createElement("h2");
-    sectionTitle.textContent = "Project Details";
+    sectionTitle.textContent = "Project Specifications";
+
+    const specificationList = document.createElement("div");
+    specificationList.className = "specific-project-specification-list";
+
+    const legacySplit = splitLegacyTechnologies(projectData.project_technologies);
+    const specificationRows = [
+        ["Project type", [normalizeProjectCategory(projectData.project_category)]],
+        ["Context", extractSpecificationItems(projectData.project_context)],
+        ["Role", extractSpecificationItems(projectData.project_role)],
+        ["Goal", extractSpecificationItems(projectData.project_goal)],
+        ["Languages", extractSpecificationItems(projectData.project_languages || legacySplit.languages)],
+        ["Technologies", extractSpecificationItems(legacySplit.technologies)],
+        ["Key learnings", extractSpecificationItems(projectData.project_takeaways)]
+    ].filter(([, values]) => values.length);
+
+    if (!specificationRows.length) {
+        const emptyState = document.createElement("p");
+        emptyState.textContent = "No project specifications added yet.";
+        container.append(sectionTitle, emptyState);
+        return;
+    }
+
+    specificationRows.forEach(([label, values]) => {
+        const section = document.createElement("div");
+        section.className = "specific-project-specification-section";
+
+        const rowLabel = document.createElement("p");
+        rowLabel.className = "specific-project-specification-title";
+        rowLabel.textContent = label;
+
+        const list = document.createElement("ul");
+        list.className = "specific-project-specification-items";
+
+        values.forEach((value) => {
+            const item = document.createElement("li");
+            item.textContent = value;
+            list.appendChild(item);
+        });
+
+        section.append(rowLabel, list);
+        specificationList.appendChild(section);
+    });
+
+    container.append(sectionTitle, specificationList);
+}
+
+function renderProjectDescription(projectData, container, projectId){
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const sectionTitle = document.createElement("h2");
+    sectionTitle.textContent = "Project Description";
 
     const details = document.createElement("p");
     details.className = "specific-project-description";
-    details.textContent = projectData.description?.trim() || projectData.project_summary?.trim() || "No detailed description added yet.";
+    details.textContent = normalizeProjectText(projectData.description?.trim() || projectData.project_summary?.trim() || "No project description added yet.");
+
+    const openDocumentButton = document.createElement("button");
+    openDocumentButton.className = "specific-project-open-document";
+    openDocumentButton.textContent = "Open Project Document";
+    openDocumentButton.addEventListener("click", () => {
+        window.open(getShowPDFPath(projectId), "_blank", "noopener,noreferrer");
+    });
 
     container.append(
         sectionTitle,
-        details
+        details,
+        openDocumentButton
     );
 }
 
@@ -102,12 +164,88 @@ function normalizeProjectCategory(category){
     return category === "academic" ? "Academic Project" : "Personal Project";
 }
 
+function normalizeProjectText(value){
+    if (!value) return "";
+    return value
+        .replace(/%0D/gi, "\r")
+        .replace(/%0A/gi, "\n");
+}
+
+function extractSpecificationItems(value){
+    const normalized = normalizeProjectText(value).trim();
+    if (!normalized) return [];
+
+    return normalized
+        .split(/\r?\n|,/)
+        .map((item) => item.replace(/^[\s\-*•]+/, "").trim())
+        .filter(Boolean);
+}
+
+function splitLegacyTechnologies(value){
+    const normalized = normalizeProjectText(value).trim();
+    if (!normalized) {
+        return {
+            languages: "",
+            technologies: ""
+        };
+    }
+
+    const languagesMatch = normalized.match(/languages?\s*:\s*([^\n]+)/i);
+    const technologiesMatch = normalized.match(/technologies?\s*:\s*([\s\S]+)/i);
+
+    if (languagesMatch || technologiesMatch) {
+        return {
+            languages: languagesMatch ? languagesMatch[1].trim() : "",
+            technologies: technologiesMatch ? technologiesMatch[1].trim() : normalized
+        };
+    }
+
+    const items = extractSpecificationItems(normalized);
+    const knownLanguages = new Set([
+        "javascript",
+        "typescript",
+        "python",
+        "java",
+        "c#",
+        "c++",
+        "c",
+        "scala",
+        "go",
+        "rust",
+        "kotlin",
+        "swift",
+        "php",
+        "ruby"
+    ]);
+
+    const languages = [];
+    const technologies = [];
+
+    items.forEach((item) => {
+        if (knownLanguages.has(item.toLowerCase())) {
+            languages.push(item);
+            return;
+        }
+        technologies.push(item);
+    });
+
+    return {
+        languages: languages.join("\n"),
+        technologies: technologies.join("\n")
+    };
+}
 
 
-function downloadContentButton(fetchFunction, container, buttonText, extension){
+
+function downloadContentButton(fetchFunction, container, buttonText, extension, openInNewTab = false){
     const downloadButton = document.createElement("button");
     downloadButton.textContent = buttonText;
     downloadButton.addEventListener("click", async () => {
+        if (openInNewTab) {
+            window.open(fetchFunction(), "_blank", "noopener,noreferrer");
+            return;
+        }
+
         const contentBlob = await fetchFunction();
         const url = URL.createObjectURL(contentBlob);
         const a = document.createElement("a");
@@ -134,20 +272,6 @@ function showVideo(projectId, container){
 
     videoContainer.appendChild(videoElement);
     container.appendChild(videoContainer);
-}
-
-
-function showPDF(projectId, container){
-    const pdfContainer = document.createElement("div");
-    pdfContainer.id = "pdfContainer-Id-" + projectId;
-    pdfContainer.classList.add("pdf-container");
-
-    const pdfIframe = document.createElement("iframe");
-    pdfIframe.src = getShowPDFPath(projectId);
-    pdfIframe.classList.add("specific-media-preview");
-
-    pdfContainer.appendChild(pdfIframe);
-    container.appendChild(pdfContainer);
 }
 
 

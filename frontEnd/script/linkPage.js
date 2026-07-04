@@ -320,9 +320,15 @@ async function toggleEditPopUp(projectData){
     const overlayObject = document.querySelector(".overlay-object");
 
     let projectNameData = projectData.project_name;
-    let projectSummaryData = projectData.project_summary ?? projectData.description ?? "";
+    let projectSummaryData = normalizeProjectText(projectData.project_summary ?? projectData.description ?? "");
     let githubLinkData = projectData.github_link;
-    let descriptionData = projectData.description ?? "";
+    let descriptionData = normalizeProjectText(projectData.description ?? "");
+    let projectContextData = normalizeProjectText(projectData.project_context ?? "");
+    let projectRoleData = normalizeProjectText(projectData.project_role ?? "");
+    let projectGoalData = normalizeProjectText(projectData.project_goal ?? "");
+    let projectLanguagesData = normalizeProjectText(projectData.project_languages ?? "");
+    let projectTechnologiesData = normalizeProjectText(projectData.project_technologies ?? "");
+    let projectTakeawaysData = normalizeProjectText(projectData.project_takeaways ?? "");
 
     editPanelProjectID = projectData.id;
     editPanelProjectCategory = normalizeCategory(projectData.project_category);
@@ -343,11 +349,23 @@ async function toggleEditPopUp(projectData){
 
     let projectNameElement = document.querySelector('.project-data[name="project_name"]');
     let projectSummaryElement = document.querySelector('.project-data[name="project_summary"]');
+    let projectContextElement = document.querySelector('.project-data[name="project_context"]');
+    let projectRoleElement = document.querySelector('.project-data[name="project_role"]');
+    let projectGoalElement = document.querySelector('.project-data[name="project_goal"]');
+    let projectLanguagesElement = document.querySelector('.project-data[name="project_languages"]');
+    let projectTechnologiesElement = document.querySelector('.project-data[name="project_technologies"]');
+    let projectTakeawaysElement = document.querySelector('.project-data[name="project_takeaways"]');
     let githubLinkElement = document.querySelector('.project-data[name="github_link"]');
     let descriptionElement = document.querySelector('.project-data[name="description"]');
     
     projectNameElement.value = projectNameData;
     projectSummaryElement.value = projectSummaryData;
+    projectContextElement.value = projectContextData;
+    projectRoleElement.value = projectRoleData;
+    projectGoalElement.value = projectGoalData;
+    projectLanguagesElement.value = projectLanguagesData;
+    projectTechnologiesElement.value = projectTechnologiesData;
+    projectTakeawaysElement.value = projectTakeawaysData;
     githubLinkElement.value = githubLinkData;
     descriptionElement.value = descriptionData;
     overlay.style.display = "flex";
@@ -562,11 +580,18 @@ function createProjectPreview(projectData){
 }
 
 function getProjectSummary(projectData){
-    return projectData.project_summary?.trim() || projectData.description?.trim() || "No summary added yet.";
+    return normalizeProjectText(projectData.project_summary?.trim() || projectData.description?.trim() || "No summary added yet.");
 }
 
 function formatProjectCategory(category){
     return normalizeCategory(category) === academicCategory ? "Academic Project" : "Personal Project";
+}
+
+function normalizeProjectText(value){
+    if (!value) return "";
+    return value
+        .replace(/%0D/gi, "\r")
+        .replace(/%0A/gi, "\n");
 }
 
 /**per link EDIT listener + single listener DELETE per all links  
@@ -669,7 +694,7 @@ function editSmallData(editedData, id){
     if(editedData.project_summary || editedData.description){
         console.log("Edited data summary is ", editedData.project_summary);
         const descriptionP = infoContent.querySelector(".Description");
-        descriptionP.textContent = editedData.project_summary ?? editedData.description;
+        descriptionP.textContent = normalizeProjectText(editedData.project_summary ?? editedData.description);
     }
 
     if (editedData.project_category) {

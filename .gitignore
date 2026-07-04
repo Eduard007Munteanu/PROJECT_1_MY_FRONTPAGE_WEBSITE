@@ -2,3 +2,5 @@ node_modules/
 backend/.gradle/
 backend/build/
 backend/upload/
+bachelor_thesis_extract.txt
+master_thesis_extract.txt
