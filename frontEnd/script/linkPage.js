@@ -505,6 +505,9 @@ function containerCreator(){
 }
 
 function previewContent(divContent, projectData){
+    const projectPreview = createProjectPreviewPlaceholder(projectData);
+    const projectMainContent = createElement("div", "project-card-main");
+    const projectInfoContent = createElement("div", "div-link-element-info-content");
     const projectDescriptionLabel = createElement("p", "project-description-label", "Description");
     const projectDescriptionBox = createElement("div", "project-description-box");
     const projectDescriptionText = createElement("p", "Description", projectData.description);
@@ -515,13 +518,35 @@ function previewContent(divContent, projectData){
     })
 
     projectDescriptionBox.append(projectDescriptionText);
-
-    divContent.append(
+    projectInfoContent.append(
         createElement("p", "Project_name", "Project name: " + projectData.project_name),
         projectDescriptionLabel,
-        projectDescriptionBox,
+        projectDescriptionBox
+    );
+    projectMainContent.append(
+        projectInfoContent,
+        projectPreview
+    );
+
+    divContent.append(
+        projectMainContent,
         previewButton
     );
+}
+
+function createProjectPreviewPlaceholder(projectData){
+    const previewContainer = createElement("div", "project-preview-placeholder");
+    const previewBadge = createElement("span", "project-preview-badge", "Preview Image");
+    const previewTitle = createElement("p", "project-preview-title", projectData.project_name);
+    const previewCaption = createElement("p", "project-preview-caption", "Image placeholder");
+
+    previewContainer.append(
+        previewBadge,
+        previewTitle,
+        previewCaption
+    );
+
+    return previewContainer;
 }
 
 /**per link EDIT listener + single listener DELETE per all links  
