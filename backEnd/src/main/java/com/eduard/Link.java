@@ -4,7 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 
 
@@ -20,6 +19,7 @@ public class Link {
     private Long id;
     private String project_name;
     private String github_link;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String project_category;
     private String pdf_url;

@@ -1,19 +1,21 @@
 // import projectDatabase from "../database/projectDatabase.js";
 import { getAllLinks,  
     getSpecificVideoFromLink, deleteAllLinks,
-     getVideoPath, deleteLink, createLink, editBigData, 
+     getVideoPath, getShowPDFPath, deleteLink, createLink, editBigData, 
     editTextData } from "../API/linkAPI.js";
 import { isAdmin } from "./siteState.js";
 
 
-let sendEdiButtonSwitch = "send";
-let editPanelProjectID = null;
-const createButtonLabel = "Create";
-const feedbackDurationMs = 1000;
 const personalCategory = "personal";
 const academicCategory = "academic";
+let editPanelProjectID = null;
+let editPanelProjectCategory = personalCategory;
+const createButtonLabel = "Create";
+const updateButtonLabel = "Update";
+const feedbackDurationMs = 1000;
 let currentProjectCategory = personalCategory;
 let projectCache = [];
+let popupMode = "create";
 
 //import projectDatabase section
 
@@ -40,9 +42,7 @@ export function insertLinkContent(){
     if (!insertLinkButton) return;
 
     insertLinkButton.addEventListener('click', () => {
-        sendEdiButtonSwitch = "send";
-        const sendDataButton = document.querySelector(".send-project-data-button");
-        if (sendDataButton) sendDataButton.textContent = createButtonLabel;
+        setPopupMode("create");
         togglePopUp();
     })
 }
@@ -111,9 +111,9 @@ export async function projectFULLCreator(){
 
 
     sendDataButton.addEventListener("click", async () => {
-        if(sendEdiButtonSwitch == "send"){
+        if (popupMode === "create"){
             await sendButtonFunction();
-        } else if(sendEdiButtonSwitch == "edit"){
+        } else if (popupMode === "edit"){
             await editButtonFunction();
         }
         
@@ -144,7 +144,6 @@ async function sendButtonFunction() {
         showButtonFeedback("success", "Project created!");
         window.setTimeout(() => {
             removePopUp();
-            resetButtonFeedback();
             RenderDataOnPage();
         }, feedbackDurationMs);
     } catch (err) {
@@ -164,6 +163,7 @@ async function editButtonFunction() {
     try {
         const textData = new FormData();
         const bigData = new FormData();
+        textData.append("project_category", editPanelProjectCategory);
 
         for (const [key, value] of Object.entries(validation.data)) {
             if (!value) continue;
@@ -180,14 +180,12 @@ async function editButtonFunction() {
             await editBigData(bigData, editPanelProjectID);
         }
         if ([...textData.keys()].length > 0) {
-            const response = await editTextData(textData, editPanelProjectID);
-            editSmallData(response, editPanelProjectID);
+            await editTextData(textData, editPanelProjectID);
         }
         
         showButtonFeedback("success", "Project updated!");
         removePopUp();
         window.setTimeout(() => {
-            resetButtonFeedback();
             RenderDataOnPage();
         }, feedbackDurationMs);
     } catch (err) {
@@ -256,6 +254,7 @@ function togglePopUp(){
     let overlay = document.querySelector(".overlay-insert-link");
     if (!overlay) return;
     overlay.style.display = "flex";
+    setPopupMode("create");
     resetButtonFeedback();
     clearInvalidFieldMarks();
 }
@@ -264,6 +263,9 @@ function removePopUp(){
     document.querySelectorAll(".project-data").forEach((input) => {
         input.value = "";
     });
+    setPopupMode("create");
+    editPanelProjectID = null;
+    editPanelProjectCategory = personalCategory;
     clearInvalidFieldMarks();
     let overlay = document.querySelector(".overlay-insert-link");
     overlay.style.display = "none";
@@ -272,10 +274,8 @@ function removePopUp(){
     const previewPDFContent = document.querySelector(".preview-pdf-button");
     const previewVideoContent  = document.querySelector(".preview-video-button");
 
-    if(previewPDFContent && previewVideoContent){
-        previewPDFContent.remove();
-        previewVideoContent.remove();
-    }
+    if (previewPDFContent) previewPDFContent.remove();
+    if (previewVideoContent) previewVideoContent.remove();
 
 }
 
@@ -311,7 +311,7 @@ function resetButtonFeedback(){
     if (!button) return;
 
     button.classList.remove("success-state", "error-state");
-    button.textContent = createButtonLabel;
+    button.textContent = getPopupButtonLabel();
 }
 
 
@@ -324,6 +324,8 @@ async function toggleEditPopUp(projectData){
     let descriptionData = projectData.description;
 
     editPanelProjectID = projectData.id;
+    editPanelProjectCategory = normalizeCategory(projectData.project_category);
+    setPopupMode("edit");
 
 
     const previewPDFContent = createElement("button", "preview-pdf-button", "Preview PDF");
@@ -347,6 +349,22 @@ async function toggleEditPopUp(projectData){
     descriptionElement.value = descriptionData;
     overlay.style.display = "flex";
 
+}
+
+function getPopupButtonLabel(){
+    return popupMode === "edit" ? updateButtonLabel : createButtonLabel;
+}
+
+function syncPopupButtonLabel(){
+    const sendDataButton = document.querySelector(".send-project-data-button");
+    if (sendDataButton) {
+        sendDataButton.textContent = getPopupButtonLabel();
+    }
+}
+
+function setPopupMode(mode){
+    popupMode = mode === "edit" ? "edit" : "create";
+    syncPopupButtonLabel();
 }
 
 //Insert/Edit pop up toolbar close/opening cleanup:
@@ -496,10 +514,7 @@ function previewContent(divContent, projectData){
         window.location.href = `/html/specificLink.html?id=${projectData.id}`;
     })
 
-    projectDescriptionBox.append(
-        projectDescriptionLabel,
-        projectDescriptionText
-    );
+    projectDescriptionBox.append(projectDescriptionText);
 
     divContent.append(
         createElement("p", "Project_name", "Project name: " + projectData.project_name),
@@ -527,10 +542,6 @@ function editInteractorButton(editButton, projectData){
 
     editButton.addEventListener("click", (event) => {
         toggleEditPopUp(projectData);
-        sendEdiButtonSwitch = "edit";
-        const sendDataButton = document.querySelector(".send-project-data-button");
-        if (sendDataButton) sendDataButton.textContent = "Update";
-
     });
 }
 
@@ -581,9 +592,7 @@ function flushSpecificLink(id){
 // Rest, more practical:
 function previewContentFunction(previewPDFContent, previewVideoContent, overlayObject, projectData){
     previewPDFContent.addEventListener("click", async () => {
-        const blobPDFResponse = await getShowPDF(projectData.id);
-        const url = URL.createObjectURL(blobPDFResponse);
-        window.open(url, "_blank"); // Opens PDF in new tab
+        window.open(getShowPDFPath(projectData.id), "_blank", "noopener,noreferrer");
     });
 
     playVideoButton(previewVideoContent, projectData, overlayObject);
@@ -592,7 +601,13 @@ function previewContentFunction(previewPDFContent, previewVideoContent, overlayO
 
 function editSmallData(editedData, id){
     const specificLink = document.getElementById(id);
+    if (!specificLink) {
+        return;
+    }
     const infoContent = specificLink.querySelector(".div-link-element-info-content");
+    if (!infoContent) {
+        return;
+    }
 
     console.log("Edit Small Data called with ", editedData , " and id ", id);
 
@@ -609,7 +624,7 @@ function editSmallData(editedData, id){
     if(editedData.description){
         console.log("Edited data description is ", editedData.description);
         const descriptionP = infoContent.querySelector(".Description");
-        descriptionP.textContent = "Description: " + editedData.description;
+        descriptionP.textContent = editedData.description;
     }
 
     if (editedData.project_category) {

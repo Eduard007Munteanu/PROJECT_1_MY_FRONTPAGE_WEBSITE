@@ -334,6 +334,7 @@ body{
     margin: 0;
 }
 
+
 .project-description-box .Description{
     margin: 0;
 }
@@ -350,7 +351,8 @@ body{
 
 
 .Description{
-  word-break: break-word;  
+  white-space: pre-wrap;
+  word-break: break-word;
   max-width: 100%;
 }
 
