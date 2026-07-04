@@ -1,7 +1,7 @@
 // import projectDatabase from "../database/projectDatabase.js";
 import { getAllLinks,  
     getSpecificVideoFromLink, deleteAllLinks,
-     getVideoPath, getShowPDFPath, deleteLink, createLink, editBigData, 
+     getVideoPath, getShowPDFPath, getImagePath, deleteLink, createLink, editBigData, 
     editTextData } from "../API/linkAPI.js";
 import { isAdmin } from "./siteState.js";
 
@@ -168,7 +168,7 @@ async function editButtonFunction() {
         for (const [key, value] of Object.entries(validation.data)) {
             if (!value) continue;
 
-            if (key === "pdf_folder" || key === "video_folder") {
+            if (key === "pdf_folder" || key === "video_folder" || key === "image_folder") {
                 bigData.append(key, value);
             } else {
                 textData.append(key, value);
@@ -505,7 +505,7 @@ function containerCreator(){
 }
 
 function previewContent(divContent, projectData){
-    const projectPreview = createProjectPreviewPlaceholder(projectData);
+    const projectPreview = createProjectPreview(projectData);
     const projectMainContent = createElement("div", "project-card-main");
     const projectInfoContent = createElement("div", "div-link-element-info-content");
     const projectDescriptionLabel = createElement("p", "project-description-label", "Description");
@@ -534,15 +534,22 @@ function previewContent(divContent, projectData){
     );
 }
 
-function createProjectPreviewPlaceholder(projectData){
+function createProjectPreview(projectData){
+    if (projectData.image_url) {
+        const previewImage = document.createElement("img");
+        previewImage.className = "project-preview-image";
+        previewImage.src = getImagePath(projectData.id);
+        previewImage.alt = `${projectData.project_name} cover image`;
+        previewImage.loading = "lazy";
+        return previewImage;
+    }
+
     const previewContainer = createElement("div", "project-preview-placeholder");
     const previewBadge = createElement("span", "project-preview-badge", "Preview Image");
-    const previewTitle = createElement("p", "project-preview-title", projectData.project_name);
     const previewCaption = createElement("p", "project-preview-caption", "Image placeholder");
 
     previewContainer.append(
         previewBadge,
-        previewTitle,
         previewCaption
     );
 

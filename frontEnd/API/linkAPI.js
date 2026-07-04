@@ -124,6 +124,10 @@ export  function getVideoPath(specific_id){
     return finder;
 }
 
+export function getImagePath(specific_id){
+    return `${BASE_URL}/imageFiles/${specific_id}`;
+}
+
 
 export async function editBigData(bigData, projectID){
     const response = await fetch(`${BASE_URL}/bigData/${projectID}`, {

@@ -22,6 +22,7 @@ public class Link {
     @Column(columnDefinition = "TEXT")
     private String description;
     private String project_category;
+    private String image_url;
     private String pdf_url;
     private String video_url;
 
@@ -31,6 +32,7 @@ public class Link {
     public String getGithub_link() { return github_link; }
     public String getDescription() { return description; }
     public String getProject_category() { return project_category; }
+    public String getImage_url() { return image_url; }
     public String getPdf_url() { return pdf_url; }
     public String getVideo_url() { return video_url; }
 
@@ -40,6 +42,7 @@ public class Link {
     public void setGithub_link(String github_link) { this.github_link = github_link; }
     public void setDescription(String description) { this.description = description; }
     public void setProject_category(String project_category) { this.project_category = project_category; }
+    public void setImage_url(String image_url) { this.image_url = image_url; }
     public void setPdf_url(String pdf_url) { this.pdf_url = pdf_url; }
     public void setVideo_url(String video_url) { this.video_url = video_url; }
 
