@@ -11,10 +11,12 @@ async function fullProjectLoad(){
 
     document.title = `${projectData.project_name} | Projects`;
     const overviewContainer = document.querySelector(".specific-project-overview");
+    const detailsContainer = document.querySelector(".specific-project-details-panel");
     const showcaseInfoContainer = document.querySelector(".vertical-specific-link-showcase-info");
     const downloadContainer = document.querySelector(".vertical-specific-link-download-box");
 
     renderProjectOverview(projectData, overviewContainer);
+    renderProjectDetails(projectData, detailsContainer);
 
     showVideo(projectId, showcaseInfoContainer);
     showPDF(projectId, showcaseInfoContainer);
@@ -41,19 +43,10 @@ function renderProjectOverview(projectData, container){
     summary.className = "specific-project-summary";
     summary.textContent = projectData.project_summary?.trim() || projectData.description?.trim() || "No summary added yet.";
 
-    const detailsLabel = document.createElement("h2");
-    detailsLabel.textContent = "Project Details";
-
-    const details = document.createElement("p");
-    details.className = "specific-project-description";
-    details.textContent = projectData.description?.trim() || projectData.project_summary?.trim() || "No detailed description added yet.";
-
     textColumn.append(
         categoryBadge,
         title,
-        summary,
-        detailsLabel,
-        details
+        summary
     );
 
     if (projectData.github_link?.trim()) {
@@ -69,6 +62,24 @@ function renderProjectOverview(projectData, container){
     container.append(
         textColumn,
         createProjectImagePreview(projectData)
+    );
+}
+
+function renderProjectDetails(projectData, container){
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const sectionTitle = document.createElement("h2");
+    sectionTitle.textContent = "Project Details";
+
+    const details = document.createElement("p");
+    details.className = "specific-project-description";
+    details.textContent = projectData.description?.trim() || projectData.project_summary?.trim() || "No detailed description added yet.";
+
+    container.append(
+        sectionTitle,
+        details
     );
 }
 
