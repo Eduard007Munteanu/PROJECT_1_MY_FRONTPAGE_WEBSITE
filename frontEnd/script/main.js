@@ -4,7 +4,7 @@ import { insertLinkContent,
         RenderDataOnPage, applyProjectAccess, initProjectCategorySwitcher } from "./linkPage.js";
 import { isAdmin, isLocalDev, toggleAdminRole } from "./siteState.js";
 
-function renderSessionControls(currentPage) {
+function renderSessionControls() {
     document.querySelectorAll(".session-controls").forEach((container) => {
         if (!container) return;
 
@@ -21,7 +21,8 @@ function renderSessionControls(currentPage) {
             const toggleButton = document.createElement("button");
             toggleButton.type = "button";
             toggleButton.className = "session-role-button";
-            toggleButton.textContent = isAdmin() ? "Switch to Guest" : "Enable Admin";
+            toggleButton.textContent = isAdmin() ? "Return to Guest" : "Enable Local Admin";
+            toggleButton.title = "Local development only";
             toggleButton.addEventListener("click", () => {
                 toggleAdminRole();
                 window.location.reload();
@@ -45,4 +46,4 @@ if (currentPage === "link.html") {
     deleteAllInteractorButton();
 }
 
-renderSessionControls(currentPage);
+renderSessionControls();
