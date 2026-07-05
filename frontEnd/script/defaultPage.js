@@ -9,7 +9,7 @@ export function changeoption(){
     let currentPage = window.location.pathname.split("/").pop();
     const currentPageName = currentPage.replace(".html", "");
 
-    if (["Home", "CV", "link", "login"].includes(currentPageName)) {
+    if (["Home", "link", "login"].includes(currentPageName)) {
         option.value = currentPageName;
     }
 

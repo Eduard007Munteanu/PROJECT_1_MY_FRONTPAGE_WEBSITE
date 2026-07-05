@@ -1,18 +1,9 @@
 import { changeoption } from "./defaultPage.js";
-import { insertLinkContent, projectFULLCreator,
+import { insertLinkContent,
         deleterInteractorButton, deleteAllInteractorButton,
         RenderDataOnPage, applyProjectAccess, initProjectCategorySwitcher } from "./linkPage.js";
 import { bindAdminPage } from "./loginPage.js";
 import { isAdmin } from "./siteState.js";
-
-
-function loadCV() {
-    fetch("CVContent.html")
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("info-content").innerHTML = html;
-        });
-}
 
 function renderSessionControls(currentPage) {
     document.querySelectorAll(".session-controls").forEach((container) => {
@@ -34,11 +25,6 @@ changeoption();
 
 const currentPage = window.location.pathname.split("/").pop();
 
-
-if (currentPage === "CV.html"){
-    loadCV();
-}
-
 if (currentPage === "Home.html") {
     bindAdminPage();
 }
@@ -48,7 +34,6 @@ if (currentPage === "link.html") {
     initProjectCategorySwitcher();
     RenderDataOnPage();
     insertLinkContent();
-    projectFULLCreator();
     deleterInteractorButton();
     deleteAllInteractorButton();
 }

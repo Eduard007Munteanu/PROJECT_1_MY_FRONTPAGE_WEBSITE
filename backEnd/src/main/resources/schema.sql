@@ -25,6 +25,16 @@ ADD COLUMN IF NOT EXISTS project_technologies TEXT;
 ALTER TABLE IF EXISTS link
 ADD COLUMN IF NOT EXISTS project_takeaways TEXT;
 
+ALTER TABLE IF EXISTS link
+ADD COLUMN IF NOT EXISTS created_at TIMESTAMP;
+
+UPDATE link
+SET created_at = CURRENT_TIMESTAMP
+WHERE created_at IS NULL;
+
+ALTER TABLE IF EXISTS link
+ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP;
+
 UPDATE link
 SET project_summary = description
 WHERE project_summary IS NULL OR BTRIM(project_summary) = '';

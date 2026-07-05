@@ -13,16 +13,15 @@
                     <p class="change-page-text">Change options</p>
                     <select class="change-page-option">Change options
                         <option value="Home" class="change-page-option-home">Home</option>
-                        <option value="CV" class="change-page-option-main">CV</option>
                         <option value="link" class="change-page-option-link">Projects</option>
                     </select>
                 </div> 
             </div>
-            <div class="links-content">
-                <div class="projects-category-switcher" aria-label="Project category selector">
-                    <button class="projects-category-button is-active" type="button" data-category="personal">Personal Projects</button>
-                    <button class="projects-category-button" type="button" data-category="academic">Academic Projects</button>
-                </div>
+        <div class="links-content">
+            <div class="projects-category-switcher" aria-label="Project category selector">
+                <button class="projects-category-button is-active" type="button" data-category="personal">Personal Projects</button>
+                <button class="projects-category-button" type="button" data-category="academic">Academic Projects</button>
+            </div>
                 <div class="link-general-options admin-only">
                     <button class="insert-link-button">Insert project content</button>
                     <button class="remove-all-button">Remove all projects</button>
@@ -33,67 +32,6 @@
                 </div>
             </div>  
         </div>   
-        <div class="overlay-insert-link">
-            <div class="overlay-object">
-                <button class="close-project-data-button">X</button>
-                <p>Please insert the following</p>
-                <div class="project-field" data-field="project_name">
-                    <label>Project name <span class="required-mark">*</span></label>
-                    <input type="text" class="project-data" name="project_name">
-                </div>
-                <div class="project-field" data-field="project_summary">
-                    <label>Project summary <span class="required-mark">*</span></label>
-                    <textarea cols="50" rows="4" class="project-data" name="project_summary"></textarea>
-                </div>
-                <div class="project-field" data-field="description">
-                    <label>Detailed description</label>
-                    <textarea cols="50" rows="5" class="project-data" name="description"></textarea>
-                </div>
-                <div class="project-field" data-field="project_context">
-                    <label>Project context</label>
-                    <input type="text" class="project-data" name="project_context" placeholder="Academic project, personal project, thesis, etc.">
-                </div>
-                <div class="project-field" data-field="project_role">
-                    <label>Your role</label>
-                    <input type="text" class="project-data" name="project_role" placeholder="Developer, co-author, researcher, etc.">
-                </div>
-                <div class="project-field" data-field="project_goal">
-                    <label>Project goal</label>
-                    <textarea cols="50" rows="3" class="project-data" name="project_goal"></textarea>
-                </div>
-                <div class="project-field" data-field="project_languages">
-                    <label>Languages</label>
-                    <textarea cols="50" rows="2" class="project-data" name="project_languages" placeholder="One language per line or comma separated"></textarea>
-                </div>
-                <div class="project-field" data-field="project_technologies">
-                    <label>Technologies</label>
-                    <textarea cols="50" rows="4" class="project-data" name="project_technologies" placeholder="Only the most relevant tools, methods, or frameworks"></textarea>
-                </div>
-                <div class="project-field" data-field="project_takeaways">
-                    <label>Key learnings</label>
-                    <textarea cols="50" rows="3" class="project-data" name="project_takeaways"></textarea>
-                </div>
-                <div class="project-field" data-field="github_link">
-                    <label>GitHub URL</label>
-                    <input type="text" class="project-data" name="github_link" placeholder="Optional">
-                </div>
-                <div class="project-field" data-field="image_folder">
-                    <label>Project cover image</label>
-                    <input type="file" class="project-data" name="image_folder" accept=".png,.jpg,.jpeg,.webp">
-                </div>
-                <div class="project-field" data-field="pdf_folder">
-                    <label>Project PDF file <span class="required-mark">*</span></label>
-                    <input type="file" class="project-data" name="pdf_folder" accept=".pdf">
-                </div>
-                <div class="project-field" data-field="video_folder">
-                    <label>Project video file <span class="required-mark">*</span></label>
-                    <input type="file" class="project-data" name="video_folder" accept=".mp4">
-                </div>
-                
-                <button class="send-project-data-button">Create</button>
-
-            </div>
-        </div>
         <div class="overlay-delete-project">
             <div class="overlay-object overlay-delete-object">
                 <button class="close-delete-project-button">X</button>

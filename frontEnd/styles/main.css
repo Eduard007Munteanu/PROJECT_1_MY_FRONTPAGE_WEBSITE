@@ -72,13 +72,6 @@ body{
     margin-right: 20px; 
 }
 
-.cv-content{
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    width: 100%;
-}
-
 .cv-section{
     border: 1px solid black;
     padding: 14px;
@@ -194,17 +187,6 @@ body{
 }
 
 
-.overlay-insert-link{
-    display: none;
-    position: fixed;
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5) /*50% opacity black color */
-}
-
 .overlay-object{
     display: flex;
     border: 1px solid black;
@@ -217,39 +199,15 @@ body{
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3)
 }
 
-.overlay-delete-project{
+.overlay-insert-link{
     display: none;
     position: fixed;
-    z-index: 110;
+    z-index: 100;
     align-items: center;
     justify-content: center;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-}
-
-.overlay-delete-object{
-    width: min(90vw, 420px);
-    position: relative;
-    align-items: center;
-    text-align: center;
-    padding: 28px 20px 20px 20px;
-}
-
-.delete-project-actions{
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
-.confirm-delete-project-button,
-.cancel-delete-project-button{
-    padding: 6px 12px;
-}
-
-.delete-project-message{
-    margin: 18px 0 8px 0;
-    max-width: 320px;
 }
 
 .admin-access-header{
@@ -313,6 +271,40 @@ body{
     color: red;
 }
 
+.overlay-delete-project{
+    display: none;
+    position: fixed;
+    z-index: 110;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.overlay-delete-object{
+    width: min(90vw, 420px);
+    position: relative;
+    align-items: center;
+    text-align: center;
+    padding: 28px 20px 20px 20px;
+}
+
+.delete-project-actions{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.confirm-delete-project-button,
+.cancel-delete-project-button{
+    padding: 6px 12px;
+}
+
+.delete-project-message{
+    margin: 18px 0 8px 0;
+    max-width: 320px;
+}
 
 .list-links{
     list-style: none;

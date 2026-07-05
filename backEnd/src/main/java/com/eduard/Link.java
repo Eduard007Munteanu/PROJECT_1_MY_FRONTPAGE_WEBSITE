@@ -5,6 +5,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import jakarta.persistence.PrePersist;
+
+import java.time.LocalDateTime;
 
 
 
@@ -37,6 +40,8 @@ public class Link {
     private String image_url;
     private String pdf_url;
     private String video_url;
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime created_at;
 
     // Getters
     public Long getId() { return id; }
@@ -54,6 +59,7 @@ public class Link {
     public String getImage_url() { return image_url; }
     public String getPdf_url() { return pdf_url; }
     public String getVideo_url() { return video_url; }
+    public LocalDateTime getCreated_at() { return created_at; }
 
     // Setters
     public void setId(Long id) { this.id = id; }
@@ -71,6 +77,14 @@ public class Link {
     public void setImage_url(String image_url) { this.image_url = image_url; }
     public void setPdf_url(String pdf_url) { this.pdf_url = pdf_url; }
     public void setVideo_url(String video_url) { this.video_url = video_url; }
+    public void setCreated_at(LocalDateTime created_at) { this.created_at = created_at; }
+
+    @PrePersist
+    public void prePersist() {
+        if (created_at == null) {
+            created_at = LocalDateTime.now();
+        }
+    }
 
     
 }

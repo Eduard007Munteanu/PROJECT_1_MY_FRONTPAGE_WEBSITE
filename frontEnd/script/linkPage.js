@@ -27,14 +27,6 @@ export function insertLinkContent() {
     });
 }
 
-export function projectFULLCreator() {
-    const legacyOverlay = document.querySelector(".overlay-insert-link");
-    if (legacyOverlay) {
-        legacyOverlay.hidden = true;
-        legacyOverlay.style.display = "none";
-    }
-}
-
 export function deleteAllInteractorButton() {
     if (!isAdmin()) return;
 
@@ -86,12 +78,6 @@ export function applyProjectAccess() {
     const adminOnly = document.querySelector(".admin-only");
     if (adminOnly) {
         adminOnly.hidden = !isAdmin();
-    }
-
-    const legacyOverlay = document.querySelector(".overlay-insert-link");
-    if (legacyOverlay) {
-        legacyOverlay.hidden = true;
-        legacyOverlay.style.display = "none";
     }
 
     const deleteOverlay = document.querySelector(".overlay-delete-project");
@@ -171,7 +157,16 @@ function renderCurrentCategory() {
 
     projectCache
         .filter((projectData) => normalizeCategory(projectData.project_category) === currentProjectCategory)
-        .sort((leftProject, rightProject) => Number(leftProject.id) - Number(rightProject.id))
+        .sort((leftProject, rightProject) => {
+            const leftCreated = new Date(leftProject.created_at ?? 0).getTime();
+            const rightCreated = new Date(rightProject.created_at ?? 0).getTime();
+
+            if (leftCreated !== rightCreated) {
+                return leftCreated - rightCreated;
+            }
+
+            return Number(leftProject.id) - Number(rightProject.id);
+        })
         .forEach((projectData) => {
             listLink.appendChild(createProjectListItem(projectData));
         });

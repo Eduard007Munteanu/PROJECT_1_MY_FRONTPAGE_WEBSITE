@@ -36,12 +36,34 @@ function renderProjectPage() {
     const descriptionContainer = document.querySelector(".specific-project-description-panel");
     const showcaseInfoContainer = document.querySelector(".vertical-specific-link-showcase-info");
     const downloadContainer = document.querySelector(".vertical-specific-link-download-box");
+    const headerContainer = document.querySelector(".header-box");
 
+    renderBackButton(headerContainer);
     renderProjectOverview(currentProjectData, overviewContainer);
     renderProjectDemo(currentProjectData, showcaseInfoContainer);
     renderProjectSpecifications(currentProjectData, specificationsContainer);
     renderProjectDescription(currentProjectData, descriptionContainer);
     renderProjectFiles(currentProjectData, downloadContainer);
+}
+
+function renderBackButton(container) {
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const title = document.createElement("p");
+    title.className = "main-box-text";
+    title.textContent = "Projects";
+
+    const backButton = document.createElement("button");
+    backButton.className = "specific-project-back-button";
+    backButton.type = "button";
+    backButton.textContent = "Back to Projects";
+    backButton.addEventListener("click", () => {
+        window.location.href = "/html/link.html";
+    });
+
+    container.append(title, backButton);
 }
 
 function renderProjectOverview(projectData, container) {
@@ -305,6 +327,13 @@ function renderProjectDescription(projectData, container) {
     }
 
     if (isAdmin()) {
+        container.appendChild(
+            createUploadControl(
+                projectData.pdf_url?.trim() ? "Replace Project Document" : "Add Project Document",
+                "pdf_folder",
+                ".pdf"
+            )
+        );
         container.appendChild(createHintText("Double-click this section to edit."));
         container.addEventListener("dblclick", () => {
             activeEditorSection = "description";
@@ -361,15 +390,6 @@ function renderProjectFiles(projectData, container) {
         container.appendChild(emptyState);
     }
 
-    if (isAdmin()) {
-        container.append(
-            createUploadControl(
-                projectData.pdf_url?.trim() ? "Replace PDF" : "Add PDF",
-                "pdf_folder",
-                ".pdf"
-            )
-        );
-    }
 }
 
 function createProjectImagePreview(projectData) {
