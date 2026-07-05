@@ -2,8 +2,7 @@ import { changeoption } from "./defaultPage.js";
 import { insertLinkContent,
         deleterInteractorButton, deleteAllInteractorButton,
         RenderDataOnPage, applyProjectAccess, initProjectCategorySwitcher } from "./linkPage.js";
-import { bindAdminPage } from "./loginPage.js";
-import { isAdmin } from "./siteState.js";
+import { isAdmin, isLocalDev, toggleAdminRole } from "./siteState.js";
 
 function renderSessionControls(currentPage) {
     document.querySelectorAll(".session-controls").forEach((container) => {
@@ -17,6 +16,18 @@ function renderSessionControls(currentPage) {
         roleBadge.className = "session-role-badge";
         roleBadge.textContent = role;
         container.append(roleBadge);
+
+        if (isLocalDev()) {
+            const toggleButton = document.createElement("button");
+            toggleButton.type = "button";
+            toggleButton.className = "session-role-button";
+            toggleButton.textContent = isAdmin() ? "Switch to Guest" : "Enable Admin";
+            toggleButton.addEventListener("click", () => {
+                toggleAdminRole();
+                window.location.reload();
+            });
+            container.append(toggleButton);
+        }
     });
 }
 
@@ -24,10 +35,6 @@ function renderSessionControls(currentPage) {
 changeoption();
 
 const currentPage = window.location.pathname.split("/").pop();
-
-if (currentPage === "Home.html") {
-    bindAdminPage();
-}
 
 if (currentPage === "link.html") {
     applyProjectAccess();
