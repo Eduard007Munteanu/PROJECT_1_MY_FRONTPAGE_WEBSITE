@@ -114,10 +114,15 @@ button:focus{
 
 .main-info{
     margin: 0;
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
+    font-size: clamp(1.2rem, 2vw, 1.45rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
     color: var(--accent);
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    border: 1px solid rgba(36, 76, 102, 0.14);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
 }
 
 .session-controls{
@@ -284,7 +289,8 @@ button.home-action-link{
 
 .projects-view-title{
     margin: 0;
-    font-size: 1.35rem;
+    font-size: 1.5rem;
+    font-weight: 700;
     color: var(--accent);
 }
 
