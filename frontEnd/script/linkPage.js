@@ -8,6 +8,7 @@ import {
     editBigData
 } from "../API/linkAPI.js";
 import { isAdmin } from "./siteState.js";
+import { openImageCropper } from "./imageCropper.js";
 
 const personalCategory = "personal";
 const academicCategory = "academic";
@@ -386,9 +387,18 @@ function createProjectCardUploadControl(projectData, fieldName, label, accept) {
         const file = input.files?.[0];
         if (!file) return;
 
+        const uploadFile = fieldName === "image_folder"
+            ? await openImageCropper(file, { aspectRatio: 4 / 3 })
+            : file;
+        if (!uploadFile) {
+            input.value = "";
+            return;
+        }
+
         const formData = new FormData();
-        formData.append(fieldName, file);
+        formData.append(fieldName, uploadFile);
         const updatedProject = await editBigData(formData, projectData.id);
+        input.value = "";
         updateProjectCache(updatedProject);
         renderCurrentCategory();
     });

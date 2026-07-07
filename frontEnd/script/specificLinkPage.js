@@ -9,6 +9,7 @@ import {
     editTextData
 } from "../API/linkAPI.js";
 import { isAdmin } from "./siteState.js";
+import { openImageCropper } from "./imageCropper.js";
 
 let currentProjectData = null;
 let currentProjectId = null;
@@ -442,9 +443,18 @@ function createUploadControl(label, fieldName, accept) {
         const file = input.files?.[0];
         if (!file) return;
 
+        const uploadFile = fieldName === "image_folder"
+            ? await openImageCropper(file, { aspectRatio: 4 / 3 })
+            : file;
+        if (!uploadFile) {
+            input.value = "";
+            return;
+        }
+
         const formData = new FormData();
-        formData.append(fieldName, file);
+        formData.append(fieldName, uploadFile);
         currentProjectData = await editBigData(formData, currentProjectId);
+        input.value = "";
         renderProjectPage();
     });
 

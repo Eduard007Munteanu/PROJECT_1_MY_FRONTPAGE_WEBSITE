@@ -278,6 +278,116 @@ button:hover{
     background: linear-gradient(180deg, #fbfcfe 0%, #eef3f8 100%);
 }
 
+.image-crop-overlay{
+    position: fixed;
+    inset: 0;
+    z-index: 180;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.68);
+    backdrop-filter: blur(4px);
+}
+
+.image-crop-modal{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: min(92vw, 900px);
+    max-height: min(92vh, 940px);
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.image-crop-close{
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    min-width: 36px;
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    background: #dc2626;
+    border-color: #b91c1c;
+    color: #fff;
+}
+
+.image-crop-title{
+    margin: 0;
+    color: var(--accent);
+}
+
+.image-crop-hint{
+    margin: 0;
+    color: var(--muted);
+}
+
+.image-crop-viewport{
+    position: relative;
+    width: min(100%, 760px);
+    margin: 0 auto;
+    aspect-ratio: var(--crop-aspect-ratio, 4 / 3);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background:
+        linear-gradient(45deg, #edf2f7 25%, transparent 25%, transparent 75%, #edf2f7 75%),
+        linear-gradient(45deg, #edf2f7 25%, transparent 25%, transparent 75%, #edf2f7 75%);
+    background-position: 0 0, 10px 10px;
+    background-size: 20px 20px;
+    touch-action: none;
+    user-select: none;
+}
+
+.image-crop-preview{
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    max-width: none;
+    cursor: grab;
+}
+
+.image-crop-preview:active{
+    cursor: grabbing;
+}
+
+.image-crop-controls{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.image-crop-zoom{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 220px;
+}
+
+.image-crop-zoom span{
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.image-crop-zoom input{
+    flex: 1;
+}
+
+.image-crop-actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .video-container,
 .pdf-container,
 .vertical-specific-link-download-box{
@@ -398,6 +508,21 @@ iframe.specific-media-preview{
 
     .specific-media-preview,
     .specific-project-media-placeholder{
+        width: 100%;
+    }
+
+    .image-crop-modal{
+        padding: 18px;
+    }
+
+    .image-crop-controls,
+    .image-crop-actions{
+        justify-content: stretch;
+    }
+
+    .image-crop-zoom,
+    .image-crop-actions button,
+    .image-crop-reset{
         width: 100%;
     }
 }
