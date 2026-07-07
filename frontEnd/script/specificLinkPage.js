@@ -206,12 +206,12 @@ function renderProjectSpecifications(projectData, container) {
     const legacySplit = splitLegacyTechnologies(projectData.project_technologies);
     const specificationRows = [
         ["Project type", [normalizeProjectCategory(projectData.project_category)]],
-        ["Context", extractSpecificationItems(projectData.project_context)],
-        ["Role", extractSpecificationItems(projectData.project_role)],
-        ["Goal", extractSpecificationItems(projectData.project_goal)],
-        ["Languages", extractSpecificationItems(projectData.project_languages || legacySplit.languages)],
-        ["Technologies", extractSpecificationItems(legacySplit.technologies)],
-        ["Key learnings", extractSpecificationItems(projectData.project_takeaways)]
+        ["Context", extractSpecificationItemsByLine(projectData.project_context)],
+        ["Role", extractSpecificationItemsByLine(projectData.project_role)],
+        ["Goal", extractSpecificationItemsByLine(projectData.project_goal)],
+        ["Languages", extractSpecificationItemsByLine(projectData.project_languages || legacySplit.languages)],
+        ["Technologies", extractSpecificationItemsByLine(legacySplit.technologies)],
+        ["Key learnings", extractSpecificationItemsByLine(projectData.project_takeaways)]
     ].filter(([, values]) => values.length);
 
     if (!specificationRows.length) {
@@ -574,6 +574,16 @@ function normalizeProjectText(value) {
         .replace(/%0A/gi, "\n");
 }
 
+function extractSpecificationItemsByLine(value) {
+    const normalized = normalizeProjectText(value).trim();
+    if (!normalized) return [];
+
+    return normalized
+        .split(/\r?\n+/)
+        .map((item) => item.replace(/^\s*-\s*/, "").trim())
+        .filter(Boolean);
+}
+
 function extractSpecificationItems(value) {
     const normalized = normalizeProjectText(value).trim();
     if (!normalized) return [];
@@ -603,7 +613,7 @@ function splitLegacyTechnologies(value) {
         };
     }
 
-    const items = extractSpecificationItems(normalized);
+    const items = extractSpecificationItemsByLine(normalized);
     const knownLanguages = new Set([
         "javascript",
         "typescript",
