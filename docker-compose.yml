@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: portfolio-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backEnd
+    container_name: portfolio-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      APP_FRONTEND_ALLOWED_ORIGINS: ${APP_FRONTEND_ALLOWED_ORIGINS}
+      FILE_UPLOAD_DIR: /app/upload
+      CV_PDF_PATH: /app/cv/${CV_FILE_NAME}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE: ${SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE}
+      SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE: ${SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE}
+    volumes:
+      - ./backEnd/upload:/app/upload
+      - ./backEnd/cv:/app/cv:ro
+    ports:
+      - "${BACKEND_PORT}:8080"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontEnd
+    container_name: portfolio-frontend
+    depends_on:
+      - backend
+    environment:
+      PORT: 3000
+      BACKEND_BASE_URL: ${BACKEND_BASE_URL}
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    restart: unless-stopped
+
+volumes:
+  postgres-data:

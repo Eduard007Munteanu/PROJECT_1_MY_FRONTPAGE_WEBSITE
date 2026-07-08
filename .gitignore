@@ -2,6 +2,10 @@ node_modules/
 backend/.gradle/
 backend/build/
 backend/upload/
+backEnd/.gradle/
+backEnd/build/
+backEnd/upload/
+.env
 bachelor_thesis_extract.txt
 master_thesis_extract.txt
 eduard_cv_extract.txt
