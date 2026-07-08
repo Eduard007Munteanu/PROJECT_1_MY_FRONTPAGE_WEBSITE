@@ -3,6 +3,7 @@ import { insertLinkContent,
         deleterInteractorButton, deleteAllInteractorButton,
         RenderDataOnPage, applyProjectAccess, initProjectCategorySwitcher } from "./linkPage.js";
 import { isAdmin, isLocalDev, toggleAdminRole } from "./siteState.js";
+import { getCvPdfDownloadUrl, getCvPdfUrl } from "./appConfig.js";
 
 function renderSessionControls() {
     document.querySelectorAll(".session-controls").forEach((container) => {
@@ -32,8 +33,22 @@ function renderSessionControls() {
     });
 }
 
+function hydrateHomeLinks() {
+    const openCvLink = document.querySelector('[data-role="open-cv-link"]');
+    const downloadCvLink = document.querySelector('[data-role="download-cv-link"]');
+
+    if (openCvLink) {
+        openCvLink.href = getCvPdfUrl();
+    }
+
+    if (downloadCvLink) {
+        downloadCvLink.href = getCvPdfDownloadUrl();
+    }
+}
+
 
 changeoption();
+hydrateHomeLinks();
 
 const currentPage = window.location.pathname.split("/").pop();
 

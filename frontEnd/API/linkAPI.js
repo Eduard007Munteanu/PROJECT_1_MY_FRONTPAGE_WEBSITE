@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:8080/api/links";
+import { getLinksApiBaseUrl } from "../script/appConfig.js";
+
+const BASE_URL = getLinksApiBaseUrl();
 
 export async function getAllLinks(){
     const response = await fetch(BASE_URL);

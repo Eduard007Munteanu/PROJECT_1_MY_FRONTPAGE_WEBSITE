@@ -1,6 +1,7 @@
 package com.eduard;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +20,19 @@ import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@CrossOrigin(origins = "http://localhost:3000") //Allow CORS communication with frontend port 3000. For development only!
 @RestController
 @RequestMapping("/api/links")
 public class LinkControllerAPI {
 
     @Autowired
     private LinkRepository linkRepository;
+
+    @Value("${file.upload-dir:upload}")
+    private String fileUploadDir;
 
     // GET: Retrieve all links
     @GetMapping
@@ -78,8 +80,7 @@ public class LinkControllerAPI {
             return ResponseEntity.notFound().build();
         }
 
-        String basePath = "E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload";
-        Path imagePath = Paths.get(basePath).resolve(imageUrl);
+        Path imagePath = resolveUploadPath(imageUrl);
         Resource resource = new FileSystemResource(imagePath);
 
         if (!resource.exists()) {
@@ -111,9 +112,7 @@ public class LinkControllerAPI {
         if (pdfUrl == null || pdfUrl.isBlank()) {
             return ResponseEntity.notFound().build();
         }
-        String basePath = "E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload";
-
-        Path pdfPath = Paths.get(basePath).resolve(pdfUrl);
+        Path pdfPath = resolveUploadPath(pdfUrl);
         Resource resource = new FileSystemResource(pdfPath);
 
         if (!resource.exists()) {
@@ -148,8 +147,7 @@ public class LinkControllerAPI {
                 return;
             }
 
-            String pdfFolderStringPath = "E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload";
-            Path pdfFolderPath = Paths.get(pdfFolderStringPath).resolve(videoUrl);
+            Path pdfFolderPath = resolveUploadPath(videoUrl);
 
             System.out.println("Resolved path: " + pdfFolderPath.toAbsolutePath());
             System.out.println("File exists? " + Files.exists(pdfFolderPath));
@@ -238,11 +236,7 @@ public class LinkControllerAPI {
                 return ResponseEntity.notFound().build();
             }
             
-            String pdfFolderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
-
-            Path file = Paths.get(pdfFolderStringPath);
-
-            Path pdfFolderPath = file.resolve(videoUrl);
+            Path pdfFolderPath = resolveUploadPath(videoUrl);
 
             Resource resource = new FileSystemResource(pdfFolderPath);
             return ResponseEntity.ok()
@@ -312,9 +306,7 @@ public class LinkControllerAPI {
         if(theLink.isPresent()){
             Link theActualLink = theLink.get();
 
-            String pdfFolderPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload");
-
-            Path folder = Paths.get(pdfFolderPath);
+            Path folder = getUploadRoot();
 
             Files.createDirectories(folder);
 
@@ -386,10 +378,7 @@ public class LinkControllerAPI {
             project_name = "Untitled Project";
         }
 
-        String pdfFolderPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
-
-
-        Path folder = Paths.get(pdfFolderPath);
+        Path folder = getUploadRoot();
         
         Files.createDirectories(folder);
 
@@ -447,6 +436,14 @@ public class LinkControllerAPI {
         return serializedPathFile;
         
 
+    }
+
+    private Path getUploadRoot() {
+        return Paths.get(fileUploadDir).toAbsolutePath().normalize();
+    }
+
+    private Path resolveUploadPath(String storedFileName) {
+        return getUploadRoot().resolve(storedFileName).normalize();
     }
 
     private String pathNameSanitizing(String fileName){
@@ -520,19 +517,15 @@ public class LinkControllerAPI {
 
 
     private void deleteFileFromPath(String deletingPDFFile, String deletingVideoFile, String deletingImageFile) throws IOException{
-        String folderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
-
-        Path file = Paths.get(folderStringPath);
-
         Path pdfFolderPath = deletingPDFFile == null || deletingPDFFile.isBlank()
                 ? null
-                : file.resolve(deletingPDFFile);
+                : resolveUploadPath(deletingPDFFile);
         Path videoFolderPath = deletingVideoFile == null || deletingVideoFile.isBlank()
                 ? null
-                : file.resolve(deletingVideoFile);
+                : resolveUploadPath(deletingVideoFile);
         Path imageFolderPath = deletingImageFile == null || deletingImageFile.isBlank()
                 ? null
-                : file.resolve(deletingImageFile);
+                : resolveUploadPath(deletingImageFile);
 
 
         if (pdfFolderPath != null) {
@@ -568,11 +561,7 @@ public class LinkControllerAPI {
             return;
         }
 
-        String folderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
-
-        Path file = Paths.get(folderStringPath);
-
-        Path pdfFolderPath = file.resolve(deletingPDFFile);
+        Path pdfFolderPath = resolveUploadPath(deletingPDFFile);
 
         try{
             Files.deleteIfExists(pdfFolderPath);
@@ -588,11 +577,7 @@ public class LinkControllerAPI {
             return;
         }
 
-        String folderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
-
-        Path file = Paths.get(folderStringPath);
-
-        Path videoFolderPath = file.resolve(deletingVideoFile);
+        Path videoFolderPath = resolveUploadPath(deletingVideoFile);
 
         try{
             Files.deleteIfExists(videoFolderPath);
@@ -607,10 +592,7 @@ public class LinkControllerAPI {
             return;
         }
 
-        String folderStringPath = ("E:/Programare in timp liber/Projects/PROJECT_1_MY_FRONTPAGE_WEBSITE/backEnd/upload"); 
-
-        Path file = Paths.get(folderStringPath);
-        Path imageFolderPath = file.resolve(deletingImageFile);
+        Path imageFolderPath = resolveUploadPath(deletingImageFile);
 
         try{
             Files.deleteIfExists(imageFolderPath);
