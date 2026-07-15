@@ -6,6 +6,7 @@ backEnd/.gradle/
 backEnd/build/
 backEnd/upload/
 .env
+static-showcase/assets/uploads/*.mp4
 bachelor_thesis_extract.txt
 master_thesis_extract.txt
 eduard_cv_extract.txt

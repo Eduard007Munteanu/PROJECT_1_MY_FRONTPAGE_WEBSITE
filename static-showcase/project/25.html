@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Learning for Visual Recognition: YOLO-Style Object Detector From Scratch | Eduard Munteanu</title>
+    <link rel="stylesheet" href="../styles/site.css">
+</head>
+<body>
+    
+        <header class="topbar">
+            <a class="brand" href="../index.html">Eduard Munteanu</a>
+            <nav class="nav">
+                <a href="../index.html">Home</a>
+                <a href="../projects.html">Projects</a>
+            </nav>
+        </header>
+
+        <main class="page detail-page">
+            <section class="card detail-hero">
+                <div class="detail-copy">
+                    <p class="category-pill">Academic Project</p>
+                    <h1>Deep Learning for Visual Recognition: YOLO-Style Object Detector From Scratch</h1>
+                    <p class="lead">A lightweight YOLO-style model trained from scratch to recognise football players and the ball, with a focus on improving detection of the small and underrepresented football class.</p>
+                    <div class="actions">
+                        <a class="button" href="../projects.html">Back to Projects</a>
+                        
+                    </div>
+                </div>
+                <div class="detail-media">
+                    <img class="detail-image" src="../assets/uploads/YOLOpic__UUID__22566d87-2608-4c9e-9603-f3b6008d0d09.png" alt="Deep Learning for Visual Recognition: YOLO-Style Object Detector From Scratch cover image">
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Project Specifications</h2>
+                <div class="spec-grid">
+                    
+        <section class="spec-block">
+            <h3>Context</h3>
+            <ul>
+                <li>Deep Learning for Visual Recognition course project</li>
+            </ul>
+        </section>
+    
+                    
+        <section class="spec-block">
+            <h3>Role</h3>
+            <ul>
+                <li>Co-author and developer</li>
+            </ul>
+        </section>
+    
+                    
+        <section class="spec-block">
+            <h3>Goal</h3>
+            <ul>
+                <li>Build a lightweight YOLO-inspired classifier from scratch</li><li>Distinguish football players from the football in match images</li><li>Improve recognition of the football as a small minority-class object</li>
+            </ul>
+        </section>
+    
+                    
+        <section class="spec-block">
+            <h3>Languages</h3>
+            <ul>
+                <li>Python</li>
+            </ul>
+        </section>
+    
+                    
+        <section class="spec-block">
+            <h3>Technologies</h3>
+            <ul>
+                <li>Convolutional neural networks</li><li>YOLO-style grid classification</li><li>Class imbalance handling</li><li>Hybrid sampling</li><li>Oversampling / undersampling</li><li>Class-weighted loss</li><li>Cyclic learning rates</li><li>Learning-rate range test</li><li>Hard negative mining</li><li>Confusion matrix evaluation</li>
+            </ul>
+        </section>
+    
+                    
+        <section class="spec-block">
+            <h3>Key learnings</h3>
+            <ul>
+                <li>Training a compact CNN-based grid classifier from scratch</li><li>Handling severe class imbalance at grid-cell level</li><li>Improving minority-class performance through sampling and learning-rate strategies</li><li>Using confusion matrices to identify class-specific failure cases</li><li>Understanding the limits of lightweight YOLO-style models for small-object classification</li>
+            </ul>
+        </section>
+    
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Project Description</h2>
+                <p>This project studies a simplified YOLO-inspired grid classifier for football image analysis. The model uses a compact convolutional backbone and a classification head that predicts whether each grid cell contains a player or the ball. Rather than relying on a large pre-trained object detector, the project focuses on understanding how much performance can be gained from a small model through better training strategies.</p><p>A central challenge was the strong imbalance between the two classes. Player cells appeared far more often than ball cells, meaning that the baseline model could achieve high overall accuracy while still failing to recognise the football reliably. To investigate this, we compared several approaches, including class-weighted loss, random oversampling, hybrid sampling, cyclic learning rates, and hard negative mining.</p><p>The final pipeline showed that the most effective improvements came from combining hybrid sampling with cyclic learning and hard negative mining. This made the model focus more on difficult ball examples and improved minority-class performance without sacrificing player accuracy.</p>
+                
+            <div class="actions">
+                <a class="button" href="../assets/uploads/DeepLearning_Predrag_Eduard%20(1)__UUID__602b3523-886b-46a2-a238-6242a99c3387.pdf" target="_blank" rel="noopener">Open Project Document</a>
+                <a class="button" href="../assets/uploads/DeepLearning_Predrag_Eduard%20(1)__UUID__602b3523-886b-46a2-a238-6242a99c3387.pdf" download>Download PDF</a>
+            </div>
+        
+            </section>
+        </main>
+    
+</body>
+</html>
