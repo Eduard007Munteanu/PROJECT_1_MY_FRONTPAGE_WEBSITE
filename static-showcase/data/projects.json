@@ -2,7 +2,8 @@
   {
     "id": 16,
     "project_name": "Master Thesis - GRIP-TK Toolkit",
-    "github_link": "",
+    "github_link": "https://github.com/Eduard007Munteanu/Master_Project_Thesis_3DUI.git",
+    "itch_link": "",
     "project_summary": "GRIP-TK is a master thesis toolkit for creating and evaluating XR interaction techniques through a node-graph workflow. It brings interaction logic, runtime behavior, logging, and evaluation setup into one system, reducing the amount of repeated work normally needed when building XR experiments.",
     "description": "This master thesis presents GRIP-TK, a node-graph toolkit for immersive authoring and evaluation of XR interaction techniques. The main idea was to support the repeated setup work that often appears across XR experiments, where developers need to rebuild similar interaction structures, logging systems, and evaluation pipelines from study to study.\r\n\r\nThe toolkit was implemented as a framework for composing interaction techniques together with experiment logic, visualization flow, and data collection support. It was not only meant to help create techniques more systematically, but also to make them easier to inspect, extend, and connect to concrete evaluation designs.\r\n\r\nTo demonstrate that workflow, the thesis walks through how interaction techniques can be constructed inside the system and later extended, including a parallax-mitigated node variant. GRIP-TK was then used in a controlled Fitts' Law study with five XR interaction techniques, showing that the toolkit could support both the runtime side of the experiment and the broader analysis pipeline needed to reach empirical conclusions.\r\n\r\nA central outcome of the work is that the toolkit supports more than authoring alone. It helps connect technique construction, experiment execution, logging, and evaluation into a single workflow, while also leaving room for future usability and productivity evaluation of the toolkit itself.",
     "project_category": "academic",
@@ -14,13 +15,14 @@
     "project_takeaways": "Toolkit architecture for reusable XR experiments\r\nInteraction technique definition through modular node structures\r\nExperiment-to-analysis workflow integration\r\nExtensibility thinking across node, structure, and environment levels",
     "image_url": "MasterCoverPhoto__UUID__78c3caa5-8ee7-4ec0-9009-eb5df820e34a.png",
     "pdf_url": "MasterProjectDocs__UUID__d19363ed-2f3e-4ca5-8831-59fe3417edd5.pdf",
-    "video_url": "https://youtu.be/K1G7UcNhBRU",
+    "video_url": "https://youtu.be/wVwFxQTfxM4",
     "created_at": "2026-07-05T08:42:35.4187"
   },
   {
     "id": 18,
     "project_name": "Bachelor Thesis - BlobbyKelp Data Visualization",
     "github_link": "",
+    "itch_link": "",
     "project_summary": "BlobbyKelp is a bachelor thesis prototype for organic data visualization, representing grouped data points on maps and 2D graphs through soft, blobby shapes. The project focuses on transforming rigid geometric groupings into more readable and visually natural shapes, making clusters easier to interpret.",
     "description": "This bachelor thesis explores how grouped data points can be visualized more organically while still staying readable and structurally meaningful.\r\n\r\nThe prototype, called BlobbyKelp, was built to move beyond rigid geometric clusters and create a softer visual language for maps and 2D graphs. It draws inspiration from GapMinder, Kelp Diagrams, BubbleSets, and KelpFusion, but aims for a more continuous and organic result.\r\n\r\nTo achieve that, the project combines graph routing, local grouping, hull generation, and curve smoothing. Related points are connected efficiently, grouped regions are shaped through convex and non-convex hull logic, and spline-based smoothing helps transform sharp boundaries into blobby forms that feel more natural to read.\r\n\r\nA large part of the work was about balancing visual clarity with technical control. The final prototype supports animation and adjustable thresholds, making it easier to inspect how grouped data evolves and how different clustering choices affect the output.",
     "project_category": "academic",
@@ -32,13 +34,14 @@
     "project_takeaways": "Computational geometry for visual grouping\r\nRouting-based structure for readability\r\nSmoother visual rendering through spline techniques",
     "image_url": "BachelorCoverPhoto__UUID__d3090fb3-47a3-4a9b-90da-791eadd5914d.png",
     "pdf_url": "2024_06_Batchelor_Project_Eduard_Munteanu(202108177)_and_Predrag_Zivanovic(202107931)__UUID__ed5b58ad-1a7a-4a45-86e6-7d9aae926ca4.pdf",
-    "video_url": "https://youtube.com/shorts/zxPkuOnMegE",
+    "video_url": "https://youtu.be/hntkPuQ-ElU",
     "created_at": "2026-07-05T08:42:35.4187"
   },
   {
     "id": 21,
     "project_name": "3D UI Project : Multiple Frame Manipulation in VR",
-    "github_link": "",
+    "github_link": "https://github.com/Eduard007Munteanu/3DInterfaceProject.git",
+    "itch_link": "",
     "project_summary": "Multiple Frame Manipulation in VR is a VR interaction prototype that lets users manipulate distant or occluded 3D objects through user-created frames and a tablet-based 2D interface.",
     "description": "This project explores how frame-based viewpoints can reduce the need for physical movement in VR. Instead of walking, reaching, or constantly changing position, the user creates portable frames of different scene areas and later uses them as interaction spaces on a tablet interface.\r\n\r\nThe prototype supports viewpoint creation, frame switching, single-object manipulation, frame-to-frame object movement, and lasso-based multi-object selection. Technically, the system maps 2D tablet input back into the 3D scene using projection-based control, allowing objects to be moved from a mostly stationary position.\r\n\r\nThe project was also evaluated through user tasks comparing frame-based manipulation with standard direct manipulation. The results showed that the approach helped with distant objects, occluded objects, and multi-object movement, but also introduced extra mental demand, sensitivity to small hand movements, and challenges with precise depth control.",
     "project_category": "academic",
@@ -50,13 +53,14 @@
     "project_takeaways": "Designing VR interaction techniques for distant object manipulation\r\nMapping 2D tablet input into 3D object transformations\r\nUsing user-created viewpoints as reusable interaction frames\r\nImplementing hand-tracked gesture interaction in Unity\r\nSupporting both single-object and multi-object manipulation workflows\r\nEvaluating trade-offs between reduced physical effort and increased cognitive load",
     "image_url": "3DUIPic__UUID__5e49dfca-97dd-463e-83ff-2b01af424c84.png",
     "pdf_url": "3D_UI_Frame_Interaction_Project (1) (1)__UUID__e49fbf57-af93-478b-bb54-e7e5523c1a69.pdf",
-    "video_url": "https://youtube.com/shorts/qTsVf2NR8T0",
+    "video_url": "https://youtu.be/K1G7UcNhBRU",
     "created_at": "2026-07-07T14:19:48.278015"
   },
   {
     "id": 22,
     "project_name": "Building the Internet of Things with P2P and Cloud Computing : AirBrush Project",
     "github_link": "",
+    "itch_link": "",
     "project_summary": "Airbrush is a multiplayer browser drawing game where players use phone motion sensors to draw in the air, while others guess the drawing on a shared canvas. The project explores WebRTC-based peer-to-peer communication and IoT-style motion interaction.",
     "description": "Airbrush explores how a smartphone can be used as a motion-based drawing controller in a browser game. One player acts as the drawer, using accelerometer and gyroscope input from their phone to create brushstrokes on a shared canvas, while the other players guess the word being drawn.\r\n\r\nThe main technical focus was building a real-time multiplayer system without relying on a traditional central game server for all communication. The project uses WebRTC data channels for peer-to-peer synchronization, while a signaling server is only used to help peers discover each other and establish connections. This made the project relevant for understanding decentralized communication, NAT traversal, synchronization, and real-time state sharing between browsers.\r\n\r\nThe prototype also includes game-state management such as player roles, chat, scoring, round progression, word hints, and canvas synchronization. A key challenge was balancing responsiveness with noisy motion-sensor data, since phone movement had to be translated into smooth and understandable drawing input. Overall, the project combines IoT sensor interaction, browser-based game development, and peer-to-peer networking into one experimental drawing game.",
     "project_category": "academic",
@@ -68,13 +72,14 @@
     "project_takeaways": "Building real-time peer-to-peer browser communication with WebRTC\r\nUsing a signaling server for peer discovery and connection setup\r\nTranslating phone motion-sensor data into drawing input\r\nSynchronizing canvas, chat, timer, score, and game state across peers\r\nHandling sensor noise, latency, NAT traversal, and multiplayer state consistency",
     "image_url": "AirBrushPhoto__UUID__69643beb-3e73-479d-afc5-1ff639be9e14.png",
     "pdf_url": "Airbrush_report_Oscar_09_12_24__UUID__3b2f0671-9937-4ac4-9947-6b7ab1b0be8f.pdf",
-    "video_url": "https://youtu.be/hntkPuQ-ElU",
+    "video_url": "https://www.youtube.com/shorts/qTsVf2NR8T0",
     "created_at": "2026-07-07T14:48:23.491183"
   },
   {
     "id": 24,
     "project_name": "Advanced Augmented Reality Project : AR Kingdoms",
     "github_link": "",
+    "itch_link": "https://garlicxd.itch.io/cgj-group-13-2025",
     "project_summary": "AR Kingdoms is an AR/VR tabletop strategy prototype for Meta Quest 2, where the player rules a virtual kingdom placed on a real table using hand tracking, gaze/pinch selection, direct touch interaction, and card-based building placement.",
     "description": "This project explored how a physical table and surrounding room can be used as part of a mixed-reality strategy interface. The prototype used spatial anchors, hand tracking, gaze/pinch selection, direct touch interaction, and card-based placement to connect virtual game objects with real-world surfaces.\r\n\r\nThe design process moved through several stages: early ideation from cultural themes, sketching and concept selection, mockups, think-aloud playtesting, and a final EXPO evaluation. Each phase helped refine the interaction flow, especially how users selected buildings, interacted with citizens, and understood the system state.\r\n\r\nA central focus was environmental feedback. Instead of showing everything through standard menus, the prototype used candles, paintings, walls, and data panels to communicate progress, happiness, resources, and political state. The EXPO feedback showed that the atmosphere and tabletop concept were effective, while also highlighting areas for improvement such as tutorial clarity, interaction mapping, and clearer communication of the project’s underlying themes.",
     "project_category": "academic",
@@ -86,13 +91,14 @@
     "project_takeaways": "Designing spatial interaction for mixed-reality tabletop systems\r\nUsing real-world surfaces as part of an AR/VR interface\r\nCombining hand tracking, gaze/pinch input, and direct manipulation\r\nCommunicating system state through environmental feedback\r\nIterating interaction design through mockups, playtesting, and EXPO evaluation",
     "image_url": "AdvancedAugmentedRealityProject__UUID__221275e7-efa4-450c-9939-f7385d89fb94.png",
     "pdf_url": "AR_Reexam_Handin__UUID__43b8f6d7-b7fe-4aa9-a5de-b7b5b7fd5eb3.pdf",
-    "video_url": "https://youtu.be/snn11Bwbdd8",
+    "video_url": "https://youtube.com/shorts/zxPkuOnMegE",
     "created_at": "2026-07-07T15:06:52.144442"
   },
   {
     "id": 25,
     "project_name": "Deep Learning for Visual Recognition: YOLO-Style Object Detector From Scratch",
     "github_link": "",
+    "itch_link": "",
     "project_summary": "A lightweight YOLO-style model trained from scratch to recognise football players and the ball, with a focus on improving detection of the small and underrepresented football class.",
     "description": "This project studies a simplified YOLO-inspired grid classifier for football image analysis. The model uses a compact convolutional backbone and a classification head that predicts whether each grid cell contains a player or the ball. Rather than relying on a large pre-trained object detector, the project focuses on understanding how much performance can be gained from a small model through better training strategies.\r\n\r\nA central challenge was the strong imbalance between the two classes. Player cells appeared far more often than ball cells, meaning that the baseline model could achieve high overall accuracy while still failing to recognise the football reliably. To investigate this, we compared several approaches, including class-weighted loss, random oversampling, hybrid sampling, cyclic learning rates, and hard negative mining.\r\n\r\nThe final pipeline showed that the most effective improvements came from combining hybrid sampling with cyclic learning and hard negative mining. This made the model focus more on difficult ball examples and improved minority-class performance without sacrificing player accuracy.",
     "project_category": "academic",
@@ -104,7 +110,7 @@
     "project_takeaways": "Training a compact CNN-based grid classifier from scratch\r\nHandling severe class imbalance at grid-cell level\r\nImproving minority-class performance through sampling and learning-rate strategies\r\nUsing confusion matrices to identify class-specific failure cases\r\nUnderstanding the limits of lightweight YOLO-style models for small-object classification",
     "image_url": "YOLOpic__UUID__22566d87-2608-4c9e-9603-f3b6008d0d09.png",
     "pdf_url": "DeepLearning_Predrag_Eduard (1)__UUID__602b3523-886b-46a2-a238-6242a99c3387.pdf",
-    "video_url": "https://youtu.be/wVwFxQTfxM4",
+    "video_url": "https://www.youtube.com/watch?v=snn11Bwbdd8",
     "created_at": "2026-07-07T15:23:24.255405"
   }
 ]

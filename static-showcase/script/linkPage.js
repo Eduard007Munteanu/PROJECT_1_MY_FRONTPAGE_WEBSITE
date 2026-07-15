@@ -135,6 +135,7 @@ async function createDraftProject() {
     formData.append("project_summary", "");
     formData.append("description", "");
     formData.append("github_link", "");
+    formData.append("itch_link", "");
     formData.append("project_context", "");
     formData.append("project_role", "");
     formData.append("project_goal", "");
@@ -214,6 +215,7 @@ function createProjectCardMain(projectData) {
 function createProjectCardInfo(projectData) {
     const projectInfoContent = createElement("div", "div-link-element-info-content");
     const categoryBadge = createElement("p", "project-category-badge", formatProjectCategory(projectData.project_category));
+    const externalLinks = createProjectCardExternalLinks(projectData);
     const projectSummaryLabel = createElement("p", "project-description-label", "Summary");
     const projectSummaryBox = createElement("div", "project-description-box");
     const projectSummaryText = createElement("p", "Description", getProjectSummary(projectData));
@@ -221,7 +223,14 @@ function createProjectCardInfo(projectData) {
     projectSummaryBox.append(projectSummaryText);
     projectInfoContent.append(
         categoryBadge,
-        createElement("p", "Project_name", projectData.project_name),
+        createElement("p", "Project_name", projectData.project_name)
+    );
+
+    if (externalLinks) {
+        projectInfoContent.append(externalLinks);
+    }
+
+    projectInfoContent.append(
         projectSummaryLabel,
         projectSummaryBox
     );
@@ -242,6 +251,7 @@ function createProjectCardEditor(projectData) {
     const nameField = createInlineEditorField("Project name", "input", projectData.project_name ?? "");
     const summaryField = createInlineEditorField("Summary", "textarea", normalizeProjectText(projectData.project_summary ?? ""), 6);
     const githubField = createInlineEditorField("GitHub URL", "input", projectData.github_link ?? "");
+    const itchField = createInlineEditorField("Itch.io URL", "input", projectData.itch_link ?? "");
     const actions = createElement("div", "project-card-inline-actions");
     const saveButton = createElement("button", "", "Save");
     const cancelButton = createElement("button", "", "Cancel");
@@ -250,7 +260,8 @@ function createProjectCardEditor(projectData) {
         const updatedProject = await saveProjectOverviewEdits(projectData, {
             project_name: nameField.input.value.trim() || "Untitled Project",
             project_summary: summaryField.input.value.trim(),
-            github_link: githubField.input.value.trim()
+            github_link: githubField.input.value.trim(),
+            itch_link: itchField.input.value.trim()
         });
         activeCardEditorProjectId = null;
         updateProjectCache(updatedProject);
@@ -263,7 +274,7 @@ function createProjectCardEditor(projectData) {
     });
 
     actions.append(saveButton, cancelButton);
-    editor.append(nameField.wrapper, summaryField.wrapper, githubField.wrapper, actions);
+    editor.append(nameField.wrapper, summaryField.wrapper, githubField.wrapper, itchField.wrapper, actions);
     return editor;
 }
 
@@ -329,6 +340,37 @@ function getProjectSummary(projectData) {
     return normalizeProjectText(projectData.project_summary?.trim() || projectData.description?.trim() || "No summary added yet.");
 }
 
+function createProjectCardExternalLinks(projectData) {
+    const githubLink = projectData.github_link?.trim();
+    const itchLink = projectData.itch_link?.trim();
+
+    if (!githubLink && !itchLink) {
+        return null;
+    }
+
+    const linksRow = createElement("div", "project-card-link-row");
+
+    if (githubLink) {
+        linksRow.appendChild(createProjectCardExternalLink("GitHub Repository", githubLink));
+    }
+
+    if (itchLink) {
+        linksRow.appendChild(createProjectCardExternalLink("Itch.io Project Link", itchLink));
+    }
+
+    return linksRow;
+}
+
+function createProjectCardExternalLink(label, href) {
+    const link = document.createElement("a");
+    link.className = "project-card-external-link";
+    link.href = href;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = label;
+    return link;
+}
+
 async function saveProjectOverviewEdits(projectData, overrides) {
     const formData = buildProjectTextFormData(projectData, overrides);
     return await editTextData(formData, projectData.id);
@@ -340,6 +382,7 @@ function buildProjectTextFormData(projectData, overrides = {}) {
         project_summary: projectData.project_summary ?? "",
         description: projectData.description ?? "",
         github_link: projectData.github_link ?? "",
+        itch_link: projectData.itch_link ?? "",
         project_context: projectData.project_context ?? "",
         project_role: projectData.project_role ?? "",
         project_goal: projectData.project_goal ?? "",

@@ -353,6 +353,36 @@ button.home-action-link{
     min-width: 0;
 }
 
+.project-card-link-row{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.project-card-external-link{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid rgba(36, 76, 102, 0.18);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8) inset;
+    transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.project-card-external-link:hover{
+    transform: translateY(-1px);
+    border-color: #aebfd2;
+    box-shadow: 0 8px 16px rgba(31, 41, 55, 0.08);
+    color: var(--accent);
+}
+
 .Project_name{
     margin: 0;
     font-size: 1.15rem;

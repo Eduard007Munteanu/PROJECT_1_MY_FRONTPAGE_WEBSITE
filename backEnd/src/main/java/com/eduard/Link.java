@@ -22,6 +22,7 @@ public class Link {
     private Long id;
     private String project_name;
     private String github_link;
+    private String itch_link;
     @Column(columnDefinition = "TEXT")
     private String project_summary;
     @Column(columnDefinition = "TEXT")
@@ -47,6 +48,7 @@ public class Link {
     public Long getId() { return id; }
     public String getProject_name() { return project_name; }
     public String getGithub_link() { return github_link; }
+    public String getItch_link() { return itch_link; }
     public String getProject_summary() { return project_summary; }
     public String getDescription() { return description; }
     public String getProject_category() { return project_category; }
@@ -65,6 +67,7 @@ public class Link {
     public void setId(Long id) { this.id = id; }
     public void setProject_name(String project_name) { this.project_name = project_name; }
     public void setGithub_link(String github_link) { this.github_link = github_link; }
+    public void setItch_link(String itch_link) { this.itch_link = itch_link; }
     public void setProject_summary(String project_summary) { this.project_summary = project_summary; }
     public void setDescription(String description) { this.description = description; }
     public void setProject_category(String project_category) { this.project_category = project_category; }

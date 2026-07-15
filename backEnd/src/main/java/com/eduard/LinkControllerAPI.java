@@ -256,6 +256,7 @@ public class LinkControllerAPI {
             @RequestParam("project_summary") String project_summary,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "github_link", required = false) String github_link,
+            @RequestParam(value = "itch_link", required = false) String itch_link,
             @RequestParam(value = "project_context", required = false) String project_context,
             @RequestParam(value = "project_role", required = false) String project_role,
             @RequestParam(value = "project_goal", required = false) String project_goal,
@@ -279,6 +280,9 @@ public class LinkControllerAPI {
             theActualLink.setProject_takeaways(project_takeaways != null ? project_takeaways : "");
             if(github_link != null){
                 theActualLink.setGithub_link(github_link);
+            }
+            if(itch_link != null){
+                theActualLink.setItch_link(itch_link);
             }
             if(project_category != null && !project_category.isBlank()){
                 theActualLink.setProject_category(project_category);
@@ -380,6 +384,7 @@ public class LinkControllerAPI {
             @RequestParam(value = "project_summary", required = false) String project_summary,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "github_link", required = false) String github_link,
+            @RequestParam(value = "itch_link", required = false) String itch_link,
             @RequestParam(value = "project_context", required = false) String project_context,
             @RequestParam(value = "project_role", required = false) String project_role,
             @RequestParam(value = "project_goal", required = false) String project_goal,
@@ -421,6 +426,7 @@ public class LinkControllerAPI {
         link.setProject_summary(project_summary != null ? project_summary : "");
         link.setDescription(description != null ? description : "");
         link.setGithub_link(github_link != null ? github_link : "");
+        link.setItch_link(itch_link != null ? itch_link : "");
         link.setProject_category(project_category != null && !project_category.isBlank() ? project_category : "personal");
         link.setProject_context(project_context != null ? project_context : "");
         link.setProject_role(project_role != null ? project_role : "");

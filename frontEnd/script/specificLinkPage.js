@@ -102,15 +102,15 @@ function renderProjectOverview(projectData, container) {
     );
 
     if (projectData.github_link?.trim()) {
-        const githubLink = document.createElement("a");
-        githubLink.className = "specific-project-github";
-        githubLink.href = projectData.github_link;
-        githubLink.target = "_blank";
-        githubLink.rel = "noopener noreferrer";
-        githubLink.textContent = "GitHub Repository";
-        textColumn.append(githubLink);
-    } else if (isAdmin()) {
-        textColumn.append(createHintText("Double-click to add a GitHub link."));
+        textColumn.append(createProjectExternalLink("GitHub Repository", projectData.github_link));
+    }
+
+    if (projectData.itch_link?.trim()) {
+        textColumn.append(createProjectExternalLink("Itch.io Project Link", projectData.itch_link));
+    }
+
+    if (isAdmin() && !projectData.github_link?.trim() && !projectData.itch_link?.trim()) {
+        textColumn.append(createHintText("Double-click to add GitHub or Itch.io links."));
     }
 
     if (isAdmin()) {
@@ -134,18 +134,21 @@ function renderOverviewEditor(projectData, container) {
     const titleField = createEditorField("Project name", "input", projectData.project_name);
     const summaryField = createEditorField("Project summary", "textarea", normalizeProjectText(projectData.project_summary ?? ""));
     const githubField = createEditorField("GitHub URL", "input", projectData.github_link ?? "");
+    const itchField = createEditorField("Itch.io URL", "input", projectData.itch_link ?? "");
 
     form.append(
         createEditorHeader("Edit Overview"),
         titleField.wrapper,
         summaryField.wrapper,
         githubField.wrapper,
+        itchField.wrapper,
         createEditorActions(
             async () => {
                 await saveTextChanges({
                     project_name: titleField.input.value.trim() || "Untitled Project",
                     project_summary: summaryField.input.value.trim(),
-                    github_link: githubField.input.value.trim()
+                    github_link: githubField.input.value.trim(),
+                    itch_link: itchField.input.value.trim()
                 });
             },
             cancelActiveEditor
@@ -372,9 +375,7 @@ function renderProjectFiles(projectData, container) {
     container.innerHTML = "";
 
     if (projectData.video_url?.trim()) {
-        if (isExternalVideoUrl(projectData.video_url)) {
-            container.appendChild(createLinkActionButton("Open Video", projectData.video_url));
-        } else {
+        if (!isExternalVideoUrl(projectData.video_url)) {
             container.appendChild(createActionButton("Download Video", async () => {
                 const contentBlob = await getSpecificVideoFromLink(currentProjectId);
                 triggerBlobDownload(contentBlob, "project-video.mp4");
@@ -586,6 +587,16 @@ function createLinkActionButton(label, href) {
     return link;
 }
 
+function createProjectExternalLink(label, href) {
+    const link = document.createElement("a");
+    link.className = "specific-project-github";
+    link.href = href;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = label;
+    return link;
+}
+
 function createHintText(text) {
     const hint = document.createElement("p");
     hint.className = "admin-section-hint";
@@ -619,6 +630,7 @@ function buildTextFormData(overrides = {}) {
         project_summary: currentProjectData.project_summary ?? "",
         description: currentProjectData.description ?? "",
         github_link: currentProjectData.github_link ?? "",
+        itch_link: currentProjectData.itch_link ?? "",
         project_context: currentProjectData.project_context ?? "",
         project_role: currentProjectData.project_role ?? "",
         project_goal: currentProjectData.project_goal ?? "",
