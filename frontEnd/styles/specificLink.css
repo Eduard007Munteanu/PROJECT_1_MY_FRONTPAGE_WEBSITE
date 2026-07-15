@@ -422,6 +422,20 @@ button:hover{
     padding: 0.55rem 0.85rem;
 }
 
+.admin-video-link-control{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: min(100%, 720px);
+}
+
+.admin-video-link-actions{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .admin-section-hint{
     margin: 0;
     color: var(--muted);

@@ -161,14 +161,15 @@ function renderProjectDemo(projectData, container) {
 
     container.innerHTML = "";
 
-    if (projectData.video_url?.trim()) {
+    const videoValue = projectData.video_url?.trim();
+    if (videoValue) {
         const videoContainer = document.createElement("div");
         videoContainer.className = "video-container";
 
-        const videoElement = document.createElement("video");
-        videoElement.src = getVideoPath(projectData.id);
-        videoElement.controls = true;
-        videoElement.className = "specific-media-preview";
+        const youtubeEmbedUrl = getYoutubeEmbedUrl(videoValue);
+        const videoElement = youtubeEmbedUrl
+            ? createYoutubeFrame(youtubeEmbedUrl, projectData.project_name)
+            : createUploadedVideoPlayer(projectData);
 
         videoContainer.appendChild(videoElement);
         container.appendChild(videoContainer);
@@ -179,10 +180,11 @@ function renderProjectDemo(projectData, container) {
     if (isAdmin()) {
         container.append(
             createUploadControl(
-                projectData.video_url?.trim() ? "Replace video" : "Add video",
+                !videoValue || isExternalVideoUrl(videoValue) ? "Upload video file" : "Replace uploaded video",
                 "video_folder",
                 ".mp4"
-            )
+            ),
+            createVideoLinkControl(projectData)
         );
     }
 }
@@ -370,10 +372,14 @@ function renderProjectFiles(projectData, container) {
     container.innerHTML = "";
 
     if (projectData.video_url?.trim()) {
-        container.appendChild(createActionButton("Download Video", async () => {
-            const contentBlob = await getSpecificVideoFromLink(currentProjectId);
-            triggerBlobDownload(contentBlob, "project-video.mp4");
-        }));
+        if (isExternalVideoUrl(projectData.video_url)) {
+            container.appendChild(createLinkActionButton("Open Video", projectData.video_url));
+        } else {
+            container.appendChild(createActionButton("Download Video", async () => {
+                const contentBlob = await getSpecificVideoFromLink(currentProjectId);
+                triggerBlobDownload(contentBlob, "project-video.mp4");
+            }));
+        }
     }
 
     if (projectData.pdf_url?.trim()) {
@@ -462,6 +468,58 @@ function createUploadControl(label, fieldName, accept) {
     return wrapper;
 }
 
+function createVideoLinkControl(projectData) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "admin-video-link-control";
+
+    const label = document.createElement("label");
+    label.className = "inline-editor-field";
+
+    const text = document.createElement("span");
+    text.textContent = "YouTube link";
+
+    const input = document.createElement("input");
+    input.type = "url";
+    input.placeholder = "https://youtu.be/...";
+    input.value = isExternalVideoUrl(projectData.video_url) ? projectData.video_url : "";
+
+    const actions = document.createElement("div");
+    actions.className = "admin-video-link-actions";
+
+    const saveButton = document.createElement("button");
+    saveButton.type = "button";
+    saveButton.textContent = input.value ? "Update video link" : "Save video link";
+    saveButton.addEventListener("click", async () => {
+        const normalizedLink = input.value.trim();
+        if (normalizedLink && !getYoutubeEmbedUrl(normalizedLink)) {
+            input.focus();
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("video_link", normalizedLink);
+        currentProjectData = await editBigData(formData, currentProjectId);
+        renderProjectPage();
+    });
+
+    const clearButton = document.createElement("button");
+    clearButton.type = "button";
+    clearButton.textContent = "Clear video";
+    clearButton.disabled = !projectData.video_url?.trim();
+    clearButton.addEventListener("click", async () => {
+        const formData = new FormData();
+        formData.append("video_link", "");
+        currentProjectData = await editBigData(formData, currentProjectId);
+        renderProjectPage();
+    });
+
+    label.append(text, input);
+    actions.append(saveButton, clearButton);
+    wrapper.append(label, actions);
+
+    return wrapper;
+}
+
 function createEditorField(label, type, value, rows = 4) {
     const wrapper = document.createElement("label");
     wrapper.className = "inline-editor-field";
@@ -516,6 +574,16 @@ function createActionButton(label, onClick) {
     button.textContent = label;
     button.addEventListener("click", onClick);
     return button;
+}
+
+function createLinkActionButton(label, href) {
+    const link = document.createElement("a");
+    link.className = "specific-project-open-document";
+    link.href = href;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = label;
+    return link;
 }
 
 function createHintText(text) {
@@ -667,6 +735,65 @@ function triggerBlobDownload(blob, filename) {
     anchor.click();
     document.body.removeChild(anchor);
     URL.revokeObjectURL(url);
+}
+
+function createUploadedVideoPlayer(projectData) {
+    const videoElement = document.createElement("video");
+    videoElement.src = getVideoPath(projectData.id);
+    videoElement.controls = true;
+    videoElement.className = "specific-media-preview";
+    return videoElement;
+}
+
+function createYoutubeFrame(embedUrl, projectName) {
+    const iframe = document.createElement("iframe");
+    iframe.className = "specific-media-preview";
+    iframe.src = embedUrl;
+    iframe.title = `${projectName} video demo`;
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    iframe.allowFullscreen = true;
+    return iframe;
+}
+
+function isExternalVideoUrl(value) {
+    return typeof value === "string" && /^https?:\/\//i.test(value.trim());
+}
+
+function getYoutubeEmbedUrl(value) {
+    if (!isExternalVideoUrl(value)) {
+        return "";
+    }
+
+    try {
+        const url = new URL(value.trim());
+        const host = url.hostname.replace(/^www\./, "").toLowerCase();
+
+        if (host === "youtu.be") {
+            const videoId = url.pathname.replace(/^\/+/, "").split("/")[0];
+            return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+        }
+
+        if (host === "youtube.com" || host === "m.youtube.com") {
+            if (url.pathname === "/watch") {
+                const videoId = url.searchParams.get("v");
+                return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+            }
+
+            if (url.pathname.startsWith("/shorts/")) {
+                const videoId = url.pathname.split("/").filter(Boolean)[1];
+                return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+            }
+
+            if (url.pathname.startsWith("/embed/")) {
+                const videoId = url.pathname.split("/").filter(Boolean)[1];
+                return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+            }
+        }
+    } catch {
+        return "";
+    }
+
+    return "";
 }
 
 fullProjectLoad();

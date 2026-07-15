@@ -142,7 +142,7 @@ public class LinkControllerAPI {
         if (theLink.isPresent()) {
             Link theActualLink = theLink.get();
             String videoUrl = theActualLink.getVideo_url();
-            if (videoUrl == null || videoUrl.isBlank()) {
+            if (videoUrl == null || videoUrl.isBlank() || isExternalUrl(videoUrl)) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
@@ -232,7 +232,7 @@ public class LinkControllerAPI {
             Link theActualLink = theLink.get();
 
             String videoUrl = theActualLink.getVideo_url();
-            if (videoUrl == null || videoUrl.isBlank()) {
+            if (videoUrl == null || videoUrl.isBlank() || isExternalUrl(videoUrl)) {
                 return ResponseEntity.notFound().build();
             }
             
@@ -297,7 +297,8 @@ public class LinkControllerAPI {
     public ResponseEntity<Link> editBigData(@PathVariable Long id,
             @RequestParam(value = "pdf_folder", required = false) MultipartFile pdf_folder,
             @RequestParam(value = "video_folder", required = false) MultipartFile video_folder,
-            @RequestParam(value = "image_folder", required = false) MultipartFile image_folder) throws IOException{
+            @RequestParam(value = "image_folder", required = false) MultipartFile image_folder,
+            @RequestParam(value = "video_link", required = false) String video_link) throws IOException{
 
         
 
@@ -311,7 +312,7 @@ public class LinkControllerAPI {
             Files.createDirectories(folder);
 
 
-            if(pdf_folder != null || video_folder != null || image_folder != null){
+            if(pdf_folder != null || video_folder != null || image_folder != null || video_link != null){
                 if(pdf_folder != null) {
 
                     deletePDFFromPath(theActualLink.getPdf_url());
@@ -333,6 +334,18 @@ public class LinkControllerAPI {
                     String video_folder_name = pathNameSanitizing(video_folder.getOriginalFilename());
                     String update_video_folder_name = pathCreator(video_folder_name, folder, video_folder);
                     theActualLink.setVideo_url(update_video_folder_name);
+
+                    linkRepository.save(theActualLink);
+                }
+                if(video_link != null) {
+                    String normalizedVideoLink = normalizeVideoLink(video_link);
+                    if (!normalizedVideoLink.isEmpty()) {
+                        deleteVideoFromPath(theActualLink.getVideo_url());
+                        theActualLink.setVideo_url(normalizedVideoLink);
+                    } else {
+                        deleteVideoFromPath(theActualLink.getVideo_url());
+                        theActualLink.setVideo_url("");
+                    }
 
                     linkRepository.save(theActualLink);
                 }
@@ -362,6 +375,7 @@ public class LinkControllerAPI {
             @RequestParam(value = "pdf_folder", required = false) MultipartFile pdf_folder,
             @RequestParam(value = "video_folder", required = false) MultipartFile video_folder,
             @RequestParam(value = "image_folder", required = false) MultipartFile image_folder,
+            @RequestParam(value = "video_link", required = false) String video_link,
             @RequestParam(value = "project_name", required = false) String project_name,
             @RequestParam(value = "project_summary", required = false) String project_summary,
             @RequestParam(value = "description", required = false) String description,
@@ -388,7 +402,7 @@ public class LinkControllerAPI {
             update_file_folder_name = pathCreator(pdf_folder_name, folder, pdf_folder);
         }
 
-        String update_video_folder_name = "";
+        String update_video_folder_name = normalizeVideoLink(video_link);
         if (video_folder != null && !video_folder.isEmpty()) {
             String video_folder_name = pathNameSanitizing(video_folder.getOriginalFilename());
             update_video_folder_name = pathCreator(video_folder_name, folder, video_folder);
@@ -444,6 +458,23 @@ public class LinkControllerAPI {
 
     private Path resolveUploadPath(String storedFileName) {
         return getUploadRoot().resolve(storedFileName).normalize();
+    }
+
+    private boolean isExternalUrl(String value) {
+        if (value == null) {
+            return false;
+        }
+
+        String normalizedValue = value.trim().toLowerCase();
+        return normalizedValue.startsWith("http://") || normalizedValue.startsWith("https://");
+    }
+
+    private String normalizeVideoLink(String videoLink) {
+        if (videoLink == null) {
+            return "";
+        }
+
+        return videoLink.trim();
     }
 
     private String pathNameSanitizing(String fileName){
@@ -520,7 +551,7 @@ public class LinkControllerAPI {
         Path pdfFolderPath = deletingPDFFile == null || deletingPDFFile.isBlank()
                 ? null
                 : resolveUploadPath(deletingPDFFile);
-        Path videoFolderPath = deletingVideoFile == null || deletingVideoFile.isBlank()
+        Path videoFolderPath = deletingVideoFile == null || deletingVideoFile.isBlank() || isExternalUrl(deletingVideoFile)
                 ? null
                 : resolveUploadPath(deletingVideoFile);
         Path imageFolderPath = deletingImageFile == null || deletingImageFile.isBlank()
@@ -574,6 +605,10 @@ public class LinkControllerAPI {
 
     private void deleteVideoFromPath(String deletingVideoFile)  throws IOException{
         if (deletingVideoFile == null || deletingVideoFile.isBlank()) {
+            return;
+        }
+
+        if (isExternalUrl(deletingVideoFile)) {
             return;
         }
 

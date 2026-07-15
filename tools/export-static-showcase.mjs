@@ -101,7 +101,7 @@ async function copyStaticFrontendShell() {
 async function writeStaticFiles(projectsToWrite) {
     const exportedProjects = projectsToWrite.map((project) => ({
         ...project,
-        video_url: ""
+        video_url: isExternalUrl(project.video_url) ? project.video_url : ""
     }));
 
     await writeFile(path.join(outputRoot, "data", "projects.json"), JSON.stringify(exportedProjects, null, 2), "utf8");
@@ -114,6 +114,14 @@ async function writeStaticFiles(projectsToWrite) {
 }
 
 async function loadProjectsFromExistingStatic() {
+    const currentDataPath = path.join(outputRoot, "data", "projects.json");
+    try {
+        const jsonContent = await readFile(currentDataPath, "utf8");
+        return normalizeProjects(JSON.parse(jsonContent));
+    } catch {
+        // Fallback to legacy static structure if present.
+    }
+
     const legacyProjectDirectory = path.join(outputRoot, "project");
     const files = (await readdir(legacyProjectDirectory))
         .filter((fileName) => /^\d+\.html$/.test(fileName))
@@ -183,7 +191,7 @@ function normalizeProjects(projectsToNormalize) {
             description: project.description ?? "",
             github_link: project.github_link ?? "",
             pdf_url: project.pdf_url ?? "",
-            video_url: "",
+            video_url: project.video_url ?? "",
             image_url: project.image_url ?? "",
             project_context: project.project_context ?? "",
             project_role: project.project_role ?? "",
@@ -211,6 +219,10 @@ function extractMatch(value, pattern) {
 
 function normalizeCategoryFromLabel(label) {
     return String(label).toLowerCase().includes("academic") ? "academic" : "personal";
+}
+
+function isExternalUrl(value) {
+    return typeof value === "string" && /^https?:\/\//i.test(value.trim());
 }
 
 function decodeHtml(value) {
@@ -301,7 +313,15 @@ function getCachedProjectById(projectId) {
 }
 
 function buildUploadPath(fileName) {
-    return fileName ? \`/assets/uploads/\${encodeURIComponent(fileName)}\` : "";
+    if (!fileName) {
+        return "";
+    }
+
+    if (/^https?:\\/\\//i.test(fileName)) {
+        return fileName;
+    }
+
+    return \`/assets/uploads/\${encodeURIComponent(fileName)}\`;
 }
 
 export async function getAllLinks() {

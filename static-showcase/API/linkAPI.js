@@ -19,7 +19,15 @@ function getCachedProjectById(projectId) {
 }
 
 function buildUploadPath(fileName) {
-    return fileName ? `/assets/uploads/${encodeURIComponent(fileName)}` : "";
+    if (!fileName) {
+        return "";
+    }
+
+    if (/^https?:\/\//i.test(fileName)) {
+        return fileName;
+    }
+
+    return `/assets/uploads/${encodeURIComponent(fileName)}`;
 }
 
 export async function getAllLinks() {
