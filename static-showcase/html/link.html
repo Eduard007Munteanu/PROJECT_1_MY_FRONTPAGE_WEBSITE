@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <Title>Projects page</Title>
+        <link rel="stylesheet" href="/styles/main.css">
+    </head>
+    <body>
+        <div class="vertical-head-body-allign">
+            <div class="horizontal-Menu-Option">
+                <p class="main-info">Projects</p>
+                <div class="session-controls"></div>
+                <div class="vertical-change-page">
+                    <p class="change-page-text">Change options</p>
+                    <select class="change-page-option">Change options
+                        <option value="Home" class="change-page-option-home">Home</option>
+                        <option value="link" class="change-page-option-link">Projects</option>
+                    </select>
+                </div> 
+            </div>
+        <div class="links-content">
+            <div class="projects-category-switcher" aria-label="Project category selector">
+                <button class="projects-category-button is-active" type="button" data-category="personal">Personal Projects</button>
+                <button class="projects-category-button" type="button" data-category="academic">Academic Projects</button>
+            </div>
+                <div class="link-general-options admin-only">
+                    <button class="insert-link-button">Insert project content</button>
+                    <button class="remove-all-button">Remove all projects</button>
+                </div>
+                <div class="projects-view">
+                    <h2 class="projects-view-title">Personal Projects</h2>
+                    <ul class ="list-links"></ul>
+                </div>
+            </div>  
+        </div>   
+        <div class="overlay-delete-project">
+            <div class="overlay-object overlay-delete-object">
+                <button class="close-delete-project-button">X</button>
+                <p class="delete-project-message">This will remove the whole project.</p>
+                <div class="delete-project-actions">
+                    <button class="confirm-delete-project-button">Delete</button>
+                    <button class="cancel-delete-project-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <script src="/config.js"></script>
+        <script type="module" src="/script/main.js"></script>
+
+
+    </body>
+</html>

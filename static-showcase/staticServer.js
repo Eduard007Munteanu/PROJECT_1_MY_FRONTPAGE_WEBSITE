@@ -21,7 +21,13 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((request, response) => {
-    const requestPath = request.url === "/" ? "/index.html" : request.url.split("?")[0];
+    if (request.url === "/") {
+        response.writeHead(302, { Location: "/html/Home.html" });
+        response.end();
+        return;
+    }
+
+    const requestPath = request.url.split("?")[0];
     const normalizedPath = path.normalize(decodeURIComponent(requestPath)).replace(/^(\.\.[\\/])+/, "");
     const filePath = path.join(ROOT, normalizedPath);
 
@@ -56,5 +62,5 @@ const server = http.createServer((request, response) => {
 });
 
 server.listen(PORT, () => {
-    console.log(`Static showcase running on http://localhost:${PORT}`);
+    console.log("Static showcase running on http://localhost:" + PORT);
 });
