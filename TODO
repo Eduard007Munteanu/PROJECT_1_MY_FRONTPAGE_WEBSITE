@@ -1,36 +1,12 @@
-Fix:
+Project notes
 
+- Media handling supports uploaded files and external video links
+- The admin workflow is intended for local maintenance, not public-site editing
+- Production deployment should use environment-based configuration
+- Static showcase export is available for lightweight hosting
 
+Future cleanup ideas
 
-BEFORE ALL:
-
-- Regarding video formats, find the source folder> For example
-upload, videoMP4, video1, convert to string as identifier the path
-Then store the path in the database. The user, when loaded, he get's
-the url Path, he insert the url path to retrieve the data, I look
-at the mapping to which folder, retrieve from the folder, send him the
-data as FormatData.
-Another option, stream/broadcast the information without downloading. 
-
-
-1) Define the database as a class (JavaScript) [x]
-2) Delete option should work [x]
-3) Create backend section [x]
-4) Define the database as a class (Java) [x]
-5) API + communication between Backend and frontend ["partially"]
-6) Advanced server internal upload of folders and other data 
-.
-.
-.
-?) Security measurements 
-?+1) On an actual cloud server. (If possible)
-
-
-
-
-Conceptually: 
-
-1) Learn about JDBC and how it works under the hood for JPA Spring Database management. 
-
-2) Remember for documentation => We are in the dev moment where we have two different ports, localhost:3000 and localhost:8080. On the production 
-section, this is not the standard, you have a single domain and main port. 
+- Refine deployment documentation
+- Improve validation and error messages further where useful
+- Continue visual polish when needed
