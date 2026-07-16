@@ -61,7 +61,7 @@ function renderBackButton(container) {
     backButton.type = "button";
     backButton.textContent = "Back to Projects";
     backButton.addEventListener("click", () => {
-        window.location.href = "/html/link.html";
+        window.location.href = "./link.html";
     });
 
     container.append(title, backButton);

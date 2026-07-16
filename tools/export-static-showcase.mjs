@@ -21,6 +21,7 @@ await copyExistingDirectory(uploadSource, uploadTarget);
 await copyExistingFile(cvSource, cvTarget);
 await removeVideoFiles(uploadTarget);
 await copyStaticFrontendShell();
+await patchStaticFrontendShell();
 await writeStaticFiles(projects);
 
 console.log(`Static showcase exported to ${outputRoot}`);
@@ -116,6 +117,54 @@ async function copyStaticFrontendShell() {
             cp(path.join(frontEndRoot, sourceRelative), path.join(outputRoot, targetRelative), { force: true })
         )
     );
+}
+
+async function patchStaticFrontendShell() {
+    const filePatches = [
+        [
+            path.join(outputRoot, "html", "Home.html"),
+            (content) => content
+                .replaceAll('href="/styles/main.css"', 'href="../styles/main.css"')
+                .replaceAll('src="/config.js"', 'src="../config.js"')
+                .replaceAll('src="/script/main.js"', 'src="../script/main.js"')
+        ],
+        [
+            path.join(outputRoot, "html", "link.html"),
+            (content) => content
+                .replaceAll('href="/styles/main.css"', 'href="../styles/main.css"')
+                .replaceAll('src="/config.js"', 'src="../config.js"')
+                .replaceAll('src="/script/main.js"', 'src="../script/main.js"')
+        ],
+        [
+            path.join(outputRoot, "html", "specificLink.html"),
+            (content) => content
+                .replaceAll('href="/styles/specificLink.css"', 'href="../styles/specificLink.css"')
+                .replaceAll('src="/config.js"', 'src="../config.js"')
+                .replaceAll('src="/script/specificLinkPage.js"', 'src="../script/specificLinkPage.js"')
+        ],
+        [
+            path.join(outputRoot, "script", "defaultPage.js"),
+            (content) => content
+                .replaceAll('window.location.href = `/html/${redirect}`;', 'window.location.href = `./${redirect}`;')
+        ],
+        [
+            path.join(outputRoot, "script", "linkPage.js"),
+            (content) => content
+                .replaceAll('window.location.href = `/html/specificLink.html?id=${createdProject.id}&edit=1`;', 'window.location.href = `./specificLink.html?id=${createdProject.id}&edit=1`;')
+                .replaceAll('window.location.href = `/html/specificLink.html?id=${projectData.id}`;', 'window.location.href = `./specificLink.html?id=${projectData.id}`;')
+        ],
+        [
+            path.join(outputRoot, "script", "specificLinkPage.js"),
+            (content) => content
+                .replaceAll('window.location.href = "/html/link.html";', 'window.location.href = "./link.html";')
+        ]
+    ];
+
+    await Promise.all(filePatches.map(async ([filePath, patcher]) => {
+        const currentContent = await readFile(filePath, "utf8");
+        const patchedContent = patcher(currentContent);
+        await writeFile(filePath, patchedContent, "utf8");
+    }));
 }
 
 async function writeStaticFiles(projectsToWrite) {
