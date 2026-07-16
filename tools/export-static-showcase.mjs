@@ -15,14 +15,7 @@ const cvTarget = path.join(assetsRoot, "cv", "Eduard_CV.pdf");
 
 const projects = await loadProjects();
 
-await rm(outputRoot, { recursive: true, force: true });
-await mkdir(path.join(outputRoot, "html"), { recursive: true });
-await mkdir(path.join(outputRoot, "styles"), { recursive: true });
-await mkdir(path.join(outputRoot, "script"), { recursive: true });
-await mkdir(path.join(outputRoot, "API"), { recursive: true });
-await mkdir(path.join(outputRoot, "data"), { recursive: true });
-await mkdir(path.join(assetsRoot, "cv"), { recursive: true });
-await mkdir(uploadTarget, { recursive: true });
+await prepareOutputDirectories();
 
 await copyExistingDirectory(uploadSource, uploadTarget);
 await copyExistingFile(cvSource, cvTarget);
@@ -52,6 +45,33 @@ async function copyExistingDirectory(source, target) {
         await cp(source, target, { recursive: true, force: true });
     } catch {
         // Ignore missing source directory for export.
+    }
+}
+
+async function prepareOutputDirectories() {
+    await mkdir(path.join(outputRoot, "html"), { recursive: true });
+    await mkdir(path.join(outputRoot, "styles"), { recursive: true });
+    await mkdir(path.join(outputRoot, "script"), { recursive: true });
+    await mkdir(path.join(outputRoot, "API"), { recursive: true });
+    await mkdir(path.join(outputRoot, "data"), { recursive: true });
+    await mkdir(path.join(assetsRoot, "cv"), { recursive: true });
+    await mkdir(uploadTarget, { recursive: true });
+
+    await clearDirectoryContents(path.join(outputRoot, "html"));
+    await clearDirectoryContents(path.join(outputRoot, "styles"));
+    await clearDirectoryContents(path.join(outputRoot, "script"));
+    await clearDirectoryContents(path.join(outputRoot, "API"));
+    await clearDirectoryContents(path.join(outputRoot, "data"));
+}
+
+async function clearDirectoryContents(directoryPath) {
+    try {
+        const entries = await readdir(directoryPath, { withFileTypes: true });
+        await Promise.all(entries.map((entry) =>
+            rm(path.join(directoryPath, entry.name), { recursive: true, force: true })
+        ));
+    } catch {
+        // Ignore missing directory.
     }
 }
 
@@ -241,11 +261,11 @@ function buildIndexRedirect() {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=/html/Home.html">
+    <meta http-equiv="refresh" content="0; url=./html/Home.html">
     <title>Redirecting...</title>
 </head>
 <body>
-    <p>Redirecting to <a href="/html/Home.html">Home</a>...</p>
+    <p>Redirecting to <a href="./html/Home.html">Home</a>...</p>
 </body>
 </html>
 `;
@@ -280,15 +300,15 @@ function buildStaticAppConfig() {
 }
 
 export function getLinksApiBaseUrl() {
-    return "/data/projects.json";
+    return new URL("../data/projects.json", window.location.href).toString();
 }
 
 export function getCvPdfUrl() {
-    return "/assets/cv/Eduard_CV.pdf";
+    return new URL("../assets/cv/Eduard_CV.pdf", window.location.href).toString();
 }
 
 export function getCvPdfDownloadUrl() {
-    return "/assets/cv/Eduard_CV.pdf";
+    return new URL("../assets/cv/Eduard_CV.pdf", window.location.href).toString();
 }
 `;
 }
@@ -296,12 +316,16 @@ export function getCvPdfDownloadUrl() {
 function buildStaticApi() {
     return `let cachedProjects = null;
 
+function resolveStaticPath(relativePath) {
+    return new URL(relativePath, window.location.href).toString();
+}
+
 async function loadProjects() {
     if (cachedProjects) {
         return cachedProjects;
     }
 
-    const response = await fetch("/data/projects.json");
+    const response = await fetch(resolveStaticPath("../data/projects.json"));
     if (!response.ok) {
         throw new Error("failed to fetch links");
     }
@@ -323,7 +347,7 @@ function buildUploadPath(fileName) {
         return fileName;
     }
 
-    return \`/assets/uploads/\${encodeURIComponent(fileName)}\`;
+    return resolveStaticPath(\`../assets/uploads/\${encodeURIComponent(fileName)}\`);
 }
 
 export async function getAllLinks() {
@@ -429,7 +453,7 @@ const MIME_TYPES = {
 
 const server = http.createServer((request, response) => {
     if (request.url === "/") {
-        response.writeHead(302, { Location: "/html/Home.html" });
+        response.writeHead(302, { Location: "./html/Home.html" });
         response.end();
         return;
     }
