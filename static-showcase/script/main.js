@@ -43,6 +43,7 @@ function hydrateHomeLinks() {
 
     if (downloadCvLink) {
         downloadCvLink.href = getCvPdfDownloadUrl();
+        downloadCvLink.setAttribute("download", "Eduard_CV.pdf");
     }
 }
 
