@@ -1,11 +1,15 @@
 let cachedProjects = null;
 
+function resolveStaticPath(relativePath) {
+    return new URL(relativePath, window.location.href).toString();
+}
+
 async function loadProjects() {
     if (cachedProjects) {
         return cachedProjects;
     }
 
-    const response = await fetch("/data/projects.json");
+    const response = await fetch(resolveStaticPath("../data/projects.json"));
     if (!response.ok) {
         throw new Error("failed to fetch links");
     }
@@ -27,7 +31,7 @@ function buildUploadPath(fileName) {
         return fileName;
     }
 
-    return `/assets/uploads/${encodeURIComponent(fileName)}`;
+    return resolveStaticPath(`../assets/uploads/${encodeURIComponent(fileName)}`);
 }
 
 export async function getAllLinks() {

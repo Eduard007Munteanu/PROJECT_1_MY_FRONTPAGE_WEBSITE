@@ -18,7 +18,7 @@ export function changeoption(){
         const redirect = `${selectValue}.html`;
 
         if (redirect !== currentPage && !redirect.includes("default")) {
-            window.location.href = `/html/${redirect}`;
+            window.location.href = `./${redirect}`;
         }
     });
 }

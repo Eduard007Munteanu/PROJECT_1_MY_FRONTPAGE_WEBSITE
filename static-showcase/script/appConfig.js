@@ -3,13 +3,13 @@ export function getBackendBaseUrl() {
 }
 
 export function getLinksApiBaseUrl() {
-    return "/data/projects.json";
+    return new URL("../data/projects.json", window.location.href).toString();
 }
 
 export function getCvPdfUrl() {
-    return "/assets/cv/Eduard_CV.pdf";
+    return new URL("../assets/cv/Eduard_CV.pdf", window.location.href).toString();
 }
 
 export function getCvPdfDownloadUrl() {
-    return "/assets/cv/Eduard_CV.pdf";
+    return new URL("../assets/cv/Eduard_CV.pdf", window.location.href).toString();
 }

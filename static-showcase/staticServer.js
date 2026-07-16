@@ -22,7 +22,7 @@ const MIME_TYPES = {
 
 const server = http.createServer((request, response) => {
     if (request.url === "/") {
-        response.writeHead(302, { Location: "/html/Home.html" });
+        response.writeHead(302, { Location: "./html/Home.html" });
         response.end();
         return;
     }

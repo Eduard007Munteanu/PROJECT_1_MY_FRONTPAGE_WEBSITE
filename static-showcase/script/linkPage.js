@@ -144,7 +144,7 @@ async function createDraftProject() {
     formData.append("project_takeaways", "");
 
     const createdProject = await createLink(formData);
-    window.location.href = `/html/specificLink.html?id=${createdProject.id}&edit=1`;
+    window.location.href = `./specificLink.html?id=${createdProject.id}&edit=1`;
 }
 
 function normalizeCategory(category) {
@@ -281,7 +281,7 @@ function createProjectCardEditor(projectData) {
 function createViewButton(projectData) {
     const previewButton = createElement("button", "view-project-button", "View Project");
     previewButton.addEventListener("click", () => {
-        window.location.href = `/html/specificLink.html?id=${projectData.id}`;
+        window.location.href = `./specificLink.html?id=${projectData.id}`;
     });
     return previewButton;
 }
